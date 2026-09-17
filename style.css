@@ -1,0 +1,17 @@
+/*
+Theme Name:        Matjar Pro
+Theme URI:         https://github.com/dropazaabal-design/ifhamnfaskpro
+Description:       قالب ووكومرس عربي مبني على RTL أصلي، مُحسَّن للتحويل في متاجر الجوال. Tailwind CSS و Vanilla JavaScript، بلا jQuery في كود القالب، وبعملة يختارها التاجر من لوحة التحكم.
+Version:           0.1.0
+Requires at least: 6.4
+Requires PHP:      8.0
+License:           GNU General Public License v2 or later
+License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain:       matjar-pro
+Domain Path:       /languages
+Tags:              e-commerce, rtl-language-support, translation-ready, custom-colors, custom-logo, custom-menu, featured-images, threaded-comments
+WC requires at least: 8.0
+
+ملاحظة: التنسيقات الفعلية تُبنى عبر Tailwind إلى assets/css/main.css.
+هذا الملف يحمل ترويسة القالب فقط كما يتطلب ووردبريس، ولا يُحمَّل على الواجهة.
+*/

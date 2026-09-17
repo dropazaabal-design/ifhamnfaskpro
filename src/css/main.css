@@ -1,0 +1,304 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ================================================================
+   الطبقة الأساسية
+   ================================================================ */
+@layer base {
+	:root {
+		color-scheme: light;
+	}
+
+	html {
+		-webkit-text-size-adjust: 100%;
+		text-size-adjust: 100%;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		html {
+			scroll-behavior: smooth;
+		}
+	}
+
+	body {
+		@apply bg-cream font-sans text-base text-body;
+		text-rendering: optimizeLegibility;
+	}
+
+	/* ووردبريس وووكومرس يطبعان هذا الصنف للنص المخصّص لقارئ الشاشة، وهو
+	   من مسؤولية القالب. بدونه تظهر نصوص مخفية مبعثرة في الصفحة. */
+	.screen-reader-text {
+		@apply sr-only;
+	}
+
+	/* حلقة تركيز واحدة واضحة لكل عنصر تفاعلي — شرط الوصولية بلوحة المفاتيح. */
+	:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+		outline: 2px solid rgb(var(--mp-cta));
+		outline-offset: 2px;
+		border-radius: 4px;
+	}
+
+	img,
+	video {
+		max-width: 100%;
+		height: auto;
+	}
+
+	/* قياس الصور مُعلَن مسبقاً في القوالب لمنع انزياح التصميم (CLS). */
+	img[width][height] {
+		height: auto;
+	}
+}
+
+/* ================================================================
+   أدوات خاصة بالعربية والاتجاه
+   ================================================================ */
+@layer base {
+	/* الأرقام والأسعار داخل نص عربي: تُعزل باتجاه LTR وإلا تشقلبت الأرقام
+	   والرموز والفواصل. هذا العيب موجود في معظم القوالب المعرّبة. */
+	.mp-num {
+		direction: ltr;
+		unicode-bidi: isolate;
+		font-variant-numeric: tabular-nums;
+	}
+
+	/* الأيقونات الاتجاهية فقط تُعكس (الأسهم والزوايا). الشعارات وأزرار
+	   تشغيل الوسائط لا تُعكس أبداً. */
+	[dir='rtl'] .mp-flip > svg,
+	[dir='rtl'] svg.mp-flip {
+		transform: scaleX(-1);
+	}
+}
+
+/* ================================================================
+   المكوّنات
+   ================================================================ */
+@layer components {
+
+	/* ---------- الأزرار ---------- */
+
+	.mp-btn {
+		@apply inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-2 rounded-xl px-5 text-center text-base font-bold no-underline transition;
+	}
+
+	.mp-btn--cta {
+		@apply bg-cta text-cta-fg hover:bg-cta-hover;
+	}
+
+	.mp-btn--outline {
+		@apply border-[1.5px] border-ink bg-transparent font-semibold text-ink hover:bg-ink hover:text-white;
+	}
+
+	.mp-btn--ghost {
+		@apply bg-transparent font-semibold text-ink hover:bg-cream;
+	}
+
+	.mp-btn--lg {
+		@apply min-h-[54px] text-lg;
+	}
+
+	.mp-btn:disabled,
+	.mp-btn[aria-disabled='true'] {
+		@apply cursor-not-allowed bg-line text-faint hover:bg-line;
+	}
+
+	/* ---------- الشارات ---------- */
+
+	.mp-pill {
+		@apply inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold;
+	}
+
+	.mp-pill--sale {
+		@apply bg-sale text-white;
+	}
+
+	.mp-pill--amber {
+		@apply bg-amber text-ink;
+	}
+
+	.mp-pill--success {
+		@apply border border-success/25 bg-success/10 text-success;
+	}
+
+	.mp-pill--info {
+		@apply border border-info/25 bg-info/10 text-info;
+	}
+
+	.mp-pill--outline {
+		@apply border border-line bg-surface text-ink;
+	}
+
+	/* ---------- الحقول ---------- */
+
+	.mp-field {
+		@apply min-h-[50px] w-full rounded-xl border-[1.5px] border-line bg-surface px-3.5 text-base text-ink transition;
+	}
+
+	.mp-field:focus {
+		@apply border-cta outline-none;
+	}
+
+	.mp-field[aria-invalid='true'] {
+		@apply border-sale;
+	}
+
+	.mp-field--valid {
+		@apply border-success;
+	}
+
+	.mp-label {
+		@apply mb-1.5 block text-sm font-bold text-ink;
+	}
+
+	.mp-hint {
+		@apply mt-1.5 block text-xs text-faint;
+	}
+
+	.mp-error {
+		@apply mt-1.5 flex items-center gap-1.5 text-xs font-semibold text-sale;
+	}
+
+	/* ---------- شريط السحب الأفقي ---------- */
+
+	.mp-rail {
+		@apply flex gap-3 overflow-x-auto;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+		/* يمنع سحب الشريط من تشغيل «رجوع» في المتصفح — مشكلة شائعة في RTL. */
+		overscroll-behavior-x: contain;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.mp-rail::-webkit-scrollbar {
+		display: none;
+	}
+
+	.mp-rail > * {
+		scroll-snap-align: start;
+		flex-shrink: 0;
+	}
+
+	/* ---------- البطاقات ---------- */
+
+	.mp-card {
+		@apply overflow-hidden rounded-2xl border border-line bg-surface;
+	}
+
+	/* ---------- الأشرطة الثابتة ---------- */
+
+	.mp-sticky-bar {
+		@apply fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface shadow-bar;
+		padding-bottom: env(safe-area-inset-bottom, 0);
+		transition: transform 200ms ease;
+	}
+
+	.mp-sticky-bar[data-mp-hidden='true'] {
+		transform: translateY(100%);
+	}
+
+	/* ================================================================
+	   إحلال تنسيقات ووكومرس
+	   أوراق ووكومرس الثلاث مُلغاة في inc/assets.php، فما تحته يعيد بناء ما
+	   يطبعه ووكومرس من عناصر لا نملك قوالبها.
+	   ================================================================ */
+
+	.woocommerce-message,
+	.woocommerce-info,
+	.woocommerce-error,
+	.woocommerce-notice {
+		@apply mb-5 list-none rounded-xl border px-4 py-3.5 text-sm leading-relaxed;
+	}
+
+	.woocommerce-message {
+		@apply border-success/25 bg-success/10 text-success;
+	}
+
+	.woocommerce-info,
+	.woocommerce-notice {
+		@apply border-info/25 bg-info/10 text-info;
+	}
+
+	.woocommerce-error {
+		@apply border-sale/25 bg-sale/10 text-sale;
+	}
+
+	.woocommerce-message .button,
+	.woocommerce-info .button,
+	.woocommerce-error .button {
+		@apply mp-btn mp-btn--outline ms-3 min-h-[36px] px-3 text-sm;
+	}
+
+	.woocommerce .price,
+	.woocommerce-Price-amount {
+		@apply font-bold text-ink;
+	}
+
+	.woocommerce .price del,
+	.woocommerce del .woocommerce-Price-amount {
+		@apply font-normal text-faint line-through;
+	}
+
+	.woocommerce .price ins {
+		@apply no-underline;
+	}
+
+	.woocommerce form .form-row {
+		@apply mb-4 flex flex-col;
+	}
+
+	.woocommerce form .form-row label {
+		@apply mp-label;
+	}
+
+	.woocommerce form .form-row input.input-text,
+	.woocommerce form .form-row textarea,
+	.woocommerce form .form-row select,
+	.woocommerce .select2-container .select2-selection--single {
+		@apply mp-field;
+	}
+
+	.woocommerce form .form-row textarea {
+		@apply min-h-[96px] py-3;
+	}
+
+	.woocommerce .required {
+		@apply text-sale no-underline;
+	}
+
+	.woocommerce-form__label-for-checkbox {
+		@apply flex flex-row items-center gap-2.5 text-sm font-normal;
+	}
+
+	.woocommerce #respond input#submit,
+	.woocommerce a.button,
+	.woocommerce button.button,
+	.woocommerce input.button {
+		@apply mp-btn mp-btn--cta;
+	}
+
+	.woocommerce a.button.alt,
+	.woocommerce button.button.alt,
+	.woocommerce input.button.alt {
+		@apply mp-btn--cta;
+	}
+
+	.woocommerce .star-rating,
+	.woocommerce .stars {
+		@apply text-accent;
+	}
+
+	.mp-breadcrumb {
+		@apply mb-4 flex flex-wrap items-center gap-1.5 text-xs text-faint;
+	}
+
+	.mp-breadcrumb a {
+		@apply text-faint no-underline hover:text-cta;
+	}
+
+	.mp-breadcrumb__item:not(:last-child)::after {
+		content: '‹';
+		@apply ms-1.5 text-line;
+	}
+}

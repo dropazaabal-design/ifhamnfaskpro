@@ -1,0 +1,12 @@
+node_modules/
+npm-debug.log*
+.DS_Store
+Thumbs.db
+*.log
+.env
+.idea/
+.vscode/
+languages/*.mo
+
+# المخرجات المبنية تُرفع مع القالب عن قصد:
+# التاجر المشتري لا يشغّل npm، فـ assets/css و assets/js و assets/fonts تُلتزم في المستودع.
