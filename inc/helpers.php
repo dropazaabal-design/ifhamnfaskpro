@@ -177,9 +177,9 @@ function matjar_pro_get_icon( $name, $args = array() ) {
 	$label = (string) $args['label'];
 
 	$attributes = sprintf(
-		'width="%1$d" height="%1$d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="%2$s" %3$s',
+		'width="%1$d" height="%1$d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"%2$s %3$s',
 		$size,
-		esc_attr( $args['class'] ),
+		'' === $args['class'] ? '' : ' class="' . esc_attr( $args['class'] ) . '"',
 		'' === $label ? 'aria-hidden="true" focusable="false"' : 'role="img" aria-label="' . esc_attr( $label ) . '"'
 	);
 
@@ -209,6 +209,12 @@ function matjar_pro_icon_paths() {
 		'chevron'  => '<path d="M6 9l6 6 6-6"/>',
 		'back'     => '<path d="M10 6l6 6-6 6"/>',
 		'card'     => '<path d="M3 6h18v12H3z"/><path d="M3 10h18"/>',
+		'arrow'    => '<path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/>',
+		'heart'    => '<path d="M12 20s-7-4.4-7-9.2A4.1 4.1 0 0 1 12 8a4.1 4.1 0 0 1 7 2.8C19 15.6 12 20 12 20z"/>',
+		'shield'   => '<path d="M12 3l7.5 3v5c0 4.6-3.2 8.2-7.5 10C7.7 19.2 4.5 15.6 4.5 11V6z"/>',
+		'star'     => '<path d="M12 3l2.7 5.7 6.3.9-4.5 4.3 1.1 6.1L12 17.2 6.4 20l1.1-6.1L3 9.6l6.3-.9z"/>',
+		'filter'   => '<path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/>',
+		'tag'      => '<path d="M20 4h-7L4 13l7 7 9-9z"/><circle cx="16" cy="8" r="1.4"/>',
 	);
 }
 
@@ -239,6 +245,35 @@ function matjar_pro_defaults() {
 		'matjar_pro_delivery_max_days'       => 4,
 		'matjar_pro_sticky_buy_bar'          => true,
 		'matjar_pro_bottom_nav'              => true,
+
+		// الهيرو
+		'matjar_pro_hero_enabled'            => true,
+		'matjar_pro_hero_layout'             => 'stacked',
+		'matjar_pro_hero_image'              => 0,
+		'matjar_pro_hero_eyebrow'            => '',
+		'matjar_pro_hero_headline'           => '',
+		'matjar_pro_hero_subtext'            => '',
+		'matjar_pro_hero_cta_label'          => '',
+		'matjar_pro_hero_cta_url'            => '',
+
+		// شريط الثقة
+		'matjar_pro_trust_enabled'           => true,
+		'matjar_pro_trust_1_title'           => 'شحن سريع',
+		'matjar_pro_trust_1_subtitle'        => '',
+		'matjar_pro_trust_2_title'           => 'دفع عند الاستلام',
+		'matjar_pro_trust_2_subtitle'        => '',
+		'matjar_pro_trust_3_title'           => 'إرجاع مجاني',
+		'matjar_pro_trust_3_subtitle'        => '',
+		'matjar_pro_trust_4_title'           => 'دعم واتساب',
+		'matjar_pro_trust_4_subtitle'        => '',
+
+		// بلاطتا الترويج
+		'matjar_pro_promo_1_image'           => 0,
+		'matjar_pro_promo_1_label'           => '',
+		'matjar_pro_promo_1_url'             => '',
+		'matjar_pro_promo_2_image'           => 0,
+		'matjar_pro_promo_2_label'           => '',
+		'matjar_pro_promo_2_url'             => '',
 	);
 }
 

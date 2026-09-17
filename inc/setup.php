@@ -90,6 +90,21 @@ add_action( 'after_setup_theme', 'matjar_pro_content_width', 0 );
  * مناطق الودجات.
  */
 function matjar_pro_widgets_init() {
+	foreach ( range( 1, 3 ) as $index ) {
+		register_sidebar(
+			array(
+				/* translators: %d: رقم العمود. */
+				'name'          => sprintf( __( 'عمود الفوتر %d', 'matjar-pro' ), $index ),
+				'id'            => 'footer-' . $index,
+				'description'   => __( 'يظهر في تذييل الصفحة. اتركه فارغاً ليُستخدم «قائمة الفوتر» بدلاً منه.', 'matjar-pro' ),
+				'before_widget' => '<section id="%1$s" class="mp-widget %2$s">',
+				'after_widget'  => '</section>',
+				'before_title'  => '<h2 class="mp-widget__title">',
+				'after_title'   => '</h2>',
+			)
+		);
+	}
+
 	register_sidebar(
 		array(
 			'name'          => __( 'الشريط الجانبي للمتجر', 'matjar-pro' ),
@@ -119,6 +134,11 @@ function matjar_pro_body_classes( $classes ) {
 
 	if ( matjar_pro_has_woocommerce() && ( is_cart() || is_checkout() ) ) {
 		$classes[] = 'mp-funnel';
+	}
+
+	// يحجز التنسيق مساحة أسفل الصفحة بقدر الشريط الثابت، فلا يغطّي المحتوى.
+	if ( matjar_pro_mod( 'matjar_pro_bottom_nav' ) ) {
+		$classes[] = 'mp-has-bottom-nav';
 	}
 
 	return $classes;

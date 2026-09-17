@@ -15,7 +15,9 @@
     "js:build": "esbuild src/js/main.js --bundle --minify --format=iife --target=es2019 --outfile=assets/js/main.js",
     "build": "npm run fonts && npm run css:build && npm run js:build",
     "dev": "npm run css:dev & npm run js:dev",
-    "verify:contrast": "php tools/verify-contrast.php"
+    "verify:contrast": "php tools/verify-contrast.php",
+    "smoke": "php tools/render-smoke.php && php tools/render-smoke.php --woocommerce && php tools/render-smoke.php --woocommerce --overlay",
+    "verify": "npm run verify:contrast && npm run smoke"
   },
   "devDependencies": {
     "@fontsource-variable/cairo": "^5.3.0",

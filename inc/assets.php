@@ -98,6 +98,8 @@ function matjar_pro_script_data() {
 			'error'      => __( 'تعذّر إكمال الطلب، حاول مرة أخرى', 'matjar-pro' ),
 			'loading'    => __( 'جارٍ التحديث…', 'matjar-pro' ),
 			'outOfStock' => __( 'غير متوفر حالياً', 'matjar-pro' ),
+			'noResults'  => __( 'لا توجد منتجات مطابقة', 'matjar-pro' ),
+			'seeAll'     => __( 'عرض كل النتائج', 'matjar-pro' ),
 		),
 		'currency' => array(
 			'code'   => function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : '',

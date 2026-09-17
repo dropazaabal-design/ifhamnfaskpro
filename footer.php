@@ -1,6 +1,9 @@
 <?php
 /**
- * تذييل الصفحة.
+ * تذييل الصفحة، والعناصر الثابتة والألواح.
+ *
+ * الألواح وشريط التنقل السفلي في نهاية المستند عن قصد: كلها عناصر مثبّتة
+ * بالتنسيق، ووضعها متأخراً يجعل ترتيب لوحة المفاتيح منطقياً بعد المحتوى.
  *
  * @package MatjarPro
  */
@@ -8,22 +11,34 @@
 defined( 'ABSPATH' ) || exit;
 
 $mp_badges   = matjar_pro_active_badges();
-$mp_cr       = matjar_pro_mod( 'matjar_pro_cr_number' );
-$mp_vat      = matjar_pro_mod( 'matjar_pro_vat_number' );
+$mp_cr       = trim( (string) matjar_pro_mod( 'matjar_pro_cr_number' ) );
+$mp_vat      = trim( (string) matjar_pro_mod( 'matjar_pro_vat_number' ) );
 $mp_whatsapp = preg_replace( '/[^0-9]/', '', (string) matjar_pro_mod( 'matjar_pro_whatsapp' ) );
+$mp_widgets  = array( 'footer-1', 'footer-2', 'footer-3' );
+$mp_has_cols = (bool) array_filter( $mp_widgets, 'is_active_sidebar' );
 ?>
-<footer class="mp-footer mt-10 bg-ink text-white">
+<footer class="mp-footer bg-ink text-white">
 	<div class="mx-auto max-w-screen-xl px-4 py-10">
 
-		<?php if ( has_nav_menu( 'footer' ) ) : ?>
+		<?php if ( $mp_has_cols ) : ?>
+			<div class="mb-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+				<?php foreach ( $mp_widgets as $mp_area ) : ?>
+					<?php if ( is_active_sidebar( $mp_area ) ) : ?>
+						<div class="mp-footer__col">
+							<?php dynamic_sidebar( $mp_area ); ?>
+						</div>
+					<?php endif; ?>
+				<?php endforeach; ?>
+			</div>
+		<?php elseif ( has_nav_menu( 'footer' ) ) : ?>
 			<nav class="mb-8" aria-label="<?php esc_attr_e( 'قائمة الفوتر', 'matjar-pro' ); ?>">
 				<?php
 				wp_nav_menu(
 					array(
 						'theme_location' => 'footer',
 						'container'      => false,
-						'depth'          => 2,
-						'menu_class'     => 'mp-footer__nav grid grid-cols-2 gap-x-6 gap-y-3 text-sm text-white/80 sm:grid-cols-3 lg:grid-cols-4',
+						'depth'          => 1,
+						'menu_class'     => 'mp-footer__nav',
 						'fallback_cb'    => false,
 					)
 				);
@@ -34,7 +49,7 @@ $mp_whatsapp = preg_replace( '/[^0-9]/', '', (string) matjar_pro_mod( 'matjar_pr
 		<?php if ( ! empty( $mp_badges ) ) : ?>
 			<div class="mb-6 flex flex-wrap gap-1.5" aria-label="<?php esc_attr_e( 'طرق الدفع المتاحة', 'matjar-pro' ); ?>">
 				<?php foreach ( $mp_badges as $mp_slug => $mp_label ) : ?>
-					<span class="mp-badge mp-badge--<?php echo esc_attr( $mp_slug ); ?> rounded-md bg-white/10 px-2.5 py-1.5 text-[11px] font-semibold text-white/90">
+					<span class="mp-badge mp-badge--<?php echo esc_attr( $mp_slug ); ?>">
 						<?php echo esc_html( $mp_label ); ?>
 					</span>
 				<?php endforeach; ?>
@@ -46,14 +61,14 @@ $mp_whatsapp = preg_replace( '/[^0-9]/', '', (string) matjar_pro_mod( 'matjar_pr
 				<p class="m-0">
 					<?php if ( '' !== $mp_cr ) : ?>
 						<?php esc_html_e( 'السجل التجاري', 'matjar-pro' ); ?>
-						<span dir="ltr"><?php echo esc_html( $mp_cr ); ?></span>
+						<span class="mp-num"><?php echo esc_html( $mp_cr ); ?></span>
 					<?php endif; ?>
 					<?php if ( '' !== $mp_cr && '' !== $mp_vat ) : ?>
 						<span aria-hidden="true"> · </span>
 					<?php endif; ?>
 					<?php if ( '' !== $mp_vat ) : ?>
 						<?php esc_html_e( 'الرقم الضريبي', 'matjar-pro' ); ?>
-						<span dir="ltr"><?php echo esc_html( $mp_vat ); ?></span>
+						<span class="mp-num"><?php echo esc_html( $mp_vat ); ?></span>
 					<?php endif; ?>
 				</p>
 			<?php endif; ?>
@@ -65,7 +80,7 @@ $mp_whatsapp = preg_replace( '/[^0-9]/', '', (string) matjar_pro_mod( 'matjar_pr
 						'theme_location' => 'legal',
 						'container'      => false,
 						'depth'          => 1,
-						'menu_class'     => 'mp-footer__legal flex flex-wrap gap-x-4 gap-y-1',
+						'menu_class'     => 'mp-footer__legal',
 						'fallback_cb'    => false,
 					)
 				);
@@ -87,7 +102,7 @@ $mp_whatsapp = preg_replace( '/[^0-9]/', '', (string) matjar_pro_mod( 'matjar_pr
 </footer>
 
 <?php if ( '' !== $mp_whatsapp ) : ?>
-	<a class="mp-fab fixed bottom-4 end-4 z-40 grid h-12 w-12 place-items-center rounded-full bg-success text-white no-underline shadow-lg transition hover:brightness-110"
+	<a class="mp-fab"
 		href="<?php echo esc_url( 'https://wa.me/' . $mp_whatsapp ); ?>"
 		target="_blank" rel="noopener"
 		aria-label="<?php esc_attr_e( 'تواصل معنا عبر واتساب', 'matjar-pro' ); ?>">
@@ -95,6 +110,12 @@ $mp_whatsapp = preg_replace( '/[^0-9]/', '', (string) matjar_pro_mod( 'matjar_pr
 	</a>
 <?php endif; ?>
 
-<?php wp_footer(); ?>
+<?php
+get_template_part( 'template-parts/header/nav-drawer' );
+get_template_part( 'template-parts/header/search-drawer' );
+get_template_part( 'template-parts/header/bottom-nav' );
+
+wp_footer();
+?>
 </body>
 </html>

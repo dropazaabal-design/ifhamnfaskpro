@@ -9,12 +9,14 @@ import announcement from './modules/announcement.js';
 import drawers from './modules/drawer.js';
 import scrollBars from './modules/scroll-bars.js';
 import accordion from './modules/accordion.js';
+import search from './modules/search.js';
 import cart from './modules/cart.js';
 
 const boot = () => {
 	announcement();
 	drawers();
 	scrollBars();
+	search();
 	accordion();
 	cart();
 };

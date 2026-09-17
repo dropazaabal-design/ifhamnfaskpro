@@ -302,3 +302,276 @@
 		@apply ms-1.5 text-line;
 	}
 }
+
+/* ================================================================
+   مكوّنات المرحلة الثالثة: الهيدر، الألواح، الفوتر، الهيرو
+   ================================================================ */
+@layer components {
+
+	/* ---------- تخطَّ إلى المحتوى ---------- */
+
+	.mp-skip {
+		@apply sr-only;
+	}
+
+	.mp-skip:focus {
+		@apply not-sr-only absolute z-50 m-3 rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-white no-underline;
+	}
+
+	/* ---------- الهيدر ---------- */
+
+	.mp-header {
+		@apply sticky top-0 z-40 border-b border-line bg-surface;
+		transition: box-shadow 160ms ease;
+	}
+
+	.mp-header[data-mp-compact='true'] {
+		@apply shadow-card;
+	}
+
+	.mp-header__brand img {
+		@apply h-9 w-auto object-contain lg:h-10;
+	}
+
+	.mp-icon-btn {
+		@apply grid h-11 w-11 shrink-0 place-items-center rounded-lg text-ink no-underline transition hover:bg-cream;
+	}
+
+	/* عدّاد السلة */
+
+	.mp-cart-count {
+		@apply absolute end-1 top-1 grid h-[17px] min-w-[17px] place-items-center rounded-full bg-cta px-1 text-[10px] font-bold leading-none text-cta-fg;
+	}
+
+	.mp-cart-count--dot {
+		@apply -end-2 -top-1.5;
+	}
+
+	/* قائمة الديسكتوب */
+
+	.mp-nav {
+		@apply m-0 flex list-none items-center gap-6 p-0 text-sm font-semibold;
+	}
+
+	.mp-nav > li {
+		@apply relative;
+	}
+
+	.mp-nav a {
+		@apply flex min-h-[44px] items-center text-ink no-underline transition hover:text-cta;
+	}
+
+	.mp-nav .current-menu-item > a,
+	.mp-nav .current-menu-parent > a {
+		@apply text-cta;
+	}
+
+	.mp-nav .sub-menu {
+		@apply invisible absolute top-full z-50 m-0 min-w-[200px] list-none rounded-xl border border-line bg-surface p-2 opacity-0 shadow-card transition;
+		inset-inline-start: 0;
+	}
+
+	.mp-nav > li:hover > .sub-menu,
+	.mp-nav > li:focus-within > .sub-menu {
+		@apply visible opacity-100;
+	}
+
+	.mp-nav .sub-menu a {
+		@apply min-h-[40px] rounded-lg px-3 text-sm font-medium hover:bg-cream;
+	}
+
+	/* ---------- الألواح ---------- */
+
+	.mp-drawer {
+		@apply pointer-events-none fixed inset-0 z-50;
+	}
+
+	.mp-drawer[data-mp-open='true'] {
+		@apply pointer-events-auto;
+	}
+
+	.mp-drawer__backdrop {
+		@apply absolute inset-0 bg-ink/50 opacity-0;
+		transition: opacity 200ms ease;
+	}
+
+	.mp-drawer[data-mp-open='true'] .mp-drawer__backdrop {
+		@apply opacity-100;
+	}
+
+	.mp-drawer__panel {
+		@apply absolute flex flex-col bg-surface;
+		transition: transform 220ms ease;
+	}
+
+	/* لوح جانبي: يدخل من جهة بداية السطر، فينقلب مع اتجاه الصفحة تلقائياً. */
+	.mp-drawer__panel--side {
+		@apply inset-y-0 start-0 w-[86%] max-w-[360px] shadow-card;
+		transform: translateX(var(--mp-drawer-out, -100%));
+	}
+
+	.mp-drawer__panel--top {
+		@apply inset-x-0 top-0 border-b border-line;
+		transform: translateY(-100%);
+	}
+
+	/*
+	 * transform لا يملك نسخة منطقية في CSS: translateX(-100%) يزيح يساراً
+	 * دائماً بغضّ النظر عن اتجاه الصفحة. واللوح مثبّت على جهة بداية السطر،
+	 * أي اليمين في العربية، فخروجه يجب أن يكون يميناً. هذا الموضع الوحيد في
+	 * القالب الذي يحتاج تجاوزاً صريحاً للاتجاه، ولا بديل عنه.
+	 */
+	[dir='rtl'] .mp-drawer__panel--side {
+		--mp-drawer-out: 100%;
+	}
+
+	.mp-drawer[data-mp-open='true'] .mp-drawer__panel--side {
+		transform: translateX(0);
+	}
+
+	.mp-drawer[data-mp-open='true'] .mp-drawer__panel--top {
+		transform: translateY(0);
+	}
+
+	.mp-drawer__menu {
+		@apply m-0 list-none p-0;
+	}
+
+	.mp-drawer__menu a {
+		@apply flex min-h-[48px] items-center gap-2 border-b border-line text-sm font-semibold text-ink no-underline transition hover:text-cta;
+	}
+
+	.mp-drawer__menu .sub-menu {
+		@apply m-0 list-none ps-4;
+	}
+
+	.mp-drawer__menu .sub-menu a {
+		@apply min-h-[42px] text-[13px] font-medium text-body;
+	}
+
+	/* ---------- نتائج البحث الفورية ---------- */
+
+	.mp-search__results {
+		@apply absolute inset-x-0 top-full z-50 mt-2 max-h-[60vh] overflow-y-auto overscroll-contain rounded-xl border border-line bg-surface p-2 shadow-card;
+	}
+
+	.mp-search__item {
+		@apply flex items-center gap-3 rounded-lg p-2 text-ink no-underline transition hover:bg-cream;
+	}
+
+	.mp-search__thumb {
+		@apply h-12 w-12 shrink-0 rounded-lg bg-line object-cover;
+	}
+
+	.mp-search__name {
+		@apply line-clamp-2 grow text-[13px] font-semibold leading-snug;
+	}
+
+	.mp-search__price {
+		@apply mp-num shrink-0 text-sm font-bold;
+	}
+
+	.mp-search__empty {
+		@apply px-2 py-3 text-center text-sm text-faint;
+	}
+
+	/* ---------- شريط التنقل السفلي ---------- */
+
+	.mp-bottom-nav {
+		@apply fixed inset-x-0 bottom-0 z-40 flex border-t border-line bg-surface shadow-bar;
+		padding-bottom: env(safe-area-inset-bottom, 0);
+		transition: transform 200ms ease;
+	}
+
+	.mp-bottom-nav[data-mp-hidden='true'] {
+		transform: translateY(100%);
+	}
+
+	.mp-bottom-nav__item {
+		@apply flex flex-1 cursor-pointer flex-col items-center justify-center gap-1 border-0 bg-transparent py-2 text-[10.5px] font-semibold text-body no-underline transition;
+		min-height: 60px;
+		font-family: inherit;
+	}
+
+	.mp-bottom-nav__item.is-active {
+		@apply font-bold text-cta;
+	}
+
+	/* يحجز مساحة الشريط فلا يغطّي آخر المحتوى. */
+	.mp-has-bottom-nav {
+		padding-bottom: calc(64px + env(safe-area-inset-bottom, 0));
+	}
+
+	@media (min-width: 1024px) {
+		.mp-has-bottom-nav {
+			padding-bottom: 0;
+		}
+	}
+
+	/* ---------- الزر العائم ---------- */
+
+	.mp-fab {
+		@apply fixed end-4 z-30 grid h-12 w-12 place-items-center rounded-full bg-success text-white no-underline shadow-lg transition hover:brightness-110;
+		bottom: calc(76px + env(safe-area-inset-bottom, 0));
+	}
+
+	@media (min-width: 1024px) {
+		.mp-fab {
+			bottom: 1.25rem;
+		}
+	}
+
+	/* ---------- الفوتر ---------- */
+
+	.mp-footer__nav,
+	.mp-footer__legal {
+		@apply m-0 flex list-none flex-wrap gap-x-5 gap-y-2 p-0;
+	}
+
+	.mp-footer__nav a,
+	.mp-footer__legal a {
+		@apply text-white/75 no-underline transition hover:text-white;
+	}
+
+	.mp-footer__nav {
+		@apply text-sm;
+	}
+
+	.mp-badge {
+		@apply rounded-md bg-white/10 px-2.5 py-1.5 text-[11px] font-semibold text-white/90;
+	}
+
+	.mp-widget {
+		@apply text-sm text-white/75;
+	}
+
+	.mp-widget__title {
+		@apply mb-3 mt-0 text-sm font-bold text-white;
+	}
+
+	.mp-widget ul {
+		@apply m-0 flex list-none flex-col gap-2 p-0;
+	}
+
+	.mp-widget a {
+		@apply text-white/75 no-underline transition hover:text-white;
+	}
+
+	/* ---------- نصوص المحتوى ---------- */
+
+	.mp-prose :where(h2, h3, h4) {
+		@apply mb-3 mt-7 font-bold text-ink;
+	}
+
+	.mp-prose :where(p, ul, ol) {
+		@apply mb-4 leading-relaxed;
+	}
+
+	.mp-prose :where(ul, ol) {
+		@apply ps-5;
+	}
+
+	.mp-prose img {
+		@apply rounded-xl;
+	}
+}

@@ -46,7 +46,10 @@ const open = ( name, trigger ) => {
 		trigger.setAttribute( 'aria-expanded', 'true' );
 	}
 
-	const first = qs( FOCUSABLE, drawer );
+	document.dispatchEvent( new CustomEvent( 'matjar:drawer-opened', { detail: { name, drawer } } ) );
+
+	const autofocus = qs( '[data-mp-autofocus]', drawer );
+	const first = autofocus || qs( FOCUSABLE, drawer );
 
 	if ( first ) {
 		first.focus();
