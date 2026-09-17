@@ -11,6 +11,9 @@ import scrollBars from './modules/scroll-bars.js';
 import accordion from './modules/accordion.js';
 import search from './modules/search.js';
 import cart from './modules/cart.js';
+import quickAdd from './modules/quick-add.js';
+import quantity from './modules/quantity.js';
+import cartDrawer from './modules/cart-drawer.js';
 
 const boot = () => {
 	announcement();
@@ -19,6 +22,9 @@ const boot = () => {
 	search();
 	accordion();
 	cart();
+	quickAdd();
+	quantity();
+	cartDrawer();
 };
 
 if ( 'loading' === document.readyState ) {

@@ -369,6 +369,64 @@ function matjar_pro_front_page_customize( $wp_customize ) {
 add_action( 'customize_register', 'matjar_pro_front_page_customize' );
 
 /**
+ * إعدادات أشرطة المنتجات.
+ *
+ * @param WP_Customize_Manager $wp_customize كائن الـ Customizer.
+ */
+function matjar_pro_rails_customize( $wp_customize ) {
+	$defaults = matjar_pro_defaults();
+
+	$wp_customize->add_section(
+		'matjar_pro_rails',
+		array(
+			'title'       => __( 'أشرطة المنتجات', 'matjar-pro' ),
+			'description' => __( 'تظهر في الصفحة الأولى تحت بلاطات الترويج، وتُسحب أفقياً على الجوال.', 'matjar-pro' ),
+			'panel'       => 'matjar_pro_panel',
+		)
+	);
+
+	$rails = array(
+		'best' => __( 'شريط الأكثر مبيعاً', 'matjar-pro' ),
+		'new'  => __( 'شريط وصل حديثاً', 'matjar-pro' ),
+	);
+
+	foreach ( $rails as $key => $label ) {
+		$wp_customize->add_setting(
+			"matjar_pro_rail_{$key}_enabled",
+			array(
+				'default'           => $defaults[ "matjar_pro_rail_{$key}_enabled" ],
+				'sanitize_callback' => 'matjar_pro_sanitize_checkbox',
+			)
+		);
+		$wp_customize->add_control(
+			"matjar_pro_rail_{$key}_enabled",
+			array(
+				'label'   => $label,
+				'section' => 'matjar_pro_rails',
+				'type'    => 'checkbox',
+			)
+		);
+
+		$wp_customize->add_setting(
+			"matjar_pro_rail_{$key}_title",
+			array(
+				'default'           => $defaults[ "matjar_pro_rail_{$key}_title" ],
+				'sanitize_callback' => 'sanitize_text_field',
+			)
+		);
+		$wp_customize->add_control(
+			"matjar_pro_rail_{$key}_title",
+			array(
+				'label'   => __( 'العنوان', 'matjar-pro' ),
+				'section' => 'matjar_pro_rails',
+				'type'    => 'text',
+			)
+		);
+	}
+}
+add_action( 'customize_register', 'matjar_pro_rails_customize' );
+
+/**
  * يطبع نصوص الهيرو — تُستدعى أيضاً من التحديث الجزئي في المعاينة.
  */
 function matjar_pro_render_hero_copy() {

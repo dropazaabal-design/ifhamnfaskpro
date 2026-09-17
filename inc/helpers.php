@@ -215,6 +215,14 @@ function matjar_pro_icon_paths() {
 		'star'     => '<path d="M12 3l2.7 5.7 6.3.9-4.5 4.3 1.1 6.1L12 17.2 6.4 20l1.1-6.1L3 9.6l6.3-.9z"/>',
 		'filter'   => '<path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/>',
 		'tag'      => '<path d="M20 4h-7L4 13l7 7 9-9z"/><circle cx="16" cy="8" r="1.4"/>',
+		'plus'     => '<path d="M12 5v14M5 12h14"/>',
+		'minus'    => '<path d="M5 12h14"/>',
+		'zoom'     => '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4.3-4.3M8 11h6M11 8v6"/>',
+		'info'     => '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 8h.01"/>',
+		'alert'    => '<path d="M12 3l9.5 17h-19z"/><path d="M12 9.5v5M12 17.5h.01"/>',
+		'clock'    => '<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3.2 1.9"/>',
+		'trash'    => '<path d="M4 7h16"/><path d="M9 7V5h6v2"/><path d="M6 7l1 13h10l1-13"/>',
+		'gift'     => '<path d="M3 8h18v4H3z"/><path d="M5 12v8h14v-8"/><path d="M12 8v12"/>',
 	);
 }
 
@@ -274,6 +282,15 @@ function matjar_pro_defaults() {
 		'matjar_pro_promo_2_image'           => 0,
 		'matjar_pro_promo_2_label'           => '',
 		'matjar_pro_promo_2_url'             => '',
+
+		// أشرطة المنتجات في الصفحة الأولى
+		'matjar_pro_rail_best_enabled'       => true,
+		'matjar_pro_rail_best_title'         => 'الأكثر مبيعاً',
+		'matjar_pro_rail_new_enabled'        => true,
+		'matjar_pro_rail_new_title'          => 'وصل حديثاً',
+
+		// الدفع
+		'matjar_pro_optional_email'          => true,
 	);
 }
 

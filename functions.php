@@ -36,4 +36,7 @@ require_once MATJAR_PRO_DIR . '/inc/front-page.php';
 
 if ( matjar_pro_has_woocommerce() ) {
 	require_once MATJAR_PRO_DIR . '/inc/woocommerce.php';
+	require_once MATJAR_PRO_DIR . '/inc/wc-loop.php';
+	require_once MATJAR_PRO_DIR . '/inc/wc-product.php';
+	require_once MATJAR_PRO_DIR . '/inc/wc-checkout.php';
 }

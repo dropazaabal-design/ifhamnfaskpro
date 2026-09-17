@@ -26,11 +26,11 @@ const close = () => {
 	lastTrigger = null;
 };
 
-const open = ( name, trigger ) => {
+export const openDrawer = ( name, trigger ) => {
 	const drawer = qs( `[data-mp-drawer="${ name }"]` );
 
 	if ( ! drawer ) {
-		return;
+		return false;
 	}
 
 	close();
@@ -54,6 +54,8 @@ const open = ( name, trigger ) => {
 	if ( first ) {
 		first.focus();
 	}
+
+	return true;
 };
 
 /**
@@ -67,8 +69,15 @@ export default function drawers() {
 		const opener = event.target.closest( '[data-mp-drawer-open]' );
 
 		if ( opener ) {
-			event.preventDefault();
-			open( opener.dataset.mpDrawerOpen, opener );
+			/*
+			 * زر السلة في الهيدر رابط إلى صفحة السلة أيضاً: نمنع الانتقال
+			 * فقط إذا وُجد اللوح فعلاً، فيبقى الرابط عاملاً في صفحة الدفع
+			 * حيث لا لوح، وعند تعطيل JavaScript.
+			 */
+			if ( openDrawer( opener.dataset.mpDrawerOpen, opener ) ) {
+				event.preventDefault();
+			}
+
 			return;
 		}
 

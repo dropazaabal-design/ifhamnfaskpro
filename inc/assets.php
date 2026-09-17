@@ -74,6 +74,24 @@ function matjar_pro_enqueue_assets() {
 		);
 	}
 
+	/*
+	 * حزمة صفحة المنتج تُحمَّل في صفحات المنتج وحدها. لا داعي أن تحمل
+	 * الصفحة الأولى وصفحات الأقسام كود المعرّض والخيارات والكمية.
+	 */
+	$product_js = '/assets/js/product.js';
+
+	if ( function_exists( 'is_product' ) && is_product() && file_exists( MATJAR_PRO_DIR . $product_js ) ) {
+		wp_enqueue_script(
+			'matjar-pro-product',
+			MATJAR_PRO_URI . $product_js,
+			array( 'matjar-pro' ),
+			matjar_pro_asset_version( $product_js ),
+			true
+		);
+
+		wp_script_add_data( 'matjar-pro-product', 'strategy', 'defer' );
+	}
+
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}

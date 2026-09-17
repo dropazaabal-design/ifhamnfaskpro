@@ -21,6 +21,37 @@ get_header();
 <?php get_template_part( 'template-parts/trust-strip' ); ?>
 <?php get_template_part( 'template-parts/promo-tiles' ); ?>
 
+<?php
+if ( matjar_pro_has_woocommerce() ) {
+
+	if ( matjar_pro_mod( 'matjar_pro_rail_best_enabled' ) ) {
+		get_template_part(
+			'template-parts/product/rail',
+			null,
+			array(
+				'title'   => (string) matjar_pro_mod( 'matjar_pro_rail_best_title' ),
+				'orderby' => 'popularity',
+				'limit'   => 8,
+				'link'    => wc_get_page_permalink( 'shop' ),
+			)
+		);
+	}
+
+	if ( matjar_pro_mod( 'matjar_pro_rail_new_enabled' ) ) {
+		get_template_part(
+			'template-parts/product/rail',
+			null,
+			array(
+				'title'   => (string) matjar_pro_mod( 'matjar_pro_rail_new_title' ),
+				'orderby' => 'date',
+				'limit'   => 8,
+				'link'    => wc_get_page_permalink( 'shop' ),
+			)
+		);
+	}
+}
+?>
+
 <main id="mp-main" class="mp-main">
 	<?php if ( have_posts() ) : ?>
 		<?php

@@ -75,8 +75,11 @@
 		font-variant-numeric: tabular-nums;
 	}
 
-	/* الأيقونات الاتجاهية فقط تُعكس (الأسهم والزوايا). الشعارات وأزرار
-	   تشغيل الوسائط لا تُعكس أبداً. */
+	/* أداة لعكس أيقونة اتجاهية مكتوبة لاتينياً (من مجموعة خارجية مثلاً).
+	   أيقونات هذا القالب مكتوبة أصلاً بالاتجاه الصحيح للعربية: arrow يشير
+	   يساراً (إلى الأمام) و back يشير يميناً (إلى الخلف)، فقلبها يعكس
+	   معناها. لذلك لا تُستخدم هذه الأداة على أيقونات القالب.
+	   الشعارات وأزرار تشغيل الوسائط لا تُعكس أبداً. */
 	[dir='rtl'] .mp-flip > svg,
 	[dir='rtl'] svg.mp-flip {
 		transform: scaleX(-1);
@@ -601,5 +604,996 @@
 
 	.mp-prose img {
 		@apply rounded-xl;
+	}
+}
+
+/* ================================================================
+   المرحلة الرابعة — بطاقة المنتج والشبكة والأشرطة
+   ================================================================ */
+@layer components {
+
+	/* ---------- البطاقة ---------- */
+
+	.mp-product {
+		@apply relative flex list-none flex-col gap-2;
+	}
+
+	.mp-product__media {
+		@apply relative overflow-hidden rounded-2xl bg-line;
+	}
+
+	.mp-product__media-link {
+		@apply block;
+	}
+
+	/*
+	 * النسبة ثابتة على مستوى التنسيق أيضاً، لا على سمتي width و height
+	 * وحدهما: صورة رفعها التاجر بنسبة مختلفة لا تكسر الشبكة ولا تُحدث
+	 * انزياحاً في التخطيط.
+	 */
+	.mp-product__img,
+	.mp-product__placeholder {
+		@apply block w-full;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+	}
+
+	.mp-product__placeholder {
+		@apply grid place-items-center text-xs text-faint;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.mp-product__img {
+			transition: transform 400ms ease;
+		}
+
+		.mp-product:hover .mp-product__img {
+			transform: scale(1.035);
+		}
+	}
+
+	.mp-product__flag {
+		@apply absolute start-2 top-2 rounded-lg px-2 py-1 text-[11px] font-bold;
+	}
+
+	.mp-product__flag--sale {
+		@apply bg-sale text-white;
+	}
+
+	.mp-product__flag--out {
+		@apply bg-ink/85 text-white;
+	}
+
+	.mp-product__body {
+		@apply flex flex-col gap-1.5 px-0.5;
+	}
+
+	.mp-product__title {
+		@apply m-0 text-sm font-semibold leading-snug;
+	}
+
+	.mp-product__title a {
+		@apply text-ink no-underline transition hover:text-cta;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.mp-product__rating {
+		@apply flex items-center gap-1 text-xs font-semibold text-body;
+	}
+
+	.mp-star {
+		@apply text-accent;
+		fill: currentColor;
+		stroke: none;
+	}
+
+	.mp-product__rating-count {
+		@apply font-normal text-faint;
+	}
+
+	.mp-product__price {
+		@apply text-[15px] font-bold text-ink;
+	}
+
+	.mp-product__price del {
+		@apply ms-1.5 text-xs font-normal text-faint;
+	}
+
+	.mp-product__price ins {
+		@apply no-underline;
+	}
+
+	/* ---------- زر الإضافة السريعة ---------- */
+
+	.mp-product__quick {
+		@apply absolute bottom-2 end-2 grid h-11 w-11 cursor-pointer place-items-center rounded-full border-0 bg-surface text-ink no-underline shadow-card transition;
+	}
+
+	.mp-product__quick:hover {
+		@apply bg-cta text-cta-fg;
+	}
+
+	.mp-product__quick-done,
+	.mp-product__quick-busy {
+		@apply hidden;
+	}
+
+	.mp-product__quick[data-mp-state='busy'] {
+		@apply pointer-events-none;
+	}
+
+	.mp-product__quick[data-mp-state='busy'] .mp-product__quick-idle {
+		@apply hidden;
+	}
+
+	.mp-product__quick[data-mp-state='busy'] .mp-product__quick-busy {
+		@apply block h-[18px] w-[18px] rounded-full border-2 border-line;
+		border-top-color: rgb( var( --mp-cta ) );
+		animation: mp-spin 700ms linear infinite;
+	}
+
+	.mp-product__quick[data-mp-state='done'] {
+		@apply bg-success text-white;
+	}
+
+	.mp-product__quick[data-mp-state='done'] .mp-product__quick-idle {
+		@apply hidden;
+	}
+
+	.mp-product__quick[data-mp-state='done'] .mp-product__quick-done {
+		@apply grid;
+	}
+
+	@keyframes mp-spin {
+		to {
+			transform: rotate( 360deg );
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.mp-product__quick[data-mp-state='busy'] .mp-product__quick-busy {
+			animation-duration: 2s;
+		}
+	}
+
+	/* ---------- الشريط الأفقي ---------- */
+
+	.mp-rail--products {
+		@apply m-0 list-none gap-3 p-0 pb-1 ps-3 pe-3 sm:gap-4;
+	}
+
+	.mp-rail--products > .mp-product {
+		@apply w-[164px] sm:w-[200px] lg:w-[220px];
+	}
+
+	/* ---------- ترتيب الأقسام والنتائج ---------- */
+
+	.mp-result-count {
+		@apply m-0;
+	}
+
+	.woocommerce-ordering select {
+		@apply min-h-[40px] rounded-lg border-[1.5px] border-line bg-surface px-2.5 text-xs font-semibold text-ink;
+	}
+
+	.mp-shop-sidebar {
+		@apply w-[240px] shrink-0;
+	}
+
+	.mp-shop-sidebar .mp-widget {
+		@apply mb-6 text-sm text-body;
+	}
+
+	.mp-shop-sidebar .mp-widget__title {
+		@apply mb-2 mt-0 text-sm font-bold text-ink;
+	}
+
+	.mp-shop-sidebar .mp-widget a {
+		@apply text-body no-underline hover:text-cta;
+	}
+
+	.woocommerce-pagination ul {
+		@apply m-0 flex list-none flex-wrap items-center justify-center gap-1.5 p-0;
+	}
+
+	.woocommerce-pagination a,
+	.woocommerce-pagination span {
+		@apply grid h-10 min-w-10 place-items-center rounded-lg border border-line bg-surface px-2 text-sm font-semibold text-ink no-underline;
+	}
+
+	.woocommerce-pagination .current {
+		@apply border-cta bg-cta text-cta-fg;
+	}
+}
+
+/* ================================================================
+   المرحلة الرابعة — صفحة المنتج
+   ================================================================ */
+@layer components {
+
+	/* ---------- المعرض ---------- */
+
+	.mp-gallery__stage {
+		@apply relative;
+	}
+
+	/*
+	 * الجوال: شريط بالسحب الأصلي. الديسكتوب: شبكة من عمودين تُظهر كل الصور
+	 * معاً — لا حالة ولا JavaScript ولا نقرة لرؤية الصورة الثانية.
+	 */
+	.mp-gallery__rail {
+		@apply m-0 flex list-none gap-2 overflow-x-auto p-0;
+		scroll-snap-type: x mandatory;
+		overscroll-behavior-x: contain;
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.mp-gallery__rail::-webkit-scrollbar {
+		display: none;
+	}
+
+	.mp-gallery__slide {
+		@apply w-full shrink-0;
+		scroll-snap-align: start;
+	}
+
+	.mp-gallery__img,
+	.mp-gallery__placeholder {
+		@apply block w-full rounded-2xl bg-line;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+	}
+
+	.mp-gallery__placeholder {
+		@apply grid place-items-center text-sm text-faint;
+	}
+
+	@media (min-width: 1024px) {
+		.mp-gallery__rail {
+			@apply grid grid-cols-2 gap-3 overflow-visible;
+		}
+
+		.mp-gallery__slide {
+			@apply w-auto;
+		}
+	}
+
+	.mp-gallery__flag {
+		@apply absolute start-3 top-3 rounded-lg bg-sale px-2.5 py-1 text-xs font-bold text-white;
+	}
+
+	.mp-gallery__counter {
+		@apply absolute end-3 top-3 rounded-full bg-ink/80 px-2.5 py-1 text-[11px] font-bold text-white lg:hidden;
+	}
+
+	.mp-gallery__dots {
+		@apply absolute inset-x-0 bottom-3 flex items-center justify-center gap-1.5;
+	}
+
+	.mp-gallery__dot {
+		@apply h-[7px] w-[7px] cursor-pointer rounded-full border-0 bg-white/70 p-0 transition;
+	}
+
+	.mp-gallery__dot[aria-selected='true'] {
+		@apply w-4 bg-ink;
+	}
+
+	/* ---------- كتلة الملخّص ---------- */
+
+	.mp-single__summary {
+		@apply mt-5 flex flex-col gap-4 lg:mt-0;
+	}
+
+	@media (min-width: 1024px) {
+		.mp-single__summary {
+			position: sticky;
+			top: 96px;
+		}
+	}
+
+	.mp-single .product_title {
+		@apply m-0 text-xl font-bold leading-snug text-ink lg:text-2xl;
+	}
+
+	.mp-single__rating {
+		@apply flex items-center gap-1.5 text-xs text-body no-underline;
+	}
+
+	.mp-stars {
+		@apply flex items-center gap-0.5;
+	}
+
+	.mp-single__price {
+		@apply flex flex-col items-start gap-2 border-t border-line pt-4;
+	}
+
+	.mp-single__price-row {
+		@apply flex flex-wrap items-baseline gap-2.5 text-2xl font-bold text-ink;
+	}
+
+	.mp-single__price-row del {
+		@apply text-base font-normal text-faint;
+	}
+
+	.mp-single__price-row ins {
+		@apply no-underline;
+	}
+
+	.mp-single__tax-note {
+		@apply text-xs text-faint;
+	}
+
+	.mp-single__bnpl {
+		@apply flex flex-col gap-2 rounded-xl border border-amber/45 bg-amber/10 p-3.5;
+	}
+
+	.mp-single__trust {
+		@apply flex flex-wrap gap-1.5 border-t border-line pt-4;
+	}
+
+	.mp-single__delivery {
+		@apply m-0 flex items-start gap-2.5 rounded-xl border border-info/25 bg-info/10 p-3.5 text-sm font-semibold leading-relaxed text-info;
+	}
+
+	.mp-single__delivery > svg {
+		@apply mt-0.5 shrink-0;
+	}
+
+	.mp-single__stock {
+		@apply m-0 flex items-center gap-2 rounded-xl border border-sale/25 bg-sale/10 p-3 text-xs font-bold text-sale;
+	}
+
+	.mp-single__benefits {
+		@apply text-sm leading-relaxed text-body;
+	}
+
+	.mp-single__benefits :where(p) {
+		@apply m-0;
+	}
+
+	.mp-single__benefits :where(ul) {
+		@apply m-0 flex list-none flex-col gap-2 p-0;
+	}
+
+	.mp-single__benefits :where(li) {
+		@apply relative ps-6;
+	}
+
+	.mp-single__benefits :where(li)::before {
+		content: '';
+		@apply absolute top-[0.45em] h-3 w-3 rounded-full bg-success/20;
+		inset-inline-start: 0;
+	}
+
+	/* ---------- الخيارات ---------- */
+
+	.mp-variations {
+		@apply flex flex-col gap-4;
+	}
+
+	.mp-variation__head {
+		@apply mb-2 flex items-baseline gap-1.5;
+	}
+
+	.mp-variation__label {
+		@apply text-sm font-bold text-ink;
+	}
+
+	.mp-variation__chosen {
+		@apply grow text-sm text-body;
+	}
+
+	.mp-variation__options {
+		@apply flex flex-wrap gap-2;
+	}
+
+	/* الحقل المنسدل يبقى مرئياً بلا JavaScript فقط. */
+	.mp-variation__select {
+		@apply mp-field;
+	}
+
+	.mp-variation__reset {
+		@apply mt-2 inline-block text-xs font-semibold text-faint;
+	}
+
+	.mp-swatch {
+		@apply grid min-h-[44px] min-w-[52px] cursor-pointer place-items-center rounded-xl border-[1.5px] border-line bg-surface px-3 text-sm font-semibold text-ink transition;
+	}
+
+	.mp-swatch:hover:not([disabled]) {
+		@apply border-ink;
+	}
+
+	.mp-swatch[aria-checked='true'] {
+		@apply border-cta bg-cta text-cta-fg;
+	}
+
+	.mp-swatch[disabled] {
+		@apply cursor-not-allowed border-dashed bg-cream text-faint line-through;
+	}
+
+	.mp-swatch--colour {
+		@apply h-11 w-11 min-w-0 rounded-full border-0 p-0;
+		background: var( --mp-swatch, rgb( var( --mp-border ) ) );
+		box-shadow: 0 0 0 1px rgb( var( --mp-border ) );
+	}
+
+	.mp-swatch--colour[aria-checked='true'] {
+		box-shadow: 0 0 0 2px rgb( var( --mp-surface ) ), 0 0 0 4px rgb( var( --mp-cta ) );
+	}
+
+	.mp-swatch--colour[disabled] {
+		@apply line-through opacity-40;
+	}
+
+	/* ---------- نموذج الشراء ---------- */
+
+	.mp-buy {
+		@apply flex flex-col gap-3;
+	}
+
+	.mp-buy__row {
+		@apply flex items-stretch gap-2.5;
+	}
+
+	.mp-buy__variation {
+		@apply flex flex-col gap-3;
+	}
+
+	.mp-buy .woocommerce-variation-price {
+		@apply text-xl font-bold text-ink;
+	}
+
+	.mp-buy .woocommerce-variation-availability p {
+		@apply m-0 text-xs font-semibold text-body;
+	}
+
+	.mp-single .stock.out-of-stock {
+		@apply m-0 rounded-xl border border-sale/25 bg-sale/10 p-3 text-sm font-bold text-sale;
+	}
+
+	.mp-single .stock.in-stock {
+		@apply m-0 text-xs font-semibold text-success;
+	}
+
+	/* ---------- الكمية ---------- */
+
+	.mp-qty {
+		@apply flex shrink-0 items-center overflow-hidden rounded-xl border-[1.5px] border-line bg-surface;
+	}
+
+	.mp-qty__btn {
+		@apply grid h-[54px] w-10 cursor-pointer place-items-center border-0 bg-transparent text-ink transition hover:bg-cream;
+	}
+
+	.mp-qty__input {
+		@apply h-[54px] w-10 border-0 bg-transparent text-center text-[15px] font-bold text-ink outline-none;
+		-moz-appearance: textfield;
+		appearance: textfield;
+	}
+
+	.mp-qty__input::-webkit-outer-spin-button,
+	.mp-qty__input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	/* ---------- الأكورديون ---------- */
+
+	.mp-accordion {
+		@apply mt-8 border-t border-line;
+	}
+
+	.mp-accordion__item {
+		@apply border-b border-line;
+	}
+
+	.mp-accordion__trigger {
+		@apply flex w-full min-h-[56px] cursor-pointer items-center gap-2 border-0 bg-transparent px-0 text-start text-[15px] font-bold text-ink;
+		font-family: inherit;
+	}
+
+	.mp-accordion__icon {
+		@apply grid shrink-0 place-items-center text-faint transition;
+	}
+
+	.mp-accordion__trigger[aria-expanded='true'] .mp-accordion__icon {
+		transform: rotate( 180deg );
+	}
+
+	.mp-accordion__panel {
+		@apply pb-5 text-sm leading-relaxed text-body;
+	}
+
+	/* ---------- شريط الشراء الثابت ---------- */
+
+	.mp-buy-bar__thumb {
+		@apply h-[54px] w-[46px] shrink-0 rounded-lg object-cover;
+	}
+
+	.mp-buy-bar__price {
+		@apply text-base font-bold text-ink;
+	}
+
+	.mp-buy-bar__price del {
+		@apply hidden;
+	}
+
+	.mp-buy-bar .mp-product__quick-done,
+	.mp-buy-bar .mp-product__quick-busy {
+		@apply hidden;
+	}
+
+	.mp-buy-bar [data-mp-state='done'] .mp-product__quick-idle {
+		@apply hidden;
+	}
+
+	.mp-buy-bar [data-mp-state='done'] .mp-product__quick-done {
+		@apply inline;
+	}
+
+	/* ---------- التقييمات والمنتجات ذات الصلة ---------- */
+
+	.mp-single .related > h2,
+	.mp-single .upsells > h2,
+	.woocommerce-Reviews h2 {
+		@apply mb-4 mt-10 text-lg font-bold text-ink lg:text-xl;
+	}
+
+	.woocommerce-Reviews .commentlist {
+		@apply m-0 flex list-none flex-col gap-5 p-0;
+	}
+
+	.woocommerce-Reviews .comment_container {
+		@apply flex gap-3;
+	}
+
+	.woocommerce-Reviews .avatar {
+		@apply h-10 w-10 shrink-0 rounded-full;
+	}
+
+	.woocommerce-Reviews .meta {
+		@apply mb-1 text-xs text-faint;
+	}
+
+	.woocommerce-Reviews .description {
+		@apply text-sm leading-relaxed text-body;
+	}
+}
+
+/* ================================================================
+   المرحلة الرابعة — السلة والدفع
+   ================================================================ */
+@layer components {
+
+	/* ---------- تقدّم الشحن المجاني ---------- */
+
+	.mp-ship-progress {
+		@apply flex flex-col gap-2 rounded-xl border border-amber/45 bg-amber/10 p-3;
+	}
+
+	.mp-ship-progress__track {
+		@apply block h-1.5 overflow-hidden rounded-full bg-amber/25;
+	}
+
+	.mp-ship-progress__fill {
+		@apply block h-1.5 rounded-full bg-amber;
+		transition: width 300ms ease;
+	}
+
+	.mp-ship-progress__done {
+		@apply m-0 flex items-center gap-2 rounded-xl border border-success/25 bg-success/10 p-3 text-xs font-bold text-success;
+	}
+
+	/* ---------- لوح السلة ---------- */
+
+	.mp-drawer__panel--cart {
+		@apply inset-y-0 end-0 w-[92%] max-w-[420px] shadow-card;
+		transform: translateX( var( --mp-cart-out, 100% ) );
+	}
+
+	/*
+	 * transform لا يملك نسخة منطقية: اللوح مثبّت على جهة نهاية السطر، أي
+	 * اليسار في العربية، فخروجه يساراً.
+	 */
+	[dir='rtl'] .mp-drawer__panel--cart {
+		--mp-cart-out: -100%;
+	}
+
+	.mp-drawer[data-mp-open='true'] .mp-drawer__panel--cart {
+		transform: translateX( 0 );
+	}
+
+	.mp-drawer__body {
+		@apply flex flex-1 flex-col gap-4 overflow-y-auto overscroll-contain p-4;
+	}
+
+	.mp-mini-cart {
+		@apply m-0 flex list-none flex-col gap-3 p-0;
+	}
+
+	.mp-mini-cart__item {
+		@apply flex items-start gap-3 border-b border-line pb-3;
+	}
+
+	.mp-mini-cart__thumb {
+		@apply block w-14 shrink-0 overflow-hidden rounded-lg bg-line;
+	}
+
+	.mp-mini-cart__thumb img {
+		@apply block w-full;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+	}
+
+	.mp-mini-cart__body {
+		@apply flex min-w-0 grow flex-col gap-1;
+	}
+
+	.mp-mini-cart__name {
+		@apply text-[13px] font-semibold leading-snug text-ink no-underline;
+	}
+
+	.mp-mini-cart__meta {
+		@apply flex items-center gap-1.5 text-xs font-semibold text-body;
+	}
+
+	.mp-mini-cart__remove {
+		@apply grid h-9 w-9 shrink-0 place-items-center rounded-lg text-faint no-underline transition hover:bg-cream hover:text-sale;
+	}
+
+	.mp-mini-cart__foot {
+		@apply mt-auto flex flex-col gap-2 border-t border-line pt-4;
+	}
+
+	.mp-mini-cart__total {
+		@apply flex items-baseline justify-between text-sm;
+	}
+
+	.mp-mini-cart__total strong {
+		@apply text-lg text-ink;
+	}
+
+	.mp-mini-cart__empty {
+		@apply flex flex-col items-center gap-3 py-10 text-center;
+	}
+
+	.mp-mini-cart .variation {
+		@apply m-0 text-[11px] text-faint;
+	}
+
+	.mp-mini-cart .variation dt,
+	.mp-mini-cart .variation dd {
+		@apply m-0 inline;
+	}
+
+	/* ---------- صفحة السلة ---------- */
+
+	.mp-cart__items {
+		@apply m-0 flex list-none flex-col gap-4 p-0;
+	}
+
+	.mp-cart__item {
+		@apply flex items-start gap-3 rounded-2xl border border-line bg-surface p-3;
+	}
+
+	.mp-cart__thumb {
+		@apply block w-20 shrink-0 overflow-hidden rounded-xl bg-line sm:w-24;
+	}
+
+	.mp-cart__thumb img {
+		@apply block w-full;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+	}
+
+	.mp-cart__body {
+		@apply flex min-w-0 grow flex-col gap-2;
+	}
+
+	.mp-cart__name {
+		@apply text-sm font-semibold leading-snug text-ink no-underline hover:text-cta;
+	}
+
+	.mp-cart__controls {
+		@apply mt-auto flex flex-wrap items-center gap-3;
+	}
+
+	.mp-cart__line-total {
+		@apply grow text-[15px] font-bold text-ink;
+	}
+
+	.mp-cart__remove {
+		@apply grid h-9 w-9 shrink-0 place-items-center rounded-lg text-faint no-underline transition hover:bg-cream hover:text-sale;
+	}
+
+	.mp-cart__actions {
+		@apply mt-5 flex flex-wrap items-center gap-3;
+	}
+
+	.mp-cart__aside {
+		@apply mt-6 lg:mt-0 lg:w-[340px] lg:shrink-0;
+	}
+
+	@media (min-width: 1024px) {
+		.mp-cart__aside {
+			position: sticky;
+			top: 96px;
+		}
+	}
+
+	.mp-coupon__toggle {
+		@apply flex min-h-[40px] cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-sm font-semibold text-cta;
+		font-family: inherit;
+	}
+
+	.mp-coupon__panel {
+		@apply mt-2 flex items-stretch gap-2;
+	}
+
+	.mp-coupon__panel .mp-field {
+		@apply min-h-[44px];
+	}
+
+	.cart_totals {
+		@apply rounded-2xl border border-line bg-surface p-4;
+	}
+
+	.cart_totals h2 {
+		@apply mb-3 mt-0 text-base font-bold text-ink;
+	}
+
+	.cart_totals table {
+		@apply w-full border-collapse text-sm;
+	}
+
+	.cart_totals th {
+		@apply py-2 text-start font-normal text-body;
+	}
+
+	.cart_totals td {
+		@apply py-2 text-end font-semibold text-ink;
+	}
+
+	.cart_totals .order-total th,
+	.cart_totals .order-total td {
+		@apply border-t border-line pt-3 text-base font-bold text-ink;
+	}
+
+	.cart_totals .wc-proceed-to-checkout {
+		@apply mt-3;
+	}
+
+	.cart_totals .checkout-button {
+		@apply mp-btn mp-btn--cta mp-btn--lg w-full;
+	}
+
+	/* ---------- قُمع الدفع ---------- */
+
+	.mp-checkout-header {
+		@apply sticky top-0 z-30 border-b border-line bg-surface;
+	}
+
+	.mp-checkout-header img {
+		@apply mx-auto h-8 w-auto object-contain;
+	}
+
+	.mp-checkout-header__back {
+		@apply flex min-h-[44px] shrink-0 items-center gap-1.5 text-xs font-semibold text-body no-underline hover:text-cta;
+	}
+
+	.mp-checkout-header__secure {
+		@apply flex shrink-0 items-center gap-1.5 text-[11px] font-bold text-success;
+	}
+
+	.mp-checkout-header__badges {
+		@apply flex flex-wrap items-center justify-center gap-1.5 border-t border-line bg-cream px-3 py-2;
+	}
+
+	.mp-checkout-footer {
+		@apply mt-8 border-t border-line bg-surface;
+	}
+
+	.mp-checkout-footer__item {
+		@apply flex items-center gap-1.5 text-[11px] font-semibold text-body;
+	}
+
+	.mp-guest-note {
+		@apply mb-5 flex items-start gap-2.5 rounded-xl border border-success/25 bg-success/10 p-3.5 text-[13px] font-semibold leading-relaxed text-success;
+	}
+
+	.mp-guest-note > svg {
+		@apply mt-0.5 shrink-0;
+	}
+
+	.mp-checkout__grid {
+		@apply lg:flex lg:items-start lg:gap-10;
+	}
+
+	.mp-checkout__main {
+		@apply min-w-0 grow;
+	}
+
+	.mp-checkout__aside {
+		@apply mt-8 lg:mt-0 lg:w-[360px] lg:shrink-0;
+	}
+
+	@media (min-width: 1024px) {
+		.mp-checkout__aside {
+			position: sticky;
+			top: 96px;
+		}
+	}
+
+	.mp-checkout__heading {
+		@apply mb-4 mt-0 text-base font-bold text-ink lg:text-lg;
+	}
+
+	.mp-checkout__peek {
+		@apply mb-5 overflow-hidden rounded-xl border border-line bg-surface;
+	}
+
+	.mp-checkout__peek-toggle {
+		@apply flex w-full min-h-[52px] cursor-pointer items-center gap-2 border-0 bg-transparent px-3.5 text-sm font-semibold text-ink;
+		font-family: inherit;
+	}
+
+	.mp-checkout__peek-total {
+		@apply shrink-0 text-base font-bold text-ink;
+	}
+
+	.mp-checkout__peek-panel {
+		@apply border-t border-line px-3.5 py-3;
+	}
+
+	/*
+	 * عمود واحد على الجوال دائماً: الحقول المتجاورة ترفع نسبة الخطأ وتُفشل
+	 * الإكمال التلقائي في المتصفح.
+	 */
+	.mp-checkout .form-row {
+		@apply mb-4 flex w-full flex-col;
+	}
+
+	.mp-checkout .form-row-first,
+	.mp-checkout .form-row-last {
+		@apply w-full;
+	}
+
+	.mp-optional {
+		@apply text-xs font-semibold text-faint;
+	}
+
+	.mp-field--invalid {
+		@apply border-sale;
+	}
+
+	.mp-review {
+		@apply w-full border-collapse overflow-hidden rounded-2xl border border-line bg-surface text-sm;
+	}
+
+	.mp-review th,
+	.mp-review td {
+		@apply px-4 py-3 text-start align-top;
+	}
+
+	.mp-review tbody th {
+		@apply font-semibold text-ink;
+	}
+
+	.mp-review tbody td {
+		@apply text-end font-semibold text-ink;
+	}
+
+	.mp-review__qty {
+		@apply ms-1.5 text-xs font-normal text-faint;
+	}
+
+	.mp-review tfoot th {
+		@apply border-t border-line font-normal text-body;
+	}
+
+	.mp-review tfoot td {
+		@apply border-t border-line text-end font-semibold text-ink;
+	}
+
+	.mp-review tfoot .order-total th,
+	.mp-review tfoot .order-total td {
+		@apply bg-cream text-base font-bold text-ink;
+	}
+
+	.mp-review .variation {
+		@apply m-0 text-[11px] font-normal text-faint;
+	}
+
+	/* طرق الدفع: بطاقات اختيار كبيرة لا أزرار راديو صغيرة */
+
+	.woocommerce-checkout-payment {
+		@apply mt-5;
+	}
+
+	.wc_payment_methods {
+		@apply m-0 flex list-none flex-col gap-2.5 p-0;
+	}
+
+	.wc_payment_method > label {
+		@apply flex min-h-[58px] cursor-pointer items-center gap-3 rounded-xl border-[1.5px] border-line bg-surface px-3.5 text-sm font-bold text-ink;
+	}
+
+	.wc_payment_method > input[type='radio'] {
+		@apply h-5 w-5 shrink-0;
+		accent-color: rgb( var( --mp-cta ) );
+	}
+
+	.wc_payment_method > input[type='radio']:checked + label {
+		@apply border-cta bg-cta/[0.06];
+	}
+
+	.wc_payment_method label img {
+		@apply ms-auto h-6 w-auto;
+	}
+
+	.payment_box {
+		@apply rounded-xl bg-cream p-3.5 text-xs leading-relaxed text-body;
+	}
+
+	.woocommerce-terms-and-conditions-wrapper {
+		@apply mt-4 text-xs leading-relaxed text-body;
+	}
+
+	#place_order {
+		@apply mp-btn mp-btn--cta mp-btn--lg mt-4 w-full;
+	}
+
+	/*
+	 * زر إتمام الطلب ملصق أسفل الشاشة على الجوال. لصقه بدل تكراره في شريط
+	 * منفصل يعني زراً واحداً لا زرين، وبلا سطر JavaScript.
+	 */
+	@media (max-width: 1023px) {
+		.woocommerce-checkout-payment {
+			position: sticky;
+			bottom: 0;
+			z-index: 20;
+			margin-inline: -0.75rem;
+			padding: 0.75rem;
+			background: rgb( var( --mp-surface ) );
+			border-top: 1px solid rgb( var( --mp-border ) );
+			box-shadow: 0 -6px 20px -12px rgb( 15 30 51 / 0.28 );
+			padding-bottom: calc( 0.75rem + env( safe-area-inset-bottom, 0 ) );
+		}
+
+		#place_order {
+			@apply mt-3;
+		}
+	}
+
+	/* ---------- صفحة الشكر ---------- */
+
+	.mp-thankyou {
+		@apply mx-auto flex max-w-lg flex-col items-start gap-4 py-6;
+	}
+
+	.mp-thankyou__hero {
+		@apply flex w-full flex-col items-start gap-3 rounded-2xl border border-line bg-surface p-5;
+	}
+
+	.mp-thankyou__check {
+		@apply grid h-14 w-14 place-items-center rounded-full bg-success/10 text-success;
+	}
+
+	.mp-thankyou__facts {
+		@apply m-0 grid w-full list-none grid-cols-2 gap-3 p-0;
+	}
+
+	.mp-thankyou__facts li {
+		@apply flex flex-col gap-1 rounded-xl border border-line bg-surface p-3 text-xs text-faint;
+	}
+
+	.mp-thankyou__facts strong {
+		@apply text-sm text-ink;
 	}
 }

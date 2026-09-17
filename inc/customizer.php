@@ -341,6 +341,23 @@ function matjar_pro_customize_register( $wp_customize ) {
 		);
 	}
 
+	$wp_customize->add_setting(
+		'matjar_pro_optional_email',
+		array(
+			'default'           => $defaults['matjar_pro_optional_email'],
+			'sanitize_callback' => 'matjar_pro_sanitize_checkbox',
+		)
+	);
+	$wp_customize->add_control(
+		'matjar_pro_optional_email',
+		array(
+			'label'       => __( 'البريد الإلكتروني اختياري في الدفع', 'matjar-pro' ),
+			'description' => __( 'الجوال هو الهوية الفعلية في السوق المستهدف، وإجبار البريد يرفع ترك السلة. تنبيه: بعض بوّابات الدفع تطلب بريداً، ورسالة تأكيد الطلب لا تُرسل بدونه — أطفئه إن كانت بوّابتك تحتاجه.', 'matjar-pro' ),
+			'section'     => 'matjar_pro_conversion',
+			'type'        => 'checkbox',
+		)
+	);
+
 	$toggles = array(
 		'matjar_pro_sticky_buy_bar' => __( 'شريط الشراء الثابت في صفحة المنتج', 'matjar-pro' ),
 		'matjar_pro_bottom_nav'     => __( 'شريط التنقل السفلي على الجوال', 'matjar-pro' ),

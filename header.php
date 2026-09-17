@@ -7,7 +7,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$mp_announcement = matjar_pro_mod( 'matjar_pro_announcement_enabled' ) ? matjar_pro_announcement_message() : '';
+$mp_funnel       = matjar_pro_has_woocommerce() && matjar_pro_is_funnel();
+$mp_announcement = ( ! $mp_funnel && matjar_pro_mod( 'matjar_pro_announcement_enabled' ) ) ? matjar_pro_announcement_message() : '';
 $mp_has_wc       = matjar_pro_has_woocommerce();
 $mp_count        = ( $mp_has_wc && WC()->cart ) ? WC()->cart->get_cart_contents_count() : 0;
 ?>
@@ -26,6 +27,16 @@ $mp_count        = ( $mp_has_wc && WC()->cart ) ? WC()->cart->get_cart_contents_
 <a class="mp-skip" href="#mp-main">
 	<?php esc_html_e( 'تخطَّ إلى المحتوى', 'matjar-pro' ); ?>
 </a>
+
+<?php
+/*
+ * صفحة الدفع تحصل على هيدر مصغّر: لا إعلان ولا قائمة ولا بحث ولا سلة.
+ * كل عنصر قابل للنقر فيها هو مخرج تسرّب من القُمع.
+ */
+if ( $mp_funnel ) :
+	get_template_part( 'template-parts/header/minimal' );
+else :
+?>
 
 <?php if ( '' !== $mp_announcement ) : ?>
 	<div class="mp-announcement bg-ink text-white" data-mp-announcement>
@@ -76,7 +87,7 @@ $mp_count        = ( $mp_has_wc && WC()->cart ) ? WC()->cart->get_cart_contents_
 				<?php echo matjar_pro_get_icon( 'user', array( 'size' => 21 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</a>
 
-			<a class="mp-icon-btn relative" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'السلة', 'matjar-pro' ); ?>">
+			<a class="mp-icon-btn relative" href="<?php echo esc_url( wc_get_cart_url() ); ?>" data-mp-drawer-open="cart" aria-controls="mp-cart-drawer" aria-label="<?php esc_attr_e( 'السلة', 'matjar-pro' ); ?>">
 				<?php echo matjar_pro_get_icon( 'cart', array( 'size' => 21 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<span class="mp-cart-count<?php echo $mp_count > 0 ? '' : ' hidden'; ?>" data-count="<?php echo esc_attr( (string) $mp_count ); ?>">
 					<?php echo esc_html( number_format_i18n( $mp_count ) ); ?>
@@ -103,3 +114,5 @@ $mp_count        = ( $mp_has_wc && WC()->cart ) ? WC()->cart->get_cart_contents_
 		</div>
 	<?php endif; ?>
 </header>
+
+<?php endif; ?>

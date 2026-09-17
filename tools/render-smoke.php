@@ -18,7 +18,9 @@ define( 'MATJAR_PRO_URI', 'https://example.test/wp-content/themes/matjar-pro' );
 define( 'MATJAR_PRO_VERSION', '0.1.0' );
 define( 'DATE_W3C_STUB', 'Y-m-d\TH:i:sP' );
 
-$GLOBALS['mp_smoke_with_wc'] = in_array( '--woocommerce', $argv, true );
+$GLOBALS['mp_smoke_with_wc'] = in_array( '--woocommerce', $argv, true ) || in_array( '--funnel', $argv, true ) || in_array( '--card', $argv, true );
+$GLOBALS['mp_smoke_funnel']  = in_array( '--funnel', $argv, true );
+$GLOBALS['mp_smoke_card']    = in_array( '--card', $argv, true );
 
 /* ---------- مُحاكي ووردبريس ---------- */
 
@@ -41,6 +43,7 @@ function sanitize_hex_color( $t ) { return $t; }               // phpcs:ignore
 function absint( $v ) { return abs( (int) $v ); }              // phpcs:ignore
 function add_action( ...$a ) {}                                // phpcs:ignore
 function add_filter( ...$a ) {}                                // phpcs:ignore
+function do_action( ...$a ) {}                                 // phpcs:ignore
 function remove_action( ...$a ) {}                             // phpcs:ignore
 function apply_filters( $h, $v ) { return $v; }                // phpcs:ignore
 function wp_parse_args( $a, $d = array() ) { return array_merge( $d, (array) $a ); } // phpcs:ignore
@@ -116,8 +119,24 @@ function get_footer() { include MATJAR_PRO_DIR . '/footer.php'; } // phpcs:ignor
 if ( $GLOBALS['mp_smoke_with_wc'] ) {
 	class WooCommerce {} // phpcs:ignore
 	class MP_Smoke_Cart { // phpcs:ignore
-		/** @return int */
-		public function get_cart_contents_count() { return 3; }
+		/** @return int */   public function get_cart_contents_count() { return 3; }
+		/** @return bool */  public function is_empty() { return false; }
+		/** @return array */ public function get_cart() {
+			return array(
+				'abc123' => array( 'data' => new WC_Product(), 'quantity' => 2, 'product_id' => 101 ),
+			);
+		}
+		/** @param object $p المنتج. @return string */ public function get_product_price( $p ) { return '179.00 ر.س'; }
+		/** @param object $p المنتج. @param int $q الكمية. @return string */ public function get_product_subtotal( $p, $q ) { return '358.00 ر.س'; }
+		/** @return string */public function get_cart_subtotal() { return '358.00 ر.س'; }
+		/** @return string */public function get_total() { return '358.00 ر.س'; }
+		/** @return float */ public function get_displayed_subtotal() { return 358.0; }
+		/** @return bool */  public function needs_shipping() { return true; }
+		/** @return bool */  public function show_shipping() { return true; }
+		/** @return array */ public function get_coupons() { return array(); }
+		/** @return array */ public function get_fees() { return array(); }
+		/** @return array */ public function get_tax_totals() { return array(); }
+		/** @return bool */  public function display_prices_including_tax() { return true; }
 	}
 	class MP_Smoke_WC { // phpcs:ignore
 		/** @var MP_Smoke_Cart */
@@ -132,10 +151,66 @@ if ( $GLOBALS['mp_smoke_with_wc'] ) {
 	function get_woocommerce_currency() { return 'SAR'; }               // phpcs:ignore
 	function wc_price( $v ) { return '<span class="woocommerce-Price-amount">' . number_format( (float) $v, 2 ) . ' ر.س</span>'; } // phpcs:ignore
 	function is_cart() { return false; }                                // phpcs:ignore
-	function is_checkout() { return false; }                            // phpcs:ignore
+	function is_checkout() { return (bool) $GLOBALS['mp_smoke_funnel']; }         // phpcs:ignore
+	function is_order_received_page() { return false; }                 // phpcs:ignore
+	function wc_get_checkout_url() { return 'https://example.test/checkout'; }    // phpcs:ignore
+	function wc_get_price_to_display( $p, $a = array() ) { return isset( $a['price'] ) ? (float) $a['price'] : 179.0; } // phpcs:ignore
+	function wc_product_class( $class = '', $product = null ) { echo 'class="' . esc_attr( ( is_array( $class ) ? implode( ' ', $class ) : $class ) . ' product type-simple' ) . '"'; } // phpcs:ignore
+	function wc_tax_enabled() { return true; }                          // phpcs:ignore
+	function wc_coupons_enabled() { return true; }                      // phpcs:ignore
+	function the_permalink() { echo 'https://example.test/product/demo'; }        // phpcs:ignore
+	function the_ID() { echo '101'; }                                   // phpcs:ignore
+
+	class WC_Product { // phpcs:ignore
+		/** @var bool */
+		public $variable = false;
+		/** @param bool $variable هل المنتج ذو متغيّرات. */
+		public function __construct( $variable = false ) { $this->variable = $variable; }
+		/** @return int */   public function get_id() { return 101; }
+		/** @return bool */  public function is_visible() { return true; }
+		/** @return int */   public function get_image_id() { return 12; }
+		/** @return string */public function get_name() { return 'عباية كلاسيك مطرّزة'; }
+		/** @return bool */  public function is_in_stock() { return true; }
+		/** @return bool */  public function is_on_sale() { return true; }
+		/** @return string */public function get_regular_price() { return '279'; }
+		/** @return string */public function get_price_html() { return '<del>279.00 ر.س</del> <ins>179.00 ر.س</ins>'; }
+		/** @return int */   public function get_review_count() { return 42; }
+		/** @return string */public function get_average_rating() { return '4.8'; }
+		/** @param string $t النوع. @return bool */ public function is_type( $t ) { return $this->variable ? 'variable' === $t : 'simple' === $t; }
+		/** @return bool */  public function is_purchasable() { return true; }
+		/** @return string */public function get_permalink() { return 'https://example.test/product/demo'; }
+		/** @return bool */  public function managing_stock() { return true; }
+		/** @return int */   public function get_stock_quantity() { return 3; }
+		/** @return string */public function get_short_description() { return '<ul><li>كريب ثقيل لا يشفّ</li><li>تطريز يدوي</li></ul>'; }
+		/** @return string */public function get_sku() { return 'AB-01'; }
+		/** @return bool */  public function exists() { return true; }
+		/** @param string $size المقاس. @return string */ public function get_image( $size = '' ) { return '<img src="https://example.test/i.jpg" width="150" height="188" alt="">'; }
+		/** @return bool */  public function is_sold_individually() { return false; }
+		/** @return int */   public function get_max_purchase_quantity() { return 10; }
+		/** @return int */   public function get_min_purchase_quantity() { return 1; }
+		/** @return bool */  public function backorders_require_notification() { return false; }
+		/** @param int $q الكمية. @return bool */ public function is_on_backorder( $q = 1 ) { return false; }
+		/** @return string */public function single_add_to_cart_text() { return 'أضف إلى السلة'; }
+	}
 	function is_shop() { return false; }                                // phpcs:ignore
 	function is_product_taxonomy() { return false; }                    // phpcs:ignore
 	function is_account_page() { return false; }                        // phpcs:ignore
+	function wc_get_products( $a = array() ) { return array( new WC_Product(), new WC_Product( true ) ); } // phpcs:ignore
+	function wc_get_cart_remove_url( $k ) { return 'https://example.test/cart?remove=' . $k; }             // phpcs:ignore
+	function wc_get_formatted_cart_item_data( $i, $flat = false ) { return ''; }                           // phpcs:ignore
+	function wc_get_template_part( $slug, $name = '' ) {                // phpcs:ignore
+		$file = MATJAR_PRO_DIR . '/woocommerce/' . $slug . ( $name ? "-{$name}" : '' ) . '.php';
+
+		if ( file_exists( $file ) ) {
+			include $file;
+		}
+	}
+	function woocommerce_mini_cart( $a = array() ) {                    // phpcs:ignore
+		include MATJAR_PRO_DIR . '/woocommerce/cart/mini-cart.php';
+	}
+	function setup_postdata( $p ) { return true; }                      // phpcs:ignore
+	function wp_reset_postdata() {}                                     // phpcs:ignore
+	function get_post( $id = 0 ) { return (object) array( 'ID' => 101, 'post_title' => 'منتج' ); }         // phpcs:ignore
 }
 
 /* ---------- الإعدادات المُحاكاة ---------- */
@@ -169,6 +244,9 @@ require_once MATJAR_PRO_DIR . '/inc/front-page.php';
 
 if ( function_exists( 'WC' ) ) {
 	require_once MATJAR_PRO_DIR . '/inc/woocommerce.php';
+	require_once MATJAR_PRO_DIR . '/inc/wc-loop.php';
+	require_once MATJAR_PRO_DIR . '/inc/wc-product.php';
+	require_once MATJAR_PRO_DIR . '/inc/wc-checkout.php';
 }
 
 set_error_handler(
@@ -180,7 +258,24 @@ set_error_handler(
 ob_start();
 matjar_pro_print_critical_css();
 matjar_pro_preload_fonts();
-include MATJAR_PRO_DIR . '/front-page.php';
+
+if ( $GLOBALS['mp_smoke_card'] ) {
+	// بطاقة المنتج وحدها: أكثر قالب يُصيَّر في المتجر.
+	$GLOBALS['product'] = new WC_Product();
+	echo '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"></head><body><ul class="mp-grid">';
+	include MATJAR_PRO_DIR . '/woocommerce/content-product.php';
+	$GLOBALS['product'] = new WC_Product( true );
+	include MATJAR_PRO_DIR . '/woocommerce/content-product.php';
+	echo '</ul></body></html>';
+} elseif ( $GLOBALS['mp_smoke_funnel'] ) {
+	// قُمع الدفع: الهيدر المصغّر والتذييل المصغّر فقط.
+	include MATJAR_PRO_DIR . '/header.php';
+	echo '<main id="mp-main"></main>';
+	include MATJAR_PRO_DIR . '/footer.php';
+} else {
+	include MATJAR_PRO_DIR . '/front-page.php';
+}
+
 $html = ob_get_clean();
 
 if ( in_array( '--print', $argv, true ) ) {
@@ -188,8 +283,14 @@ if ( in_array( '--print', $argv, true ) ) {
 	exit( 0 );
 }
 
-$variant = $GLOBALS['mp_smoke_with_wc'] ? 'مع ووكومرس' : 'بدون ووكومرس';
-$variant .= in_array( '--overlay', $argv, true ) ? ' + overlay' : '';
+if ( $GLOBALS['mp_smoke_card'] ) {
+	$variant = 'بطاقة المنتج';
+} elseif ( $GLOBALS['mp_smoke_funnel'] ) {
+	$variant = 'قُمع الدفع';
+} else {
+	$variant = $GLOBALS['mp_smoke_with_wc'] ? 'مع ووكومرس' : 'بدون ووكومرس';
+	$variant .= in_array( '--overlay', $argv, true ) ? ' + overlay' : '';
+}
 
 printf(
 	"صُيّر بنجاح · %-24s %6d بايت · صور %d · أزرار %d · حقول %d

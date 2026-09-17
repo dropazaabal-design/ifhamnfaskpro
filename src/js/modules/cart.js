@@ -94,6 +94,46 @@ export const getCart = async () => {
 	return cart;
 };
 
+/**
+ * يطلب أجزاء السلة الجاهزة من ووكومرس ويستبدلها في الصفحة.
+ *
+ * بعد الإضافة عبر Store API لا تُطلَق أجزاء ووكومرس تلقائياً، فنطلبها
+ * صريحاً. الفائدة أن اللوح والعدّاد يُبنيان في الخادم: الأسعار والعملة
+ * والترجمة كلها من مصدر واحد، فلا يتكرّر المنطق في المتصفح ولا يتفرّق.
+ *
+ * @return {Promise<void>}
+ */
+export const refreshFragments = async () => {
+	const url = settings().fragmentsUrl;
+
+	if ( ! url ) {
+		return;
+	}
+
+	const response = await fetch( url, {
+		credentials: 'same-origin',
+		headers: { 'X-Requested-With': 'XMLHttpRequest' },
+	} );
+
+	if ( ! response.ok ) {
+		return;
+	}
+
+	const data = await response.json();
+
+	if ( ! data || ! data.fragments ) {
+		return;
+	}
+
+	Object.entries( data.fragments ).forEach( ( [ selector, html ] ) => {
+		document.querySelectorAll( selector ).forEach( ( node ) => {
+			node.outerHTML = html;
+		} );
+	} );
+
+	document.dispatchEvent( new CustomEvent( 'matjar:fragments-refreshed' ) );
+};
+
 export default function cart() {
 	// ووكومرس يطلق هذا الحدث عبر jQuery من إضافات أخرى؛ نستمع له بلا jQuery.
 	document.body.addEventListener( 'wc_fragments_refreshed', () => {

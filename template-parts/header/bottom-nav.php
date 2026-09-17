@@ -34,7 +34,7 @@ $mp_count = ( matjar_pro_has_woocommerce() && WC()->cart ) ? WC()->cart->get_car
 	</button>
 
 	<?php if ( matjar_pro_has_woocommerce() ) : ?>
-		<a class="mp-bottom-nav__item<?php echo is_cart() ? ' is-active' : ''; ?>" href="<?php echo esc_url( wc_get_cart_url() ); ?>">
+		<a class="mp-bottom-nav__item<?php echo is_cart() ? ' is-active' : ''; ?>" href="<?php echo esc_url( wc_get_cart_url() ); ?>" data-mp-drawer-open="cart" aria-controls="mp-cart-drawer">
 			<span class="relative">
 				<?php echo matjar_pro_get_icon( 'cart', array( 'size' => 21 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<span class="mp-cart-count mp-cart-count--dot<?php echo $mp_count > 0 ? '' : ' hidden'; ?>" data-count="<?php echo esc_attr( (string) $mp_count ); ?>">

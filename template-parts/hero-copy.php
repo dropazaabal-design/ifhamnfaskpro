@@ -34,8 +34,10 @@ $mp_overlay  = 'overlay' === matjar_pro_mod( 'matjar_pro_hero_layout' );
 <?php if ( '' !== $mp_cta ) : ?>
 	<a class="mp-btn mp-btn--cta mp-btn--lg mt-1 w-full sm:w-auto" href="<?php echo esc_url( matjar_pro_hero_cta_url() ); ?>">
 		<?php echo esc_html( $mp_cta ); ?>
-		<span class="mp-flip" aria-hidden="true">
-			<?php echo matjar_pro_get_icon( 'arrow', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-		</span>
+		<?php
+		// السهم مكتوب أصلاً يشير يساراً، أي «إلى الأمام» في العربية. قلبه
+		// بـ mp-flip يجعله يشير إلى الخلف، وهو عكس معنى الزر.
+		echo matjar_pro_get_icon( 'arrow', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		?>
 	</a>
 <?php endif; ?>
