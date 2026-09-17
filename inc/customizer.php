@@ -419,7 +419,9 @@ function matjar_pro_sanitize_cta_style( $value ) {
  * @return string
  */
 function matjar_pro_sanitize_font( $value ) {
-	return array_key_exists( $value, matjar_pro_fonts() ) ? $value : 'plex';
+	$defaults = matjar_pro_defaults();
+
+	return array_key_exists( $value, matjar_pro_fonts() ) ? $value : $defaults['matjar_pro_font'];
 }
 
 /**

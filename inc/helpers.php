@@ -225,7 +225,7 @@ function matjar_pro_defaults() {
 		'matjar_pro_palette'                 => 'trust',
 		'matjar_pro_cta_style'               => 'burnt',
 		'matjar_pro_cta_custom'              => '',
-		'matjar_pro_font'                    => 'plex',
+		'matjar_pro_font'                    => 'cairo',
 		'matjar_pro_announcement_enabled'    => true,
 		'matjar_pro_announcement_text'       => '',
 		'matjar_pro_whatsapp'                => '',

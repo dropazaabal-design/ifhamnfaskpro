@@ -149,7 +149,7 @@ function matjar_pro_cta_styles() {
 function matjar_pro_fonts() {
 	return array(
 		'plex'  => array(
-			'label'  => __( 'IBM Plex Sans Arabic — أعلى مقروئية (‎187KB / 6 ملفات)', 'matjar-pro' ),
+			'label'  => __( 'IBM Plex Sans Arabic — أعلى مقروئية، أثقل (‎187KB / 6 ملفات)', 'matjar-pro' ),
 			'family' => 'IBM Plex Sans Arabic',
 			'stack'  => "'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif",
 			'faces'  => array(
@@ -188,7 +188,7 @@ function matjar_pro_fonts() {
 			),
 		),
 		'cairo' => array(
-			'label'  => __( 'Cairo متغيّر — الأخف (‎63KB / ملفان)', 'matjar-pro' ),
+			'label'  => __( 'Cairo متغيّر — الافتراضي، الأخف (‎63KB / ملفان)', 'matjar-pro' ),
 			'family' => 'Cairo Variable',
 			'stack'  => "'Cairo Variable', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif",
 			'faces'  => array(
@@ -206,6 +206,27 @@ function matjar_pro_fonts() {
 			),
 		),
 	);
+}
+
+/**
+ * يعيد مفتاح عائلة الخط المختارة، مُتحقَّقاً منه.
+ *
+ * مركزية هذه الدالة تمنع تكرار الافتراضي في ثلاثة مواضع — وهو ما كان
+ * يجعل تغيير الخط الافتراضي تعديلاً في أربعة أماكن.
+ *
+ * @return string
+ */
+function matjar_pro_font_key() {
+	$fonts = matjar_pro_fonts();
+	$key   = matjar_pro_mod( 'matjar_pro_font' );
+
+	if ( isset( $fonts[ $key ] ) ) {
+		return $key;
+	}
+
+	$defaults = matjar_pro_defaults();
+
+	return isset( $fonts[ $defaults['matjar_pro_font'] ] ) ? $defaults['matjar_pro_font'] : array_key_first( $fonts );
 }
 
 /**
@@ -281,13 +302,8 @@ function matjar_pro_darken( $hex, $percent = 12 ) {
  */
 function matjar_pro_css_variables() {
 	$tokens = matjar_pro_resolved_tokens();
-	$fonts  = matjar_pro_fonts();
-	$key    = matjar_pro_mod( 'matjar_pro_font' );
-
-	if ( ! isset( $fonts[ $key ] ) ) {
-		$key = 'plex';
-	}
-
+	$fonts = matjar_pro_fonts();
+	$key   = matjar_pro_font_key();
 	$lines = array();
 
 	foreach ( $tokens as $name => $hex ) {
@@ -311,13 +327,7 @@ function matjar_pro_css_variables() {
  */
 function matjar_pro_font_faces_css() {
 	$fonts = matjar_pro_fonts();
-	$key   = matjar_pro_mod( 'matjar_pro_font' );
-
-	if ( ! isset( $fonts[ $key ] ) ) {
-		$key = 'plex';
-	}
-
-	$font  = $fonts[ $key ];
+	$font  = $fonts[ matjar_pro_font_key() ];
 	$base  = MATJAR_PRO_URI . '/assets/fonts/';
 	$rules = array();
 
@@ -345,15 +355,9 @@ function matjar_pro_font_faces_css() {
  */
 function matjar_pro_font_preloads() {
 	$fonts = matjar_pro_fonts();
-	$key   = matjar_pro_mod( 'matjar_pro_font' );
+	$urls  = array();
 
-	if ( ! isset( $fonts[ $key ] ) ) {
-		$key = 'plex';
-	}
-
-	$urls = array();
-
-	foreach ( $fonts[ $key ]['faces'] as $face ) {
+	foreach ( $fonts[ matjar_pro_font_key() ]['faces'] as $face ) {
 		if ( empty( $face['preload'] ) ) {
 			continue;
 		}
