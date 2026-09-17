@@ -39,6 +39,18 @@
 		border-radius: 4px;
 	}
 
+	/*
+	 * سمة hidden في HTML تُخفي عبر ورقة المتصفح الافتراضية بقاعدة
+	 * [hidden]{display:none} ذات وزن ضعيف، فأي أداة عرض في Tailwind على
+	 * العنصر نفسه (grid أو flex أو block) تتغلّب عليها ويبقى العنصر ظاهراً.
+	 * ظهر هذا فعلاً في زر تفريغ البحث: hidden موجودة والزر مرئي.
+	 * الحل عند المصدر لا عند كل حالة، فتُصان كل استخدامات hidden في القالب
+	 * وفي JavaScript معاً.
+	 */
+	[hidden] {
+		display: none !important;
+	}
+
 	img,
 	video {
 		max-width: 100%;
@@ -511,8 +523,24 @@
 	/* ---------- الزر العائم ---------- */
 
 	.mp-fab {
-		@apply fixed end-4 z-30 grid h-12 w-12 place-items-center rounded-full bg-success text-white no-underline shadow-lg transition hover:brightness-110;
+		@apply fixed end-4 z-30 grid h-12 w-12 place-items-center rounded-full bg-success text-white no-underline shadow-lg hover:brightness-110;
 		bottom: calc(76px + env(safe-area-inset-bottom, 0));
+		transition: opacity 180ms ease, transform 180ms ease, filter 180ms ease;
+	}
+
+	/*
+	 * الزر العائم لا يظهر قبل أن يمرّر الزائر أول شاشة.
+	 *
+	 * القياس على شاشة 390×844: الزر يشغل 720-768 رأسياً، وزر الشراء في
+	 * الهيرو يشغل 728-782 — أي أن زر الدعم يغطّي 48 بكسل من أهم زر في
+	 * الصفحة في اللحظة التي يصل فيها الزائر. تحريكه لا يحلّ المشكلة لأن
+	 * موضع زر الشراء يتغيّر بطول العنوان الذي يكتبه التاجر.
+	 *
+	 * وهذا أفضل تجارياً أيضاً: لا يُعرض مخرج للدعم قبل أن يرى الزائر العرض.
+	 */
+	.mp-fab[data-mp-hidden='true'] {
+		@apply pointer-events-none opacity-0;
+		transform: scale(0.85);
 	}
 
 	@media (min-width: 1024px) {

@@ -10,9 +10,16 @@ import { qs, qsa, onFrame } from './util.js';
 export default function scrollBars() {
 	const bottomNav = qs( '[data-mp-bottom-nav]' );
 	const header = qs( '[data-mp-header]' );
+	const fab = qs( '.mp-fab' );
 	let previous = window.scrollY;
 
-	if ( bottomNav || header ) {
+	// الحالة الابتدائية تُكتب فوراً لا عند أول تمرير، وإلا ظهر الزر لحظةً
+	// فوق زر الشراء قبل أن يلمس الزائر الشاشة.
+	if ( fab ) {
+		fab.dataset.mpHidden = window.scrollY < window.innerHeight * 0.6 ? 'true' : 'false';
+	}
+
+	if ( bottomNav || header || fab ) {
 		const onScroll = onFrame( () => {
 			const current = window.scrollY;
 			const goingDown = current > previous && current > 120;
@@ -23,6 +30,10 @@ export default function scrollBars() {
 
 			if ( header ) {
 				header.dataset.mpCompact = current > 24 ? 'true' : 'false';
+			}
+
+			if ( fab ) {
+				fab.dataset.mpHidden = current < window.innerHeight * 0.6 ? 'true' : 'false';
 			}
 
 			previous = current;
