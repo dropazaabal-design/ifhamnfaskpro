@@ -2,12 +2,17 @@
 /**
  * صفحة الأقسام وأرشيف المنتجات.
  *
+ * منطقة النتائج مغلّفة في data-mp-results ليستبدلها AJAX كاملةً، فيبقى
+ * التصيير كلّه على الخادم ولا يُعاد بناء بطاقة منتج في المتصفح.
+ *
  * @package MatjarPro
  */
 
 defined( 'ABSPATH' ) || exit;
 
 get_header();
+
+$mp_has_filters = matjar_pro_has_filters();
 ?>
 
 <div class="mx-auto max-w-screen-xl px-3 py-5 lg:px-4 lg:py-8">
@@ -23,26 +28,34 @@ get_header();
 
 	<div class="lg:flex lg:items-start lg:gap-8">
 
-		<?php if ( is_active_sidebar( 'shop-sidebar' ) ) : ?>
+		<?php if ( $mp_has_filters ) : ?>
 			<aside class="mp-shop-sidebar hidden lg:block" aria-label="<?php esc_attr_e( 'فلترة المنتجات', 'matjar-pro' ); ?>">
-				<?php dynamic_sidebar( 'shop-sidebar' ); ?>
+				<?php get_template_part( 'template-parts/shop/filter-body', null, array( 'context' => 'aside' ) ); ?>
 			</aside>
 		<?php endif; ?>
 
-		<div class="min-w-0 grow">
+		<div class="min-w-0 grow" data-mp-results>
 
-			<div class="mb-4 flex items-center gap-3 border-b border-line pb-3">
-				<?php if ( is_active_sidebar( 'shop-sidebar' ) ) : ?>
-					<button type="button" class="mp-btn mp-btn--outline min-h-[40px] px-3 text-sm lg:hidden" data-mp-drawer-open="filter" aria-expanded="false" aria-controls="mp-filter-drawer">
+			<div class="mb-3 flex items-center gap-3 border-b border-line pb-3">
+				<?php if ( $mp_has_filters ) : ?>
+					<button type="button" class="mp-filter-btn lg:hidden" data-mp-drawer-open="filter" aria-expanded="false" aria-controls="mp-filter-drawer">
 						<?php echo matjar_pro_get_icon( 'filter', array( 'size' => 16 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						<?php esc_html_e( 'فلترة', 'matjar-pro' ); ?>
+						<?php $mp_count = matjar_pro_filter_count(); ?>
+						<?php if ( $mp_count > 0 ) : ?>
+							<span class="mp-filter-btn__count mp-num"><?php echo esc_html( number_format_i18n( $mp_count ) ); ?></span>
+						<?php endif; ?>
 					</button>
 				<?php endif; ?>
 
-				<p class="mp-result-count m-0 grow text-xs text-faint"><?php woocommerce_result_count(); ?></p>
+				<p class="mp-result-count grow text-xs text-faint"><?php woocommerce_result_count(); ?></p>
 
 				<?php woocommerce_catalog_ordering(); ?>
 			</div>
+
+			<?php if ( $mp_has_filters ) : ?>
+				<?php get_template_part( 'template-parts/shop/active-filters' ); ?>
+			<?php endif; ?>
 
 			<?php if ( woocommerce_product_loop() ) : ?>
 
@@ -70,4 +83,8 @@ get_header();
 </div>
 
 <?php
+if ( $mp_has_filters ) {
+	get_template_part( 'template-parts/shop/filter-drawer' );
+}
+
 get_footer();

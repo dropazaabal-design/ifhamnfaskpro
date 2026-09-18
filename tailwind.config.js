@@ -75,6 +75,14 @@ module.exports = {
 		'out-of-stock',
 		'woocommerce-variation-price',
 		'woocommerce-variation-availability',
+		// صفحة الحساب
+		'woocommerce-table--order-details',
+		'woocommerce-table--customer-details',
+		'woocommerce-customer-details',
+		'woocommerce-order-details__title',
+		'woocommerce-column__title',
+		'woocommerce-MyAccount-navigation-link',
+		'is-active',
 	],
 	theme: {
 		extend: {

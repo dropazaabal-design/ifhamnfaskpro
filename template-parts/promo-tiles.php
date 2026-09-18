@@ -29,7 +29,7 @@ if ( empty( $mp_tiles ) ) {
 					'matjar-pro-card',
 					false,
 					array(
-						'class'   => 'aspect-[4/5] w-full object-cover transition duration-300 group-hover:scale-[1.03] sm:aspect-[4/3]',
+						'class'   => 'aspect-[4/5] w-full object-cover transition duration-300 group-hover:scale-[1.03] sm:aspect-[16/9]',
 						'sizes'   => '(min-width: 640px) 50vw, 50vw',
 						'loading' => 'lazy',
 						'alt'     => esc_attr( $mp_tile['label'] ),

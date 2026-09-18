@@ -11,14 +11,15 @@
     "fonts": "node tools/copy-fonts.mjs",
     "css:dev": "tailwindcss -i src/css/main.css -o assets/css/main.css --watch",
     "css:build": "tailwindcss -i src/css/main.css -o assets/css/main.css --minify",
-    "js:dev": "esbuild src/js/main.js src/js/product.js src/js/checkout.js --bundle --format=iife --target=es2019 --sourcemap --outdir=assets/js --watch",
-    "js:build": "esbuild src/js/main.js src/js/product.js src/js/checkout.js --bundle --minify --format=iife --target=es2019 --outdir=assets/js",
+    "js:dev": "esbuild src/js/main.js src/js/product.js src/js/checkout.js src/js/shop.js --bundle --format=iife --target=es2019 --sourcemap --outdir=assets/js --watch",
+    "js:build": "esbuild src/js/main.js src/js/product.js src/js/checkout.js src/js/shop.js --bundle --minify --format=iife --target=es2019 --outdir=assets/js",
     "build": "npm run fonts && npm run css:build && npm run js:build",
     "dev": "npm run css:dev & npm run js:dev",
     "verify:contrast": "php tools/verify-contrast.php",
-    "smoke": "php tools/render-smoke.php && php tools/render-smoke.php --woocommerce && php tools/render-smoke.php --woocommerce --overlay && php tools/render-smoke.php --card && php tools/render-smoke.php --funnel",
-    "verify": "npm run verify:contrast && npm run smoke",
-    "preview": "node tools/preview.mjs"
+    "smoke": "php tools/render-smoke.php && php tools/render-smoke.php --woocommerce && php tools/render-smoke.php --woocommerce --overlay && php tools/render-smoke.php --card && php tools/render-smoke.php --funnel && php tools/render-smoke.php --filter && php tools/render-smoke.php --account",
+    "verify": "npm run verify:contrast && npm run smoke && npm run pot",
+    "preview": "node tools/preview.mjs",
+    "pot": "php tools/make-pot.php"
   },
   "devDependencies": {
     "@fontsource-variable/cairo": "^5.3.0",
