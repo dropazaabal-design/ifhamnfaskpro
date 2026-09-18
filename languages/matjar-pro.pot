@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Matjar Pro 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-18 00:08+0000\n"
+"POT-Creation-Date: 2026-09-18 14:27+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,6 +14,11 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "X-Generator: matjar-pro tools/make-pot.php\n"
 "X-Domain: matjar-pro\n"
+
+#. translators: 1: أول منتج معروض. 2: آخر منتج معروض. 3: إجمالي المنتجات.
+#: woocommerce/loop/result-count.php:43
+msgid "%1$s–%2$s من %3$s منتجاً"
+msgstr ""
 
 #. translators: %s: عدد التقييمات.
 #: inc/wc-product.php:74
@@ -200,7 +205,7 @@ msgstr ""
 msgid "إنشاء الحساب"
 msgstr ""
 
-#: woocommerce/global/quantity-input.php:21
+#: woocommerce/global/quantity-input.php:30
 msgid "إنقاص الكمية"
 msgstr ""
 
@@ -409,6 +414,10 @@ msgstr ""
 
 #: header.php:101 inc/setup.php:41 template-parts/header/nav-drawer.php:23
 msgid "القائمة الرئيسية"
+msgstr ""
+
+#: woocommerce/global/quantity-input.php:20
+msgid "الكمية"
 msgstr ""
 
 #: inc/customizer.php:56
@@ -678,7 +687,7 @@ msgstr ""
 msgid "روابط السياسات"
 msgstr ""
 
-#: woocommerce/global/quantity-input.php:41
+#: woocommerce/global/quantity-input.php:50
 msgid "زيادة الكمية"
 msgstr ""
 
@@ -911,6 +920,10 @@ msgstr ""
 msgid "كلمة المرور"
 msgstr ""
 
+#: woocommerce/global/quantity-input.php:19
+msgid "كمية %s"
+msgstr ""
+
 #: inc/tokens.php:134
 msgid "كهرماني — نص كحلي"
 msgstr ""
@@ -994,6 +1007,11 @@ msgstr ""
 
 #: inc/wc-account.php:118
 msgid "ملفاتي"
+msgstr ""
+
+#. translators: %s: عدد المنتجات.
+#: woocommerce/loop/result-count.php:15 woocommerce/loop/result-count.php:26
+msgid "منتج واحد"
 msgstr ""
 
 #: woocommerce/checkout/thankyou.php:130
