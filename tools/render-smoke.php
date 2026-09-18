@@ -1229,21 +1229,15 @@ set_error_handler(
  * --catalog يُطبع وحده بلا تنسيق: جدول المنتجات التجريبية بصيغة JSON،
  * ليقرأه المحاكي بدل تكرار الأسماء والأسعار يدوياً.
  */
+// --tokens=navy — كتلة :root لِلوحة مشحونة، ليستهلكها المحاكي.
 foreach ( $argv as $mp_arg ) {
 	if ( 0 !== strpos( $mp_arg, '--tokens=' ) ) {
 		continue;
 	}
 
-	$mp_parts = array_pad( explode( ',', substr( $mp_arg, 9 ) ), 4, '' );
-
-	foreach ( array( 'primary', 'bg', 'cta', 'accent' ) as $mp_i => $mp_name ) {
-		if ( '' !== $mp_parts[ $mp_i ] ) {
-			$GLOBALS['mp_smoke_mods'][ 'matjar_pro_color_' . $mp_name ] = '#' . ltrim( $mp_parts[ $mp_i ], '#' );
-		}
-	}
+	$GLOBALS['mp_smoke_mods']['matjar_pro_palette'] = substr( $mp_arg, 9 );
 
 	echo matjar_pro_css_variables();
-	echo matjar_pro_font_faces_css();
 	exit( 0 );
 }
 

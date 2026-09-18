@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Matjar Pro 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-18 15:25+0000\n"
+"POT-Creation-Date: 2026-09-18 15:48+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -43,11 +43,11 @@ msgstr ""
 msgid "BENEFIT"
 msgstr ""
 
-#: inc/tokens.php:199
+#: inc/tokens.php:240
 msgid "Cairo متغيّر — الافتراضي، الأخف (‎63KB / ملفان)"
 msgstr ""
 
-#: inc/tokens.php:160
+#: inc/tokens.php:201
 msgid "IBM Plex Sans Arabic — أعلى مقروئية، أثقل (‎187KB / 6 ملفات)"
 msgstr ""
 
@@ -87,6 +87,14 @@ msgid_plural "آخر %s قطع"
 msgstr[0] ""
 msgstr[1] ""
 
+#: inc/tokens.php:104
+msgid "أحادي — إلكترونيات"
+msgstr ""
+
+#: inc/tokens.php:177
+msgid "أخضر زمردي"
+msgstr ""
+
 #: woocommerce/cart/cart.php:137
 msgid "أدخل الكود"
 msgstr ""
@@ -101,6 +109,10 @@ msgstr ""
 
 #: inc/customizer.php:130
 msgid "أرضية الموقع. الأسطح والبطاقات تُشتَقّ منها، فتبقى متمايزة عنها."
+msgstr ""
+
+#: inc/tokens.php:182
+msgid "أسود كربوني"
 msgstr ""
 
 #: inc/front-page.php:382
@@ -504,10 +516,6 @@ msgstr ""
 msgid "الوصف"
 msgstr ""
 
-#: inc/tokens.php:137
-msgid "برتقالي محروق — نص أبيض"
-msgstr ""
-
 #: inc/customizer.php:489
 msgid "بعملة متجرك الحالية (%s). صفر يعني تعطيل شريط تقدّم الشحن."
 msgstr ""
@@ -648,10 +656,6 @@ msgstr ""
 msgid "تيك توك"
 msgstr ""
 
-#: inc/tokens.php:35
-msgid "ثقة — الافتراضي"
-msgstr ""
-
 #: inc/assets.php:117
 msgid "جارٍ التحديث…"
 msgstr ""
@@ -693,16 +697,12 @@ msgstr ""
 msgid "حسابي وطلباتي"
 msgstr ""
 
-#: inc/tokens.php:132
+#: inc/tokens.php:167
 msgid "حسب اللوحة المختارة"
 msgstr ""
 
 #: woocommerce/cart/mini-cart.php:38
 msgid "حصلت على الشحن المجاني"
-msgstr ""
-
-#: inc/tokens.php:77
-msgid "حيوي — أزياء وشباب"
 msgstr ""
 
 #: inc/wc-account.php:117
@@ -757,6 +757,10 @@ msgstr ""
 
 #: inc/setup.php:43
 msgid "روابط السياسات"
+msgstr ""
+
+#: inc/tokens.php:79
+msgid "زمردي — أزياء وطبيعي"
 msgstr ""
 
 #: woocommerce/global/quantity-input.php:50
@@ -954,10 +958,6 @@ msgstr ""
 msgid "غير متوفر حالياً"
 msgstr ""
 
-#: inc/tokens.php:56
-msgid "فخامة"
-msgstr ""
-
 #: inc/customizer.php:249
 msgid "فعّل ما يخصّ سوقك فقط. الشارات المُطفأة لا تُطبع في الصفحة إطلاقاً."
 msgstr ""
@@ -996,6 +996,18 @@ msgstr[1] ""
 msgid "قيد التجهيز"
 msgstr ""
 
+#: inc/tokens.php:172
+msgid "كحلي عميق"
+msgstr ""
+
+#: inc/tokens.php:54
+msgid "كحلي — الافتراضي"
+msgstr ""
+
+#: inc/tokens.php:129
+msgid "كربوني — متجر داكن"
+msgstr ""
+
 #: inc/customizer.php:25
 msgid "كل إعدادات القالب. العملة نفسها تُضبط من ووكومرس، والقالب يتبعها."
 msgstr ""
@@ -1018,10 +1030,6 @@ msgstr ""
 
 #: woocommerce/global/quantity-input.php:19
 msgid "كمية %s"
-msgstr ""
-
-#: inc/tokens.php:142
-msgid "كهرماني — نص كحلي"
 msgstr ""
 
 #: woocommerce/cart/cart.php:136
@@ -1165,10 +1173,6 @@ msgstr ""
 
 #: inc/customizer.php:107
 msgid "نمط زر الشراء"
-msgstr ""
-
-#: inc/tokens.php:98
-msgid "هادئ — عناية وتجميل"
 msgstr ""
 
 #: inc/wc-checkout.php:200

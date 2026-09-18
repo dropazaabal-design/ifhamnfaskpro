@@ -47,7 +47,7 @@ $mp_overlay = 'overlay' === matjar_pro_mod( 'matjar_pro_hero_layout' );
 				 * العنوان تصبح رهينة الصورة التي يرفعها التاجر.
 				 */
 				?>
-				<div class="absolute inset-0 bg-ink/65" aria-hidden="true"></div>
+				<div class="absolute inset-0 bg-inverse/65" aria-hidden="true"></div>
 			<?php endif; ?>
 		</div>
 	<?php endif; ?>

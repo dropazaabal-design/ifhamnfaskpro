@@ -21,7 +21,7 @@ $mp_count        = ( $mp_has_wc && WC()->cart ) ? WC()->cart->get_cart_contents_
 	<?php wp_head(); ?>
 </head>
 
-<body <?php body_class( 'bg-cream font-sans text-base text-body antialiased' ); ?>>
+<body <?php body_class( 'bg-page font-sans text-base text-body antialiased' ); ?>>
 <?php wp_body_open(); ?>
 
 <a class="mp-skip" href="#mp-main">
@@ -39,7 +39,7 @@ else :
 ?>
 
 <?php if ( '' !== $mp_announcement ) : ?>
-	<div class="mp-announcement bg-ink text-white" data-mp-announcement>
+	<div class="mp-announcement bg-inverse text-inverse-ink" data-mp-announcement>
 		<div class="mx-auto flex max-w-screen-xl items-center gap-2 px-3 py-2">
 			<span class="shrink-0 text-accent-ink" aria-hidden="true">
 				<?php echo matjar_pro_get_icon( 'truck', array( 'size' => 16 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>

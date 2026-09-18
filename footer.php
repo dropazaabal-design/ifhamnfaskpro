@@ -59,7 +59,7 @@ $mp_whatsapp = preg_replace( '/[^0-9]/', '', (string) matjar_pro_mod( 'matjar_pr
 	$mp_has_cols = (bool) array_filter( $mp_widgets, 'is_active_sidebar' );
 	$mp_badges   = matjar_pro_active_badges();
 	?>
-	<footer class="mp-footer bg-ink text-white">
+	<footer class="mp-footer bg-inverse text-inverse-ink">
 		<div class="mx-auto max-w-screen-xl px-4 py-10">
 
 			<?php if ( $mp_has_cols ) : ?>

@@ -243,8 +243,8 @@ function matjar_pro_icon_paths() {
  */
 function matjar_pro_defaults() {
 	return array(
-		'matjar_pro_palette'                 => 'trust',
-		'matjar_pro_cta_style'               => 'burnt',
+		'matjar_pro_palette'                 => 'navy',
+		'matjar_pro_cta_style'               => 'palette',
 		'matjar_pro_font'                    => 'cairo',
 		'matjar_pro_announcement_enabled'    => true,
 		'matjar_pro_announcement_text'       => '',

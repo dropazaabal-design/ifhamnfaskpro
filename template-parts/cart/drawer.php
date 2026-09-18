@@ -20,7 +20,7 @@ if ( ! matjar_pro_has_woocommerce() || matjar_pro_is_funnel() ) {
 	<div class="mp-drawer__panel mp-drawer__panel--cart" id="mp-cart-drawer">
 		<div class="flex h-14 items-center gap-2 border-b border-line px-4">
 			<span class="grow font-bold text-ink"><?php esc_html_e( 'سلتك', 'matjar-pro' ); ?></span>
-			<button type="button" class="-me-2 grid h-11 w-11 place-items-center rounded-lg text-ink transition hover:bg-cream" data-mp-drawer-close aria-label="<?php esc_attr_e( 'إغلاق السلة', 'matjar-pro' ); ?>">
+			<button type="button" class="-me-2 grid h-11 w-11 place-items-center rounded-lg text-ink transition hover:bg-page" data-mp-drawer-close aria-label="<?php esc_attr_e( 'إغلاق السلة', 'matjar-pro' ); ?>">
 				<?php echo matjar_pro_get_icon( 'close', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</button>
 		</div>

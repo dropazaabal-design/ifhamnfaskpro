@@ -30,89 +30,124 @@ const MATJAR_PRO_RANGE_LATIN = 'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U
  * @return array<string,array>
  */
 function matjar_pro_palettes() {
+	/*
+	 * قاعدة اللوحات: لا لون دافئ في أي رمز علامة — لا برتقالي ولا أصفر ولا
+	 * ذهبي ولا بنّي. المساحة البصرية تُترك لصور المنتجات، والألوان الباردة
+	 * الرصينة هي ما يقرأه المشتري احترافاً.
+	 *
+	 * الألوان الدلالية (الخصم، التوفّر، التوصيل، التقسيط) تبقى بمعانيها
+	 * المتعارفة لأن معناها أهمّ من انسجامها، لكنّها تُضبط في درجة كل لوحة.
+	 *
+	 * لكل رمز دور واحد:
+	 *   ink/text/muted  النصوص بثلاث مراتب
+	 *   bg/surface      أرضية الصفحة ثم سطح البطاقات
+	 *   border          حدّ زخرفي بين الكتل
+	 *   field           حدّ الحقول — وحده يُعرّف الحقل، فحدّه ٣:١
+	 *   cta/cta-hover   زر الشراء، وهو وحده مساحة اللون المشبعة
+	 *   accent          الإبراز على السطح · accent-ink على الحبر
+	 *   progress        مِلء شريط الشحن المجاني
+	 *   sale            خلفية شارة الخصم · sale-ink نصّ الخصم على طبقة
+	 *   success/info/bnpl  التوفّر، التوصيل، التقسيط
+	 */
 	return array(
-		'trust'  => array(
-			'label'  => __( 'ثقة — الافتراضي', 'matjar-pro' ),
+		'navy'     => array(
+			'label'  => __( 'كحلي — الافتراضي', 'matjar-pro' ),
 			'tokens' => array(
-				'ink'        => '#0F1E33',
-				'bg'         => '#FAF9F7',
-				'surface'    => '#FFFFFF',
-				'border'     => '#E7E5E1',
-				'text'       => '#4B5563',
-				'muted'      => '#6B7280',
-				'shadow'     => '#0F1E33',
-				'cta'        => '#C2410C',
-				'cta-hover'  => '#9A3412',
-				'accent'     => '#EA580C',
-				'accent-ink' => '#F97316',
-				'amber'      => '#B45309',
-				'sale'       => '#B42318',
-				'success'    => '#15803D',
-				'info'       => '#1D4ED8',
-				'bnpl'       => '#6D28D9',
+				'ink'        => '#0B1524',
+				'bg'         => '#FFFFFF',
+				'surface'    => '#F6F7F9',
+				'border'      => '#E4E7EC',
+				'field'       => '#9AA3B2',
+				'text'        => '#3A4658',
+				'muted'       => '#61708A',
+				'inverse'     => '#0B1524',
+				'inverse-ink' => '#EDF1F6',
+				'shadow'      => '#0B1524',
+				'cta'         => '#173F73',
+				'cta-hover'   => '#102C52',
+				'accent'      => '#2E5C9A',
+				'accent-ink'  => '#8FB4E4',
+				'progress'    => '#2E5C9A',
+				'sale'        => '#A8103A',
+				'sale-ink'    => '#A8103A',
+				'success'     => '#10683F',
+				'info'        => '#1B4A87',
+				'bnpl'        => '#553C9A',
 			),
 		),
-		'luxury' => array(
-			'label'  => __( 'فخامة', 'matjar-pro' ),
+		'emerald'  => array(
+			'label'  => __( 'زمردي — أزياء وطبيعي', 'matjar-pro' ),
 			'tokens' => array(
-				'ink'        => '#14110E',
-				'bg'         => '#FAF8F4',
-				'surface'    => '#FFFFFF',
-				'border'     => '#E8E2D8',
-				'text'       => '#4A4034',
-				'muted'      => '#6B5F50',
-				'shadow'     => '#2A2118',
-				'cta'        => '#7A611F',
-				'cta-hover'  => '#5C4917',
-				'accent'     => '#B8860B',
-				'accent-ink' => '#D4AF37',
-				'amber'      => '#946A08',
-				'sale'       => '#9B2226',
-				'success'    => '#3F6212',
-				'info'       => '#1E4E6B',
-				'bnpl'       => '#6D4C8A',
+				'ink'        => '#0D2620',
+				'bg'         => '#FFFFFF',
+				'surface'    => '#F5F8F6',
+				'border'      => '#E1EAE5',
+				'field'       => '#98AAA1',
+				'text'        => '#37493F',
+				'muted'       => '#5E7268',
+				'inverse'     => '#0D2620',
+				'inverse-ink' => '#EDF4F0',
+				'shadow'      => '#0D2620',
+				'cta'         => '#046B4E',
+				'cta-hover'   => '#03513B',
+				'accent'      => '#0E7490',
+				'accent-ink'  => '#7DD3E8',
+				'progress'    => '#046B4E',
+				'sale'        => '#A8103A',
+				'sale-ink'    => '#A8103A',
+				'success'     => '#10683F',
+				'info'        => '#1B5C7A',
+				'bnpl'        => '#553C9A',
 			),
 		),
-		'vivid'  => array(
-			'label'  => __( 'حيوي — أزياء وشباب', 'matjar-pro' ),
+		'mono'     => array(
+			'label'  => __( 'أحادي — إلكترونيات', 'matjar-pro' ),
 			'tokens' => array(
-				'ink'        => '#111827',
-				'bg'         => '#FDF9FB',
-				'surface'    => '#FFFFFF',
-				'border'     => '#EFE6EB',
-				'text'       => '#4B5563',
-				'muted'      => '#6B7280',
-				'shadow'     => '#2A1020',
-				'cta'        => '#BE185D',
-				'cta-hover'  => '#9D174D',
-				'accent'     => '#EC4899',
-				'accent-ink' => '#F472B6',
-				'amber'      => '#B45309',
-				'sale'       => '#BE123C',
-				'success'    => '#15803D',
-				'info'       => '#4338CA',
-				'bnpl'       => '#86198F',
+				'ink'        => '#0A0C0F',
+				'bg'         => '#FFFFFF',
+				'surface'    => '#F5F6F7',
+				'border'      => '#E3E5E8',
+				'field'       => '#9A9EA5',
+				'text'        => '#3C4145',
+				'muted'       => '#666C73',
+				'inverse'     => '#0A0C0F',
+				'inverse-ink' => '#F1F2F4',
+				'shadow'      => '#0A0C0F',
+				'cta'         => '#14181D',
+				'cta-hover'   => '#000000',
+				'accent'      => '#1D4ED8',
+				'accent-ink'  => '#93C5FD',
+				'progress'    => '#1D4ED8',
+				'sale'        => '#A8103A',
+				'sale-ink'    => '#A8103A',
+				'success'     => '#10683F',
+				'info'        => '#1D4ED8',
+				'bnpl'        => '#4438CA',
 			),
 		),
-		'calm'   => array(
-			'label'  => __( 'هادئ — عناية وتجميل', 'matjar-pro' ),
+		'carbon'   => array(
+			'label'  => __( 'كربوني — متجر داكن', 'matjar-pro' ),
 			'tokens' => array(
-				'ink'        => '#1F2937',
-				'bg'         => '#F8F7F4',
-				'surface'    => '#FFFFFF',
-				'border'     => '#E5E3DD',
-				'text'       => '#4B5563',
-				'muted'      => '#6B7280',
-				'shadow'     => '#12262B',
-				'cta'        => '#0F766E',
-				'cta-hover'  => '#115E59',
-				'accent'     => '#0D9488',
-				'accent-ink' => '#2DD4BF',
-				'amber'      => '#A16207',
-				'sale'       => '#B42318',
-				'success'    => '#15803D',
-				'info'       => '#0E7490',
-				'bnpl'       => '#6D28D9',
+				'ink'        => '#F3F6F9',
+				'bg'         => '#0A0C0F',
+				'surface'    => '#14181E',
+				'border'      => '#272E38',
+				'field'       => '#5A6472',
+				'text'        => '#C2CAD4',
+				'muted'       => '#939DAA',
+				'inverse'     => '#15191F',
+				'inverse-ink' => '#F3F6F9',
+				'shadow'      => '#000000',
+				'cta'         => '#FFFFFF',
+				'cta-hover'   => '#DCE3EB',
+				'accent'      => '#60A5FA',
+				'accent-ink'  => '#60A5FA',
+				'progress'    => '#60A5FA',
+				'sale'        => '#A8103A',
+				'sale-ink'    => '#FF7A99',
+				'success'     => '#34D399',
+				'info'        => '#7DD3FC',
+				'bnpl'        => '#B39CFB',
 			),
 		),
 	);
@@ -133,18 +168,24 @@ function matjar_pro_cta_styles() {
 			'cta'   => '',
 			'hover' => '',
 		),
-		'burnt'   => array(
-			'label' => __( 'برتقالي محروق — نص أبيض', 'matjar-pro' ),
-			'cta'   => '#C2410C',
-			'hover' => '#9A3412',
+		'navy'    => array(
+			'label' => __( 'كحلي عميق', 'matjar-pro' ),
+			'cta'   => '#173F73',
+			'hover' => '#102C52',
 		),
-		'amber'   => array(
-			'label' => __( 'كهرماني — نص كحلي', 'matjar-pro' ),
-			'cta'   => '#F59E0B',
-			'hover' => '#D97706',
+		'emerald' => array(
+			'label' => __( 'أخضر زمردي', 'matjar-pro' ),
+			'cta'   => '#046B4E',
+			'hover' => '#03513B',
+		),
+		'carbon'  => array(
+			'label' => __( 'أسود كربوني', 'matjar-pro' ),
+			'cta'   => '#14181D',
+			'hover' => '#000000',
 		),
 	);
 }
+
 
 /**
  * عائلات الخطوط المرفقة مع القالب.
@@ -247,7 +288,7 @@ function matjar_pro_resolved_tokens() {
 	$choice   = matjar_pro_mod( 'matjar_pro_palette' );
 
 	if ( ! isset( $palettes[ $choice ] ) ) {
-		$choice = 'trust';
+		$choice = 'navy';
 	}
 
 	$tokens = $palettes[ $choice ]['tokens'];
@@ -296,17 +337,37 @@ function matjar_pro_resolved_tokens() {
 		$tokens['cta-hover'] = matjar_pro_darken( $custom, 14 );
 	}
 
-	// هنا تُفرض المقروئية: لون نص الزر ليس خياراً بل نتيجة حساب.
-	$tokens['cta-fg'] = matjar_pro_readable_foreground( $tokens['cta'], '#FFFFFF', $tokens['ink'] );
+	/*
+	 * هنا تُفرض المقروئية: ألوان نصوص الأزرار والشارات المصمتة ليست خياراً
+	 * بل نتيجة حساب.
+	 *
+	 * والمُرشَّح الغامق أغمق ما في اللوحة لا «الحبر» دائماً: في اللوحة
+	 * الكربونية الحبر لونٌ فاتح، فزرٌّ أبيض كان سيُحسَب له نصّ فاتح فوق
+	 * فاتح ثم يُعتَّم الزر نفسه — ويُهدَم تصميم الزر الأبيض من أصله.
+	 */
+	$darkest = matjar_pro_relative_luminance( $tokens['ink'] ) <= matjar_pro_relative_luminance( $tokens['bg'] )
+		? $tokens['ink']
+		: $tokens['bg'];
+
+	$tokens['cta-fg'] = matjar_pro_readable_foreground( $tokens['cta'], '#FFFFFF', $darkest );
 
 	/*
-	 * الزر مساحة لون مشبعة كبيرة: إن لم يعبر أيٌّ من الأبيض أو الحبر حدّ
-	 * ٤٫٥ فوقه، فاللون نفسه هو المشكلة لا نصّه، فيُعتَّم حتى يعبر الأبيض.
+	 * الزر مساحة لون مشبعة كبيرة: إن لم يعبر أيٌّ من المُرشَّحين حدّ ٤٫٥
+	 * فوقه، فاللون نفسه هو المشكلة لا نصّه، فيُدفَع حتى يعبر أحدهما.
 	 */
 	if ( matjar_pro_contrast_ratio( $tokens['cta-fg'], $tokens['cta'] ) < 4.5 ) {
-		$tokens['cta']       = matjar_pro_ensure_contrast( $tokens['cta'], '#FFFFFF', 4.5 );
+		$tokens['cta']       = matjar_pro_ensure_contrast( $tokens['cta'], $tokens['cta-fg'], 4.5 );
 		$tokens['cta-hover'] = matjar_pro_darken( $tokens['cta'], 14 );
-		$tokens['cta-fg']    = matjar_pro_readable_foreground( $tokens['cta'], '#FFFFFF', $tokens['ink'] );
+		$tokens['cta-fg']    = matjar_pro_readable_foreground( $tokens['cta'], '#FFFFFF', $darkest );
+	}
+
+	/*
+	 * الشارات المصمتة: شارة نسبة الخصم وعلامة تأكيد الاستلام تُرسمان بلونٍ
+	 * كامل، فنصّهما يُحسَب كنصّ الزر. بلا هذا لا يستطيع لون دلالي أن يكون
+	 * فاتحاً على لوحة داكنة ومصمتاً بنصٍّ أبيض في الوقت نفسه.
+	 */
+	foreach ( array( 'sale', 'success' ) as $solid ) {
+		$tokens[ $solid . '-fg' ] = matjar_pro_readable_foreground( $tokens[ $solid ], '#FFFFFF', $darkest );
 	}
 
 	/*
@@ -320,7 +381,12 @@ function matjar_pro_resolved_tokens() {
 	 * الدفع عند الاستلام مثلاً نصُّها بلون النقد فوق النقد بشفافية ٠٫٠٨.
 	 * التصحيح يُعاد مرّتين لأن الطبقة تتغيّر بتغيّر اللون.
 	 */
-	foreach ( array( 'sale', 'success', 'info', 'bnpl' ) as $semantic ) {
+	/*
+	 * ما يُقرأ نصّاً يُصحَّح، وما يُرسَم مصمتاً لا. لون الخصم مثلاً يبقى
+	 * قرمزياً غامقاً لشارة النسبة (نصّها أبيض)، ونسخة sale-ink هي التي
+	 * تُقرأ نصّاً على الطبقة — وعليها وحدها يجري التصحيح.
+	 */
+	foreach ( array( 'sale-ink', 'success', 'info', 'bnpl' ) as $semantic ) {
 		$tokens[ $semantic ] = matjar_pro_ensure_contrast_on_tint(
 			$tokens[ $semantic ],
 			$tokens['surface'],
@@ -335,20 +401,22 @@ function matjar_pro_resolved_tokens() {
 			$tokens['bg'],
 			$tokens['surface'],
 			matjar_pro_blend( $tokens['success'], $tokens['surface'] ),
-			matjar_pro_blend( $tokens['sale'], $tokens['surface'] ),
+			matjar_pro_blend( $tokens['sale-ink'], $tokens['surface'] ),
 			matjar_pro_blend( $tokens['info'], $tokens['surface'] ),
 			matjar_pro_blend( $tokens['bnpl'], $tokens['surface'] ),
-			matjar_pro_blend( $tokens['amber'], $tokens['surface'] ),
 		),
 		4.5
 	);
 
 	/*
-	 * العنبري مِلء شريط الشحن. الحدّ الذي يُقرأ منه الزائر المسافة المتبقّية
+	 * مِلء شريط الشحن المجاني. الحدّ الذي يُقرأ منه الزائر المسافة المتبقّية
 	 * هو حدّ المِلء على المجرى — والمجرى بلون الحدود — لا حدّه على السطح
 	 * تحت الكتلة. اشتراط الاثنين معاً كان يُسقط تركيبات لا مشكلة فيها.
 	 */
-	$tokens['amber'] = matjar_pro_ensure_contrast( $tokens['amber'], $tokens['border'], 3.0, 3 );
+	$tokens['progress'] = matjar_pro_ensure_contrast( $tokens['progress'], $tokens['border'], 3.0, 3 );
+
+	// حدّ الحقول وحده يُعرّف الحقل، فحدّه ٣:١ لا زخرفة.
+	$tokens['field'] = matjar_pro_ensure_contrast( $tokens['field'], $tokens['surface'], 3.0, 3 );
 
 	/**
 	 * تصفية رموز التصميم النهائية.
@@ -579,11 +647,26 @@ function matjar_pro_derive_neutrals( $primary, $page ) {
 		3
 	);
 
+	// حدّ الحقول أقوى من الحدّ الزخرفي: وحده يُعلِم الزائر أين يكتب.
+	$field = matjar_pro_ensure_contrast(
+		$dark ? matjar_pro_lighten( $page, 32 ) : matjar_pro_darken( $page, 38 ),
+		$surface,
+		3.0,
+		3
+	);
+
+	// السطح المعكوس غامق دائماً أيّاً كانت اللوحة، ونصّه يُصحَّح فوقه.
+	$inverse     = $dark ? matjar_pro_lighten( $page, 6 ) : $ink;
+	$inverse_ink = matjar_pro_ensure_contrast( '#FFFFFF', $inverse, 4.5 );
+
 	return array(
-		'ink'     => $ink,
+		'ink'         => $ink,
+		'inverse'     => $inverse,
+		'inverse-ink' => $inverse_ink,
 		'bg'      => strtoupper( $page ),
 		'surface' => $surface,
 		'border'  => $border,
+		'field'   => $field,
 		'text'    => $text,
 		'muted'   => $muted,
 		'shadow'  => $ink,

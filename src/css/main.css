@@ -22,7 +22,7 @@
 	}
 
 	body {
-		@apply bg-cream font-sans text-base text-body;
+		@apply bg-page font-sans text-base text-body;
 		text-rendering: optimizeLegibility;
 	}
 
@@ -102,11 +102,11 @@
 	}
 
 	.mp-btn--outline {
-		@apply border-[1.5px] border-ink bg-transparent font-semibold text-ink hover:bg-ink hover:text-white;
+		@apply border-[1.5px] border-ink bg-transparent font-semibold text-ink hover:bg-ink hover:text-page;
 	}
 
 	.mp-btn--ghost {
-		@apply bg-transparent font-semibold text-ink hover:bg-cream;
+		@apply bg-transparent font-semibold text-ink hover:bg-page;
 	}
 
 	.mp-btn--lg {
@@ -125,7 +125,7 @@
 	}
 
 	.mp-pill--sale {
-		@apply bg-sale text-white;
+		@apply bg-sale text-sale-fg;
 	}
 
 	/*
@@ -133,7 +133,7 @@
 	 * الأخضر يبقى لمعنى واحد — النقد والتوفّر — فلا يحمل معنيين.
 	 */
 	.mp-pill--discount {
-		@apply border border-sale/[0.35] bg-sale/[0.08] text-sale;
+		@apply border border-sale-ink/[0.35] bg-sale-ink/[0.08] text-sale-ink;
 	}
 
 	.mp-pill--success {
@@ -223,7 +223,7 @@
 	}
 
 	.mp-pay__mark {
-		@apply rounded-md border border-line bg-cream px-2 py-0.5 text-[11px] font-bold text-body;
+		@apply rounded-md border border-line bg-page px-2 py-0.5 text-[11px] font-bold text-body;
 	}
 
 	/* أدوار الدفع: البطاقات، المحافظ، التقسيط. */
@@ -278,7 +278,7 @@
 	}
 
 	.mp-cod__tick {
-		@apply grid h-6 w-6 shrink-0 place-items-center rounded-full text-white;
+		@apply grid h-6 w-6 shrink-0 place-items-center rounded-full text-success-fg;
 		background: rgb( var( --mp-success ) );
 	}
 
@@ -404,7 +404,7 @@
 	}
 
 	.mp-field {
-		@apply min-h-[50px] w-full rounded-xl border-[1.5px] border-line bg-surface px-3.5 text-base text-ink transition;
+		@apply min-h-[50px] w-full rounded-xl border-[1.5px] border-field bg-surface px-3.5 text-base text-ink transition;
 	}
 
 	.mp-field:focus {
@@ -587,7 +587,7 @@
 	}
 
 	.mp-skip:focus {
-		@apply not-sr-only absolute z-50 m-3 rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-white no-underline;
+		@apply not-sr-only absolute z-50 m-3 rounded-lg bg-inverse px-4 py-2 text-sm font-semibold text-inverse-ink no-underline;
 	}
 
 	/* ---------- الهيدر ---------- */
@@ -606,7 +606,7 @@
 	}
 
 	.mp-icon-btn {
-		@apply grid h-11 w-11 shrink-0 place-items-center rounded-lg text-ink no-underline transition hover:bg-cream;
+		@apply grid h-11 w-11 shrink-0 place-items-center rounded-lg text-ink no-underline transition hover:bg-page;
 	}
 
 	/* عدّاد السلة */
@@ -649,7 +649,7 @@
 	}
 
 	.mp-nav .sub-menu a {
-		@apply min-h-[40px] rounded-lg px-3 text-sm font-medium hover:bg-cream;
+		@apply min-h-[40px] rounded-lg px-3 text-sm font-medium hover:bg-page;
 	}
 
 	/* ---------- الألواح ---------- */
@@ -663,7 +663,7 @@
 	}
 
 	.mp-drawer__backdrop {
-		@apply absolute inset-0 bg-ink/50 opacity-0;
+		@apply absolute inset-0 bg-inverse/50 opacity-0;
 		transition: opacity 200ms ease;
 	}
 
@@ -728,7 +728,7 @@
 	}
 
 	.mp-search__item {
-		@apply flex items-center gap-3 rounded-lg p-2 text-ink no-underline transition hover:bg-cream;
+		@apply flex items-center gap-3 rounded-lg p-2 text-ink no-underline transition hover:bg-page;
 	}
 
 	.mp-search__thumb {
@@ -914,7 +914,7 @@
 	}
 
 	.mp-product__flag--out {
-		@apply bg-ink/85 text-white;
+		@apply bg-inverse/85 text-inverse-ink;
 	}
 
 	.mp-product__body {
@@ -1121,7 +1121,7 @@
 	}
 
 	.mp-gallery__counter {
-		@apply absolute end-3 top-3 rounded-full bg-ink/80 px-2.5 py-1 text-[11px] font-bold text-white lg:hidden;
+		@apply absolute end-3 top-3 rounded-full bg-inverse/80 px-2.5 py-1 text-[11px] font-bold text-inverse-ink lg:hidden;
 	}
 
 	.mp-gallery__dots {
@@ -1282,7 +1282,7 @@
 	}
 
 	.mp-swatch[disabled] {
-		@apply cursor-not-allowed border-dashed bg-cream text-faint line-through;
+		@apply cursor-not-allowed border-dashed bg-page text-faint line-through;
 	}
 
 	.mp-swatch--colour {
@@ -1336,7 +1336,7 @@
 	}
 
 	.mp-qty__btn {
-		@apply grid h-[54px] w-10 cursor-pointer place-items-center border-0 bg-transparent text-ink transition hover:bg-cream;
+		@apply grid h-[54px] w-10 cursor-pointer place-items-center border-0 bg-transparent text-ink transition hover:bg-page;
 	}
 
 	.mp-qty__input {
@@ -1442,7 +1442,7 @@
 	/* ---------- تقدّم الشحن المجاني ---------- */
 
 	.mp-ship-progress {
-		@apply flex flex-col gap-2 rounded-xl border border-amber/[0.35] bg-amber/[0.08] p-3;
+		@apply flex flex-col gap-2 rounded-xl border border-progress/[0.35] bg-progress/[0.08] p-3;
 	}
 
 	/*
@@ -1454,7 +1454,7 @@
 	}
 
 	.mp-ship-progress__fill {
-		@apply block h-1.5 rounded-full bg-amber;
+		@apply block h-1.5 rounded-full bg-progress;
 		transition: width 300ms ease;
 	}
 
@@ -1516,7 +1516,7 @@
 	}
 
 	.mp-mini-cart__remove {
-		@apply grid h-9 w-9 shrink-0 place-items-center rounded-lg text-faint no-underline transition hover:bg-cream hover:text-sale;
+		@apply grid h-9 w-9 shrink-0 place-items-center rounded-lg text-faint no-underline transition hover:bg-page hover:text-sale;
 	}
 
 	.mp-mini-cart__foot {
@@ -1581,7 +1581,7 @@
 	}
 
 	.mp-cart__remove {
-		@apply grid h-9 w-9 shrink-0 place-items-center rounded-lg text-faint no-underline transition hover:bg-cream hover:text-sale;
+		@apply grid h-9 w-9 shrink-0 place-items-center rounded-lg text-faint no-underline transition hover:bg-page hover:text-sale;
 	}
 
 	.mp-cart__actions {
@@ -1664,7 +1664,7 @@
 	}
 
 	.mp-checkout-header__badges {
-		@apply flex flex-wrap items-center justify-center gap-1.5 border-t border-line bg-cream px-3 py-2;
+		@apply flex flex-wrap items-center justify-center gap-1.5 border-t border-line bg-page px-3 py-2;
 	}
 
 	.mp-checkout-footer {
@@ -1775,7 +1775,7 @@
 
 	.mp-review tfoot .order-total th,
 	.mp-review tfoot .order-total td {
-		@apply bg-cream text-base font-bold text-ink;
+		@apply bg-page text-base font-bold text-ink;
 	}
 
 	.mp-review .variation {
@@ -1841,7 +1841,7 @@
 	}
 
 	.payment_box {
-		@apply rounded-xl bg-cream p-3.5 text-xs leading-relaxed text-body;
+		@apply rounded-xl bg-page p-3.5 text-xs leading-relaxed text-body;
 	}
 
 	.woocommerce-terms-and-conditions-wrapper {

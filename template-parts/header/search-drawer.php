@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 			<div class="grow">
 				<?php get_search_form( array( 'mp_context' => 'drawer' ) ); ?>
 			</div>
-			<button type="button" class="grid h-11 w-11 shrink-0 place-items-center rounded-lg text-ink transition hover:bg-cream" data-mp-drawer-close aria-label="<?php esc_attr_e( 'إغلاق البحث', 'matjar-pro' ); ?>">
+			<button type="button" class="grid h-11 w-11 shrink-0 place-items-center rounded-lg text-ink transition hover:bg-page" data-mp-drawer-close aria-label="<?php esc_attr_e( 'إغلاق البحث', 'matjar-pro' ); ?>">
 				<?php echo matjar_pro_get_icon( 'close', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</button>
 		</div>

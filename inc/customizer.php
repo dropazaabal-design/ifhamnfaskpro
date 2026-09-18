@@ -637,7 +637,7 @@ function matjar_pro_sanitize_checkbox( $value ) {
  * @return string
  */
 function matjar_pro_sanitize_palette( $value ) {
-	return array_key_exists( $value, matjar_pro_palettes() ) ? $value : 'trust';
+	return array_key_exists( $value, matjar_pro_palettes() ) ? $value : 'navy';
 }
 
 /**
@@ -645,7 +645,7 @@ function matjar_pro_sanitize_palette( $value ) {
  * @return string
  */
 function matjar_pro_sanitize_cta_style( $value ) {
-	return array_key_exists( $value, matjar_pro_cta_styles() ) ? $value : 'burnt';
+	return array_key_exists( $value, matjar_pro_cta_styles() ) ? $value : 'palette';
 }
 
 /**

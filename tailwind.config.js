@@ -92,7 +92,13 @@ module.exports = {
 		extend: {
 			colors: {
 				ink: 'rgb(var(--mp-ink) / <alpha-value>)',
-				cream: 'rgb(var(--mp-bg) / <alpha-value>)',
+				// سطح معكوس غامق دائماً: التذييل وشريط الإعلان وحُجُب الصور.
+				// مستقلّ عن «الحبر» لأن الحبر في اللوحة الداكنة لونٌ فاتح.
+				inverse: {
+					DEFAULT: 'rgb(var(--mp-inverse) / <alpha-value>)',
+					ink: 'rgb(var(--mp-inverse-ink) / <alpha-value>)',
+				},
+				page: 'rgb(var(--mp-bg) / <alpha-value>)',
 				surface: 'rgb(var(--mp-surface) / <alpha-value>)',
 				line: 'rgb(var(--mp-border) / <alpha-value>)',
 				body: 'rgb(var(--mp-text) / <alpha-value>)',
@@ -106,10 +112,21 @@ module.exports = {
 					DEFAULT: 'rgb(var(--mp-accent) / <alpha-value>)',
 					ink: 'rgb(var(--mp-accent-ink) / <alpha-value>)',
 				},
-				amber: 'rgb(var(--mp-amber) / <alpha-value>)',
-				sale: 'rgb(var(--mp-sale) / <alpha-value>)',
-				success: 'rgb(var(--mp-success) / <alpha-value>)',
+				// مِلء شريط الشحن المجاني — دور لا لون، فلا يُسمّى بلونه.
+				progress: 'rgb(var(--mp-progress) / <alpha-value>)',
+				// حدّ الحقول: أقوى من الحدّ الزخرفي لأنه وحده يُعرّف الحقل.
+				field: 'rgb(var(--mp-field) / <alpha-value>)',
+				sale: {
+					DEFAULT: 'rgb(var(--mp-sale) / <alpha-value>)',
+					fg: 'rgb(var(--mp-sale-fg) / <alpha-value>)',
+					ink: 'rgb(var(--mp-sale-ink) / <alpha-value>)',
+				},
+				success: {
+					DEFAULT: 'rgb(var(--mp-success) / <alpha-value>)',
+					fg: 'rgb(var(--mp-success-fg) / <alpha-value>)',
+				},
 				info: 'rgb(var(--mp-info) / <alpha-value>)',
+				bnpl: 'rgb(var(--mp-bnpl) / <alpha-value>)',
 			},
 			fontFamily: {
 				sans: ['var(--mp-font-sans)'],

@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 	<div class="mp-drawer__panel mp-drawer__panel--side" id="mp-nav-drawer">
 		<div class="flex h-14 items-center gap-2 border-b border-line px-4">
 			<span class="grow font-bold text-ink"><?php esc_html_e( 'القائمة', 'matjar-pro' ); ?></span>
-			<button type="button" class="-me-2 grid h-11 w-11 place-items-center rounded-lg text-ink transition hover:bg-cream" data-mp-drawer-close aria-label="<?php esc_attr_e( 'إغلاق القائمة', 'matjar-pro' ); ?>">
+			<button type="button" class="-me-2 grid h-11 w-11 place-items-center rounded-lg text-ink transition hover:bg-page" data-mp-drawer-close aria-label="<?php esc_attr_e( 'إغلاق القائمة', 'matjar-pro' ); ?>">
 				<?php echo matjar_pro_get_icon( 'close', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</button>
 		</div>

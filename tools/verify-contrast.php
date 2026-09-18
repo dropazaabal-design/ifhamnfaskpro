@@ -38,6 +38,10 @@ if ( ! function_exists( 'get_theme_mod' ) ) {
 	 * @return mixed
 	 */
 	function get_theme_mod( $key, $default = false ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
+		if ( 'matjar_pro_palette' === $key && isset( $GLOBALS['mp_palette'] ) ) {
+			return $GLOBALS['mp_palette'];
+		}
+
 		return $default;
 	}
 }
@@ -83,9 +87,18 @@ $total    = 0;
 printf( "%-8s | %-30s | %6s | %5s | %s\n", 'palette', 'pair', 'ratio', 'min', 'result' );
 echo str_repeat( '-', 72 ), "\n";
 
-foreach ( matjar_pro_palettes() as $name => $palette ) {
-	$t  = $palette['tokens'];
-	$fg = matjar_pro_readable_foreground( $t['cta'], '#FFFFFF', $t['ink'] );
+foreach ( array_keys( matjar_pro_palettes() ) as $name ) {
+	/*
+	 * الرموز تُقرأ بعد مرورها على دوال التصحيح لا من تعريف اللوحة: ما
+	 * يُشحن هو الناتج المُصحَّح، وفحص التعريف الخام يفحص ما لا يراه أحد.
+	 */
+	$GLOBALS['mp_palette'] = $name;
+	$t                     = matjar_pro_resolved_tokens();
+	// المُرشَّح الغامق أغمق ما في اللوحة: في الكربونية الحبر فاتح.
+	$darkest = matjar_pro_relative_luminance( $t['ink'] ) <= matjar_pro_relative_luminance( $t['bg'] )
+		? $t['ink']
+		: $t['bg'];
+	$fg = matjar_pro_readable_foreground( $t['cta'], '#FFFFFF', $darkest );
 
 	$pairs = array(
 		array( 'CTA + computed label', $fg, $t['cta'], 4.5 ),
@@ -94,28 +107,28 @@ foreach ( matjar_pro_palettes() as $name => $palette ) {
 		array( 'muted text on page', $t['muted'], $t['bg'], 4.5 ),
 		array( 'heading on page', $t['ink'], $t['bg'], 4.5 ),
 		array( 'body text on card', $t['text'], $t['surface'], 4.5 ),
-		array( 'sale badge + white', '#FFFFFF', $t['sale'], 4.5 ),
-		array( 'success badge + white', '#FFFFFF', $t['success'], 4.5 ),
-		array( 'info badge + white', '#FFFFFF', $t['info'], 4.5 ),
-		// العنبري شريط تقدّم لا خلفية نص: حدّه 3:1 كرسم واجهة، ومقابل
-		// المجرى الذي يُرسم عليه لا مقابل السطح تحت الكتلة.
-		array( 'amber bar on track', $t['amber'], $t['border'], 3.0 ),
-		array( 'ship bar fill on track', $t['amber'], $t['border'], 3.0 ),
+		array( 'sale badge + computed', matjar_pro_readable_foreground( $t['sale'], '#FFFFFF', $darkest ), $t['sale'], 4.5 ),
+		array( 'COD tick + computed', matjar_pro_readable_foreground( $t['success'], '#FFFFFF', $darkest ), $t['success'], 4.5 ),
+		array( 'field border on card', $t['field'], $t['surface'], 3.0 ),
+		array( 'saved pill on tint', $t['sale-ink'], mp_blend( $t['sale-ink'], $t['surface'], 0.08 ), 4.5 ),
+		// مِلء شريط الشحن رسم واجهة: حدّه 3:1 مقابل المجرى الذي يُرسم عليه.
+		array( 'ship bar fill on track', $t['progress'], $t['border'], 3.0 ),
+
 		array( 'accent graphic on card', $t['accent'], $t['surface'], 3.0 ),
-		array( 'accent graphic on ink', $t['accent-ink'], $t['ink'], 3.0 ),
+		array( 'accent graphic on inverse', $t['accent-ink'], $t['inverse'], 3.0 ),
+		array( 'inverse text on inverse', $t['inverse-ink'], $t['inverse'], 4.5 ),
 
 		// كتل طرق الدفع: النص فوق المزيج المُركَّب الذي يراه المستخدم.
 		array( 'COD label on COD card', $t['success'], mp_blend( $t['success'], $t['surface'], 0.07 ), 4.5 ),
 		array( 'COD note on COD card', $t['text'], mp_blend( $t['success'], $t['surface'], 0.07 ), 4.5 ),
-		array( 'COD tick + white', '#FFFFFF', $t['success'], 4.5 ),
 		array( 'COD gateway label', $t['ink'], mp_blend( $t['success'], $t['surface'], 0.07 ), 4.5 ),
 		array( 'card group icon', $t['info'], mp_blend( $t['info'], $t['surface'], 0.10 ), 3.0 ),
 		array( 'wallet group icon', $t['ink'], mp_blend( $t['ink'], $t['surface'], 0.08 ), 3.0 ),
 		array( 'split group icon', $t['bnpl'], mp_blend( $t['bnpl'], $t['surface'], 0.10 ), 3.0 ),
 		array( 'split mark text', $t['bnpl'], mp_blend( $t['bnpl'], $t['surface'], 0.07 ), 4.5 ),
 		array( 'BNPL line on block', $t['bnpl'], mp_blend( $t['bnpl'], $t['surface'], 0.07 ), 4.5 ),
-		array( 'pay mark text on cream', $t['text'], $t['bg'], 4.5 ),
-		array( 'saved pill on card', $t['sale'], mp_blend( $t['sale'], $t['surface'], 0.08 ), 4.5 ),
+		array( 'pay mark text on page', $t['text'], $t['bg'], 4.5 ),
+
 	);
 
 	foreach ( $pairs as $pair ) {

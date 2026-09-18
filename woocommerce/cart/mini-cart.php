@@ -120,7 +120,7 @@ $mp_progress = matjar_pro_free_shipping_progress();
 <?php else : ?>
 
 	<div class="mp-mini-cart__empty">
-		<span class="mx-auto grid h-12 w-12 place-items-center rounded-full bg-cream text-faint" aria-hidden="true">
+		<span class="mx-auto grid h-12 w-12 place-items-center rounded-full bg-page text-faint" aria-hidden="true">
 			<?php echo matjar_pro_get_icon( 'cart', array( 'size' => 22 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</span>
 		<p class="m-0 text-sm font-semibold text-ink"><?php esc_html_e( 'سلتك فارغة', 'matjar-pro' ); ?></p>

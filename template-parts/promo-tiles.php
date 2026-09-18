@@ -40,7 +40,7 @@ if ( empty( $mp_tiles ) ) {
 
 			<?php if ( '' !== $mp_tile['label'] ) : ?>
 				<?php /* طبقة 65% هنا أيضاً: العنوان أبيض فوق صورة لا نعرفها. */ ?>
-				<span class="absolute inset-x-0 bottom-0 bg-ink/65 px-3 py-2.5 text-sm font-bold text-white">
+				<span class="absolute inset-x-0 bottom-0 bg-inverse/65 px-3 py-2.5 text-sm font-bold text-inverse-ink">
 					<?php echo esc_html( $mp_tile['label'] ); ?>
 				</span>
 			<?php endif; ?>

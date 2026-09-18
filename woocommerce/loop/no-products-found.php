@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 ?>
 <div class="mx-auto max-w-md rounded-2xl border border-line bg-surface p-8 text-center">
-	<span class="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-full bg-cream text-faint" aria-hidden="true">
+	<span class="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-full bg-page text-faint" aria-hidden="true">
 		<?php echo matjar_pro_get_icon( 'search', array( 'size' => 22 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 	</span>
 	<h2 class="m-0 text-lg font-bold text-ink"><?php esc_html_e( 'لا منتجات مطابقة', 'matjar-pro' ); ?></h2>
