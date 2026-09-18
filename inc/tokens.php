@@ -31,123 +31,114 @@ const MATJAR_PRO_RANGE_LATIN = 'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U
  */
 function matjar_pro_palettes() {
 	/*
-	 * قاعدة اللوحات: لا لون دافئ في أي رمز علامة — لا برتقالي ولا أصفر ولا
-	 * ذهبي ولا بنّي. المساحة البصرية تُترك لصور المنتجات، والألوان الباردة
-	 * الرصينة هي ما يقرأه المشتري احترافاً.
+	 * اللوحات مبنية على جرد قيم موثّقة من أنظمة تصميم منشورة، لا على ذوق:
 	 *
-	 * الألوان الدلالية (الخصم، التوفّر، التوصيل، التقسيط) تبقى بمعانيها
-	 * المتعارفة لأن معناها أهمّ من انسجامها، لكنّها تُضبط في درجة كل لوحة.
+	 *   Shopify Dawn        القالب المرجعي لشوبيفاي — أرضياته وأزراره
+	 *   Shopify Polaris     نظام تصميم شوبيفاي — العلامة والدلالات
+	 *   Salla theme-raed    القالب المرجعي لسلة — رماديّاته ولون الخطر
+	 *   WooCommerce Storefront  المنصّة التي يعمل عليها هذا القالب
+	 *   WordPress TT4       سلّم المحيّدات
+	 *   IBM Carbon          سلّم الأزرق
 	 *
-	 * لكل رمز دور واحد:
-	 *   ink/text/muted  النصوص بثلاث مراتب
-	 *   bg/surface      أرضية الصفحة ثم سطح البطاقات
-	 *   border          حدّ زخرفي بين الكتل
-	 *   field           حدّ الحقول — وحده يُعرّف الحقل، فحدّه ٣:١
-	 *   cta/cta-hover   زر الشراء، وهو وحده مساحة اللون المشبعة
-	 *   accent          الإبراز على السطح · accent-ink على الحبر
-	 *   progress        مِلء شريط الشحن المجاني
-	 *   sale            خلفية شارة الخصم · sale-ink نصّ الخصم على طبقة
-	 *   success/info/bnpl  التوفّر، التوصيل، التقسيط
+	 * وما قاسه الجرد: محيّدات هذه الأنظمة رمادي خالص (٠° و٠٪ تشبّع) في
+	 * أربعة عشر قيمة من أصل أربع وثلاثين، وأزرقها كلّه في نطاق ٢١٤°–٢٢٧°
+	 * — ثلاثة عشر درجة فقط — وألوان التفاعل كلّها في الطرف الغامق، والخطر
+	 * قرمزي عند ٣٥٠°–٣٥٢° لا أحمر برتقالي. اللوحات تتبع هذا.
+	 *
+	 * سلّم المحيّدات والدلالات مشترك بين اللوحات الفاتحة الثلاث: يتغيّر لون
+	 * التفاعل وحده. هذا ما يجعلها أربع لوحات لا أربع هويّات متنافرة.
+	 *
+	 * القيم التي لا يُنشرها أي نظام (سلّم داكن للدلالات مثلاً) تُترك
+	 * لدوال التصحيح في هذا الملف: تدفعها حتى تعبر الحدّ، فلا قيمة مُختارة
+	 * بالذوق ولا قيمة غير مفحوصة.
 	 */
+	$neutral = array(
+		'bg'      => '#FFFFFF',   // Dawn scheme-1 · Storefront
+		'surface' => '#F3F3F3',   // Dawn scheme-2
+		'border'  => '#E3E3E3',   // Polaris color-border
+		'field'   => '#A4A4A4',   // TT4 contrast-3 — يُصحَّح إلى ٣:١
+		'text'    => '#4A4A4A',   // Polaris text-brand
+		'muted'   => '#616161',   // Polaris text-secondary
+		'ink'     => '#121212',   // Dawn scheme-1 text
+		'inverse'     => '#121212',
+		'inverse-ink' => '#FFFFFF',
+		'shadow'      => '#121212',
+	);
+
+	$semantic = array(
+		'sale'     => '#C70A24',  // Polaris bg-fill-critical
+		'sale-ink' => '#A30A24',  // Polaris bg-fill-critical-hover
+		'success'  => '#047B5D',  // Polaris bg-fill-success
+		'info'     => '#005BD3',  // Polaris bg-fill-emphasis
+		'bnpl'     => '#7F54B3',  // WooCommerce Storefront accent
+	);
+
 	return array(
-		'navy'     => array(
-			'label'  => __( 'كحلي — الافتراضي', 'matjar-pro' ),
-			'tokens' => array(
-				'ink'        => '#0B1524',
-				'bg'         => '#FFFFFF',
-				'surface'    => '#F6F7F9',
-				'border'      => '#E4E7EC',
-				'field'       => '#9AA3B2',
-				'text'        => '#3A4658',
-				'muted'       => '#61708A',
-				'inverse'     => '#0B1524',
-				'inverse-ink' => '#EDF1F6',
-				'shadow'      => '#0B1524',
-				'cta'         => '#173F73',
-				'cta-hover'   => '#102C52',
-				'accent'      => '#2E5C9A',
-				'accent-ink'  => '#8FB4E4',
-				'progress'    => '#2E5C9A',
-				'sale'        => '#A8103A',
-				'sale-ink'    => '#A8103A',
-				'success'     => '#10683F',
-				'info'        => '#1B4A87',
-				'bnpl'        => '#553C9A',
+		'navy'    => array(
+			'label'  => __( 'كحلي عميق — الافتراضي', 'matjar-pro' ),
+			'tokens' => array_merge(
+				$neutral,
+				$semantic,
+				array(
+					'cta'        => '#001D6C',   // Carbon blue-90
+					'cta-hover'  => '#001141',   // Carbon blue-100
+					'accent'     => '#005BD3',   // Polaris emphasis
+					'accent-ink' => '#0F62FE',   // Carbon blue-60
+					'progress'   => '#005BD3',
+				)
 			),
 		),
-		'emerald'  => array(
+		'emerald' => array(
 			'label'  => __( 'زمردي — أزياء وطبيعي', 'matjar-pro' ),
-			'tokens' => array(
-				'ink'        => '#0D2620',
-				'bg'         => '#FFFFFF',
-				'surface'    => '#F5F8F6',
-				'border'      => '#E1EAE5',
-				'field'       => '#98AAA1',
-				'text'        => '#37493F',
-				'muted'       => '#5E7268',
-				'inverse'     => '#0D2620',
-				'inverse-ink' => '#EDF4F0',
-				'shadow'      => '#0D2620',
-				'cta'         => '#046B4E',
-				'cta-hover'   => '#03513B',
-				'accent'      => '#0E7490',
-				'accent-ink'  => '#7DD3E8',
-				'progress'    => '#046B4E',
-				'sale'        => '#A8103A',
-				'sale-ink'    => '#A8103A',
-				'success'     => '#10683F',
-				'info'        => '#1B5C7A',
-				'bnpl'        => '#553C9A',
+			'tokens' => array_merge(
+				$neutral,
+				$semantic,
+				array(
+					'cta'        => '#047B5D',   // Polaris success
+					'cta-hover'  => '#03614A',   // مُشتَقّ: أغمق ١٥٪
+					'accent'     => '#047B5D',
+					'accent-ink' => '#3FC79A',   // مُشتَقّ ليعبر على الحبر
+					'progress'   => '#047B5D',
+				)
 			),
 		),
-		'mono'     => array(
+		'mono'    => array(
 			'label'  => __( 'أحادي — إلكترونيات', 'matjar-pro' ),
-			'tokens' => array(
-				'ink'        => '#0A0C0F',
-				'bg'         => '#FFFFFF',
-				'surface'    => '#F5F6F7',
-				'border'      => '#E3E5E8',
-				'field'       => '#9A9EA5',
-				'text'        => '#3C4145',
-				'muted'       => '#666C73',
-				'inverse'     => '#0A0C0F',
-				'inverse-ink' => '#F1F2F4',
-				'shadow'      => '#0A0C0F',
-				'cta'         => '#14181D',
-				'cta-hover'   => '#000000',
-				'accent'      => '#1D4ED8',
-				'accent-ink'  => '#93C5FD',
-				'progress'    => '#1D4ED8',
-				'sale'        => '#A8103A',
-				'sale-ink'    => '#A8103A',
-				'success'     => '#10683F',
-				'info'        => '#1D4ED8',
-				'bnpl'        => '#4438CA',
+			'tokens' => array_merge(
+				$neutral,
+				$semantic,
+				array(
+					'cta'        => '#303030',   // Polaris bg-fill-brand
+					'cta-hover'  => '#1A1A1A',   // Polaris bg-fill-brand-hover
+					'accent'     => '#005BD3',   // Polaris emphasis — الأزرق التقني وحده
+					'accent-ink' => '#0F62FE',   // Carbon blue-60
+					'progress'   => '#005BD3',
+				)
 			),
 		),
-		'carbon'   => array(
+		'carbon'  => array(
 			'label'  => __( 'كربوني — متجر داكن', 'matjar-pro' ),
 			'tokens' => array(
-				'ink'        => '#F3F6F9',
-				'bg'         => '#0A0C0F',
-				'surface'    => '#14181E',
-				'border'      => '#272E38',
-				'field'       => '#5A6472',
-				'text'        => '#C2CAD4',
-				'muted'       => '#939DAA',
-				'inverse'     => '#15191F',
-				'inverse-ink' => '#F3F6F9',
+				'bg'          => '#121212',   // Dawn scheme-4 background
+				'surface'     => '#242833',   // Dawn scheme-3 — لمسة الرمادي المزرق
+				'border'      => '#3A4152',   // مُشتَقّ من السطح
+				'field'       => '#697389',   // مُشتَقّ — يُصحَّح إلى ٣:١
+				'text'        => '#CCCCCC',   // Polaris gray-10
+				'muted'       => '#A4A4A4',   // TT4 contrast-3
+				'ink'         => '#FFFFFF',   // Dawn scheme-4 text
+				'inverse'     => '#242833',   // Dawn scheme-3
+				'inverse-ink' => '#FFFFFF',
 				'shadow'      => '#000000',
-				'cta'         => '#FFFFFF',
-				'cta-hover'   => '#DCE3EB',
-				'accent'      => '#60A5FA',
-				'accent-ink'  => '#60A5FA',
-				'progress'    => '#60A5FA',
-				'sale'        => '#A8103A',
-				'sale-ink'    => '#FF7A99',
-				'success'     => '#34D399',
-				'info'        => '#7DD3FC',
-				'bnpl'        => '#B39CFB',
+				'cta'         => '#FFFFFF',   // Dawn scheme-4 button
+				'cta-hover'   => '#E3E3E3',   // Polaris gray-8
+				'accent'      => '#0F62FE',   // Carbon blue-60
+				'accent-ink'  => '#0F62FE',
+				'progress'    => '#0F62FE',
+				'sale'        => '#C70A24',   // Polaris — تبقى مصمتة بنصّ محسوب
+				'sale-ink'    => '#FF8FA3',   // مُشتَقّ ليُقرأ على السطح الداكن
+				'success'     => '#3FC79A',   // مُشتَقّ من Polaris ليُقرأ على الداكن
+				'info'        => '#78BFFF',   // مُشتَقّ من Polaris
+				'bnpl'        => '#BCA0E8',   // مُشتَقّ من بنفسجي ووكومرس
 			),
 		),
 	);
@@ -321,12 +312,12 @@ function matjar_pro_resolved_tokens() {
 		);
 	}
 
-	// لون الإبراز: شارات العلامة والعناصر الثانوية. حدّه ٣:١ كرسم واجهة.
+	// لون الإبراز: شارات العلامة والعناصر الثانوية.
 	$accent = matjar_pro_custom_color( 'matjar_pro_color_accent' );
 
 	if ( '' !== $accent ) {
-		$tokens['accent']     = matjar_pro_ensure_contrast( $accent, $tokens['surface'], 3.0, 3 );
-		$tokens['accent-ink'] = matjar_pro_ensure_contrast( $accent, $tokens['ink'], 3.0, 3 );
+		$tokens['accent']     = $accent;
+		$tokens['accent-ink'] = $accent;
 	}
 
 	// لون مخصّص كامل لزر الشراء، إن أدخله التاجر.
@@ -417,6 +408,23 @@ function matjar_pro_resolved_tokens() {
 
 	// حدّ الحقول وحده يُعرّف الحقل، فحدّه ٣:١ لا زخرفة.
 	$tokens['field'] = matjar_pro_ensure_contrast( $tokens['field'], $tokens['surface'], 3.0, 3 );
+
+	/*
+	 * لون الإبراز نجومُ التقييم، وهي رسم يحمل معلومة فحدّها ٣:١ على البطاقة
+	 * وعلى الأرضية. و accent-ink أيقونة شريط الإعلان على السطح المعكوس.
+	 * يُصحَّحان أيّاً كان مصدرهما — مشحوناً في اللوحة أو مختاراً من التاجر.
+	 * قيمة مشحونة لا تُعفى من الفحص: Carbon blue-60 على سطح Dawn الكحلي
+	 * كان ٢٫٩٤ لا ٣٫٠٠.
+	 */
+	$tokens['accent'] = matjar_pro_ensure_contrast(
+		$tokens['accent'],
+		array( $tokens['surface'], $tokens['bg'] ),
+		3.0,
+		3
+	);
+
+	// accent-ink أيقونة شريط الإعلان، وهي على السطح المعكوس لا على الحبر.
+	$tokens['accent-ink'] = matjar_pro_ensure_contrast( $tokens['accent-ink'], $tokens['inverse'], 3.0, 3 );
 
 	/**
 	 * تصفية رموز التصميم النهائية.

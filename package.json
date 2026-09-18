@@ -21,7 +21,8 @@
     "preview": "node tools/preview.mjs",
     "pot": "php tools/make-pot.php",
     "verify:colors": "php tools/verify-custom-colors.php 4000",
-    "verify:settings": "php tools/verify-settings.php"
+    "verify:settings": "php tools/verify-settings.php",
+    "inventory": "php tools/color-inventory.php"
   },
   "devDependencies": {
     "@fontsource-variable/cairo": "^5.3.0",
