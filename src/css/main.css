@@ -124,9 +124,6 @@
 		@apply inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold;
 	}
 
-	.mp-pill--sale {
-		@apply bg-sale text-sale-fg;
-	}
 
 	/*
 	 * لغة الخصم: التوفير ونسبة الخصم بعائلة اللون نفسها، فيربطهما الزائر.
@@ -136,13 +133,7 @@
 		@apply border border-sale-ink/[0.35] bg-sale-ink/[0.08] text-sale-ink;
 	}
 
-	.mp-pill--success {
-		@apply border border-success/[0.35] bg-success/[0.08] text-success;
-	}
 
-	.mp-pill--info {
-		@apply border border-info/[0.35] bg-info/[0.08] text-info;
-	}
 
 	.mp-pill--outline {
 		@apply border border-line bg-surface text-ink;
@@ -244,6 +235,15 @@
 		@apply grid h-8 w-8 shrink-0 place-items-center rounded-lg;
 		background: rgb( var( --mp-success ) / 0.12 );
 		color: rgb( var( --mp-success ) );
+	}
+
+	/*
+	 * ‎[hidden]‎ في طبقة base وdisplay:grid في طبقة المكوّنات: التخصيص واحد،
+	 * والمتأخّر يفوز — فيظهر العنصر المخفيّ. القاعدة هنا تحسم ذلك صراحةً،
+	 * وعليها يقوم تبديل أيقونة الإشعار بين الشراء والمعلومة.
+	 */
+	.mp-toast__mark[hidden] {
+		@apply hidden;
 	}
 
 	.mp-toast__text {
@@ -521,9 +521,6 @@
 		@apply mb-1.5 block text-sm font-bold text-ink;
 	}
 
-	.mp-hint {
-		@apply mt-1.5 block text-xs text-faint;
-	}
 
 	.mp-error {
 		@apply mt-1.5 flex items-center gap-1.5 text-xs font-semibold text-sale;
@@ -2271,24 +2268,60 @@
 		@apply h-12 w-10 rounded-lg bg-line object-cover;
 	}
 
+	/*
+	 * شارة حالة الطلب.
+	 *
+	 * أربع معالجات لا سبع، ويفرّق بينها المِلء قبل اللون: الحالة الجارية
+	 * والمكتملة مصمتتان، والمنتظِرة مفرّغة، والمنتهية بلا منتج مطليّة.
+	 * فرق المِلء يُرى في تدرّج الرمادي وعند عمى الألوان، ولا يعتمد على
+	 * تمييز أزرق من أخضر — وهذا شرط WCAG 1.4.1 لا زينة.
+	 *
+	 * الأصناف تأتي من matjar_pro_order_status_meta() حرفيةً: تركيبها في
+	 * القالب يُخفيها عن ماسح Tailwind فتُقتطع كلّها.
+	 */
 	.mp-order__status {
-		@apply shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-bold;
+		@apply inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold;
 	}
 
-	.mp-order__status--processing,
-	.mp-order__status--pending,
-	.mp-order__status--on-hold {
-		@apply border-info/[0.35] bg-info/[0.08] text-info;
+	.mp-order__status::before {
+		@apply h-1.5 w-1.5 shrink-0 rounded-full bg-current content-[''];
 	}
 
-	.mp-order__status--completed {
-		@apply border-success/[0.35] bg-success/[0.08] text-success;
+	/* ينتظر إجراءً: مفرّغ، فلا يُقرأ تقدّماً */
+	.mp-order__status--wait {
+		@apply border-field bg-page text-body;
 	}
 
-	.mp-order__status--cancelled,
-	.mp-order__status--failed,
-	.mp-order__status--refunded {
-		@apply border-sale/[0.35] bg-sale/[0.08] text-sale;
+	/* جارٍ الآن: مصمت — أبرز ما في البطاقة، وهو ما يفتح المشتري الصفحة لأجله */
+	.mp-order__status--live {
+		@apply border-info bg-info text-info-fg;
+	}
+
+	.mp-order__status--live::before {
+		@apply animate-pulse;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.mp-order__status--live::before {
+			@apply animate-none;
+		}
+	}
+
+	/* انتهى بخير */
+	.mp-order__status--done {
+		@apply border-success bg-success text-success-fg;
+	}
+
+	/*
+	 * انتهى بلا منتج: مصمت لا مطليّ.
+	 *
+	 * كان طلاءً بشفافية ٨٪ ونصّاً بلون البيع، وهو ما يعطي على اللوحة
+	 * الكربونية ٢٫٤١:١ — أي نصّ لا يُقرأ. ولم يظهر الخلل قطّ لأن الصنف
+	 * كان يُقتطع من الملفّ المبني أصلاً، فكان خطأ التصيير يحجب خطأ
+	 * التباين. والمصمت يمرّ في اللوحات الستّ لأن نصّه محسوب لا مثبّت.
+	 */
+	.mp-order__status--stop {
+		@apply border-sale bg-sale text-sale-fg;
 	}
 
 	.mp-remember {

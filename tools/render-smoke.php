@@ -17,6 +17,10 @@ define( 'MATJAR_PRO_DIR', dirname( __DIR__ ) );
 define( 'MATJAR_PRO_URI', 'https://example.test/wp-content/themes/matjar-pro' );
 define( 'MATJAR_PRO_VERSION', '0.1.0' );
 define( 'DATE_W3C_STUB', 'Y-m-d\TH:i:sP' );
+define( 'MINUTE_IN_SECONDS', 60 );
+define( 'HOUR_IN_SECONDS', 3600 );
+define( 'DAY_IN_SECONDS', 86400 );
+define( 'WEEK_IN_SECONDS', 604800 );
 
 $GLOBALS['mp_smoke_with_wc'] = (bool) array_intersect(
 	array( '--woocommerce', '--funnel', '--card', '--filter', '--account', '--archive', '--product', '--checkout', '--minicart', '--catalog', '--cart' ),
@@ -39,6 +43,7 @@ $GLOBALS['mp_smoke_cro'] = in_array( '--cro', $argv, true );
 
 $GLOBALS['mp_smoke_hooks'] = $GLOBALS['mp_smoke_cro']
 	|| $GLOBALS['mp_smoke_product']
+	|| $GLOBALS['mp_smoke_archive']
 	|| $GLOBALS['mp_smoke_checkout']
 	|| $GLOBALS['mp_smoke_cartpage']
 	|| $GLOBALS['mp_smoke_minicart'];
@@ -303,7 +308,34 @@ function is_product_category() { return false; }                            // p
 function is_product_tag() { return false; }                                 // phpcs:ignore
 function get_post_type_archive_link( $t ) { return 'https://example.test/shop'; }             // phpcs:ignore
 function get_queried_object() { return null; }                              // phpcs:ignore
-function get_transient( $k ) { return 'matjar_pro_price_bounds' === $k ? array( 'min' => 45.0, 'max' => 890.0 ) : false; } // phpcs:ignore
+function get_transient( $k ) {                                              // phpcs:ignore
+	if ( 'matjar_pro_price_bounds' === $k ) {
+		return array( 'min' => 45.0, 'max' => 890.0 );
+	}
+
+	// مبيعات حقيقية مُصطنَعة للتصيير: القالب لا يعرف مصدرها.
+	if ( 'matjar_pro_proof_orders' === $k ) {
+		return array(
+			array( 'name' => 'عباية كلاسيك مطرّزة', 'time' => time() - 900 ),
+			array( 'name' => 'عطر عود ملكي 50 مل', 'time' => time() - 5400 ),
+		);
+	}
+
+	return false;
+}
+function human_time_diff( $from, $to = 0 ) {                               // phpcs:ignore
+	$diff = abs( ( $to ? $to : time() ) - $from );
+
+	if ( $diff < HOUR_IN_SECONDS ) {
+		return sprintf( '%d دقيقة', max( 1, round( $diff / MINUTE_IN_SECONDS ) ) );
+	}
+
+	if ( $diff < DAY_IN_SECONDS ) {
+		return sprintf( '%d ساعة', round( $diff / HOUR_IN_SECONDS ) );
+	}
+
+	return sprintf( '%d يوم', round( $diff / DAY_IN_SECONDS ) );
+}
 function set_transient( $k, $v, $t = 0 ) { return true; }                   // phpcs:ignore
 function delete_transient( $k ) { return true; }                            // phpcs:ignore
 function get_query_var( $v, $d = '' ) { return $d; }                        // phpcs:ignore
@@ -1223,7 +1255,9 @@ $GLOBALS['mp_smoke_mods'] = array(
 	'matjar_pro_exit_text'               => 'خصم ١٠٪ على طلبك الأول — انسخ الكود واستخدمه عند الدفع.',
 	'matjar_pro_exit_coupon'             => 'WELCOME10',
 	'matjar_pro_proof_enabled'           => in_array( '--cro', $argv, true ),
-	'matjar_pro_proof_messages'          => "نورة من الرياض طلبت عباية كلاسيك قبل ١٢ دقيقة\nسارة من جدة طلبت شيلة حرير قبل ساعة\nمنى من الدمام طلبت حقيبة يد اليوم",
+	'matjar_pro_proof_real'              => in_array( '--cro', $argv, true ),
+	// حقائق لا ادّعاءات: المحاكاة نفسها لا تعرض شراءً مختلَقاً.
+	'matjar_pro_proof_messages'          => "الشحن مجاني للطلبات فوق ٢٠٠ ريال\nالدفع عند الاستلام متاح لكل مدن المملكة\nالإرجاع خلال ١٤ يوماً بلا أسئلة",
 	'matjar_pro_proof_interval'          => 10,
 	'matjar_pro_free_shipping_threshold' => 200,
 );
@@ -1322,7 +1356,15 @@ if ( $GLOBALS['mp_smoke_card'] ) {
 	get_template_part( 'template-parts/shop/filter-drawer' );
 	echo '</body></html>';
 } elseif ( $GLOBALS['mp_smoke_archive'] ) {
-	// صفحة الأقسام كاملة: الفلترة والشبكة والترتيب.
+	/*
+	 * صفحة الأقسام كاملة عبر دورة الخطّافات الحقيقية.
+	 *
+	 * كانت تُصيَّر بلا init، فلم يُسجَّل غلاف المحتوى على
+	 * woocommerce_before_main_content ولم يظهر معلَم main — ولم يكن ذلك
+	 * خطأ القالب بل عمى الهيكل: يُصيِّر صفحةً بلا الدورة التي تبنيها.
+	 */
+	do_action( 'init' );
+
 	if ( ! $GLOBALS['mp_smoke_state_given'] ) {
 		$_GET['filter_size'] = 'm';
 	}

@@ -36,6 +36,38 @@ function matjar_pro_pwa_enabled() {
 }
 
 /**
+ * عنوان أحد موارد التطبيق.
+ *
+ * القواعد الجميلة (‎/matjar-pro-sw.js‎) تعمل فقط حين يكون تركيب الروابط
+ * الدائمة مفعّلاً. مع التركيب «العادي» لا تُطبَّق قاعدة إعادة كتابة واحدة،
+ * فيرجع الملفّان 404 بينما يظلّ وسم البيان مطبوعاً في الرأس: ميزة ميتة
+ * بلا رسالة خطأ. لذلك نعود هنا إلى متغيّر استعلام على الجذر.
+ *
+ * ومسار العنوان يبقى «/» في الحالتين، فنطاق عامل الخدمة يظلّ الموقع كلّه —
+ * ويؤكّده ترويسة Service-Worker-Allowed التي نرسلها مع الملفّ.
+ *
+ * @param string $what sw أو manifest أو offline.
+ * @return string
+ */
+function matjar_pro_pwa_url( $what ) {
+	$pretty = array(
+		'sw'       => 'matjar-pro-sw.js',
+		'manifest' => 'matjar-pro-manifest.json',
+		'offline'  => 'matjar-pro-offline/',
+	);
+
+	if ( ! isset( $pretty[ $what ] ) ) {
+		return '';
+	}
+
+	if ( get_option( 'permalink_structure' ) ) {
+		return home_url( '/' . $pretty[ $what ] );
+	}
+
+	return add_query_arg( 'matjar_pro_pwa', $what, home_url( '/' ) );
+}
+
+/**
  * يسجّل مسارَي البيان وعامل الخدمة في جذر الموقع.
  */
 function matjar_pro_pwa_rewrites() {
@@ -215,7 +247,7 @@ add_action( 'template_redirect', 'matjar_pro_pwa_serve' );
  */
 function matjar_pro_pwa_service_worker() {
 	$version   = matjar_pro_asset_version( '/assets/css/main.css' );
-	$offline   = home_url( '/matjar-pro-offline/' );
+	$offline   = matjar_pro_pwa_url( 'offline' );
 	$precache  = array( $offline );
 	$css       = MATJAR_PRO_URI . '/assets/css/main.css';
 	$precache[] = $css;
@@ -258,7 +290,7 @@ function matjar_pro_pwa_head() {
 
 	printf(
 		'<link rel="manifest" href="%s">' . "\n",
-		esc_url( home_url( '/matjar-pro-manifest.json' ) )
+		esc_url( matjar_pro_pwa_url( 'manifest' ) )
 	);
 	printf( '<meta name="theme-color" content="%s">' . "\n", esc_attr( $tokens['bg'] ) );
 	echo '<meta name="mobile-web-app-capable" content="yes">' . "\n";
@@ -275,3 +307,22 @@ function matjar_pro_pwa_head() {
 	}
 }
 add_action( 'wp_head', 'matjar_pro_pwa_head', 3 );
+
+/**
+ * يمرّر عنوان عامل الخدمة إلى JavaScript.
+ *
+ * التسجيل لا يُطبع سطراً مضمّناً في الصفحة: Content-Security-Policy صارمة
+ * تمنعه، وهي شائعة في المتاجر التي تمرّ على مدقّق دفع. يذهب العنوان مع
+ * بقيّة بيانات القالب، وتتكفّل الحزمة الرئيسية بالتسجيل بعد load.
+ *
+ * @param array $data البيانات.
+ * @return array
+ */
+function matjar_pro_pwa_script_data( $data ) {
+	if ( matjar_pro_pwa_enabled() ) {
+		$data['swUrl'] = matjar_pro_pwa_url( 'sw' );
+	}
+
+	return $data;
+}
+add_filter( 'matjar_pro_script_data', 'matjar_pro_pwa_script_data' );

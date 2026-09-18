@@ -1,4 +1,4 @@
-import { qs } from './util.js';
+import { qs, qsa } from './util.js';
 
 const DISMISSED = 'mp-proof-off';
 const MAX_ROUNDS = 3;
@@ -40,6 +40,7 @@ export default function socialProof() {
 
 	const text = qs( '[data-mp-proof-text]', toast );
 	const close = qs( '[data-mp-proof-close]', toast );
+	const marks = qsa( '[data-mp-proof-mark]', toast );
 	const every = Math.max( 4000, Number( data.every ) || 10000 );
 	const motion = window.matchMedia( '(prefers-reduced-motion: reduce)' );
 
@@ -56,7 +57,17 @@ export default function socialProof() {
 	};
 
 	const show = () => {
-		text.textContent = data.messages[ index % data.messages.length ];
+		const item = data.messages[ index % data.messages.length ];
+
+		// الصنف يحكم الأيقونة: جملة التاجر لا ترتدي أيقونة الشراء مهما
+		// كان نصّها، فلا يُقرأ كلامٌ عن المتجر إشعارَ بيع.
+		const kind = item && 'order' === item.kind ? 'order' : 'fact';
+
+		text.textContent = item && item.text ? item.text : String( item || '' );
+		marks.forEach( ( mark ) => {
+			mark.hidden = mark.dataset.mpProofMark !== kind;
+		} );
+
 		toast.hidden = false;
 
 		// إطار واحد بين الإظهار وتغيير الحالة، وإلّا لم تقع الحركة.

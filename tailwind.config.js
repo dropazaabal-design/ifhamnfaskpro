@@ -125,7 +125,10 @@ module.exports = {
 					DEFAULT: 'rgb(var(--mp-success) / <alpha-value>)',
 					fg: 'rgb(var(--mp-success-fg) / <alpha-value>)',
 				},
-				info: 'rgb(var(--mp-info) / <alpha-value>)',
+				info: {
+					DEFAULT: 'rgb(var(--mp-info) / <alpha-value>)',
+					fg: 'rgb(var(--mp-info-fg) / <alpha-value>)',
+				},
 				bnpl: 'rgb(var(--mp-bnpl) / <alpha-value>)',
 			},
 			fontFamily: {

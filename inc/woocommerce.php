@@ -29,10 +29,32 @@ function matjar_pro_replace_woocommerce_wrappers() {
 add_action( 'init', 'matjar_pro_replace_woocommerce_wrappers' );
 
 /**
+ * أصناف غلاف المحتوى.
+ *
+ * صفحة المنتج تبدأ أقرب إلى الرأس لأن الصورة هي أول ما يجب أن يُرى؛
+ * بقيّة الصفحات تأخذ هامشاً علوياً كاملاً.
+ *
+ * @return string
+ */
+function matjar_pro_main_class() {
+	$classes = 'mp-main mx-auto max-w-screen-xl px-3 py-5 lg:px-4 lg:py-8';
+
+	if ( function_exists( 'is_product' ) && is_product() ) {
+		$classes = 'mp-main mx-auto max-w-screen-xl px-3 pb-8 pt-3 lg:px-4 lg:pt-6';
+	}
+
+	return (string) apply_filters( 'matjar_pro_main_class', $classes );
+}
+
+/**
  * فتح غلاف المحتوى.
+ *
+ * هذا هو معلَم main الوحيد في صفحات ووكومرس، وهدف رابط «تخطَّ إلى
+ * المحتوى» في الرأس. القوالب تُطلق woocommerce_before_main_content ولا
+ * تفتح div بديلاً، وإلّا بقي المعلَم غائباً والرابط يشير إلى لا شيء.
  */
 function matjar_pro_wrapper_start() {
-	echo '<main id="mp-main" class="mp-main">';
+	echo '<main id="mp-main" class="' . esc_attr( matjar_pro_main_class() ) . '">';
 }
 
 /**

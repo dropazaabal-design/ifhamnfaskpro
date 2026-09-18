@@ -15,7 +15,7 @@ get_header();
 $mp_has_filters = matjar_pro_has_filters();
 ?>
 
-<div class="mx-auto max-w-screen-xl px-3 py-5 lg:px-4 lg:py-8">
+<?php do_action( 'woocommerce_before_main_content' ); ?>
 
 	<?php woocommerce_breadcrumb(); ?>
 
@@ -80,9 +80,10 @@ $mp_has_filters = matjar_pro_has_filters();
 			<?php endif; ?>
 		</div>
 	</div>
-</div>
 
 <?php
+do_action( 'woocommerce_after_main_content' );
+
 if ( $mp_has_filters ) {
 	get_template_part( 'template-parts/shop/filter-drawer' );
 }

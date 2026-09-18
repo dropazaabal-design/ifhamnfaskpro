@@ -11,6 +11,69 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * صنف شارة حالة الطلب وشرحها بالعربية الواضحة.
+ *
+ * الصنف يُكتب هنا حرفياً ولا يُركَّب في القالب: Tailwind يمسح النصّ الساكن،
+ * والصنف المُركَّب ديناميكياً «mp-order__status--{$status}» لا يراه المُحلّل،
+ * فيُقتطع من الملفّ المبني وتخرج الحالات كلّها بلون واحد. هذا ما كان يقع.
+ *
+ * والحالات مجموعة في أربع معالجات لا سبع، لأن المشتري يحتاج جواباً واحداً:
+ * هل طلبي ينتظرني، أم يُجهَّز، أم وصل، أم انتهى بلا منتج؟
+ *
+ * @param string $status حالة الطلب كما يعيدها ووكومرس.
+ * @return array{class: string, note: string}
+ */
+function matjar_pro_order_status_meta( $status ) {
+	$status = str_replace( 'wc-', '', (string) $status );
+
+	$map = array(
+		'pending'    => array(
+			'class' => 'mp-order__status--wait',
+			'note'  => __( 'بانتظار إتمام الدفع — لا يبدأ التجهيز قبله.', 'matjar-pro' ),
+		),
+		'on-hold'    => array(
+			'class' => 'mp-order__status--wait',
+			'note'  => __( 'موقوف مؤقتاً حتى يتأكّد الدفع.', 'matjar-pro' ),
+		),
+		'processing' => array(
+			'class' => 'mp-order__status--live',
+			'note'  => __( 'نجهّز طلبك الآن، وسيُشحن قريباً.', 'matjar-pro' ),
+		),
+		'completed'  => array(
+			'class' => 'mp-order__status--done',
+			'note'  => __( 'اكتمل الطلب وسُلّم.', 'matjar-pro' ),
+		),
+		'cancelled'  => array(
+			'class' => 'mp-order__status--stop',
+			'note'  => __( 'أُلغي هذا الطلب.', 'matjar-pro' ),
+		),
+		'failed'     => array(
+			'class' => 'mp-order__status--stop',
+			'note'  => __( 'لم يكتمل الدفع، ولم يُخصم منك شيء.', 'matjar-pro' ),
+		),
+		'refunded'   => array(
+			'class' => 'mp-order__status--stop',
+			'note'  => __( 'أُعيد مبلغ هذا الطلب إليك.', 'matjar-pro' ),
+		),
+	);
+
+	$meta = isset( $map[ $status ] ) ? $map[ $status ] : array(
+		'class' => 'mp-order__status--wait',
+		'note'  => '',
+	);
+
+	/**
+	 * تصفية شارة حالة الطلب.
+	 *
+	 * تصل حالةً مخصّصة بإحدى المعالجات الأربع.
+	 *
+	 * @param array{class: string, note: string} $meta   الشارة.
+	 * @param string                             $status الحالة.
+	 */
+	return (array) apply_filters( 'matjar_pro_order_status_meta', $meta, $status );
+}
+
+/**
  * تقدّم الطلب على شكل خطوات.
  *
  * ثلاث خطوات لا أكثر: ووكومرس لا يملك حالة «تم الشحن» في نواته، وإضافة

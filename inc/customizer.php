@@ -529,7 +529,7 @@ function matjar_pro_customize_register( $wp_customize ) {
 		'matjar_pro_exit_enabled',
 		array(
 			'label'       => __( 'تفعيل نافذة نيّة الخروج', 'matjar-pro' ),
-			'description' => __( 'تظهر مرّة واحدة لكل جلسة، وعلى أجهزة الفأرة وحدها.', 'matjar-pro' ),
+			'description' => __( 'مرّة واحدة لكل جلسة. على الحاسب تظهر حين يخرج المؤشّر من أعلى النافذة، وعلى الجوال حين يعود الزائر بتمرير صاعد حاسم بعد أن يكون تصفّح ومكث.', 'matjar-pro' ),
 			'section'     => 'matjar_pro_cro',
 			'type'        => 'checkbox',
 			'priority'    => 20,
@@ -579,10 +579,28 @@ function matjar_pro_customize_register( $wp_customize ) {
 		'matjar_pro_proof_enabled',
 		array(
 			'label'       => __( 'تفعيل إشعارات النشاط', 'matjar-pro' ),
-			'description' => __( 'اكتب إشعارات صادقة تصف نشاطاً حقيقياً في متجرك. الإشعارات المُختلَقة إعلانٌ مضلّل يعرّضك للمساءلة النظامية ويُفقد ثقة المشتري إن انكشف.', 'matjar-pro' ),
+			'description' => __( 'شريط صغير أسفل الشاشة. لا يظهر في السلة ولا في صفحات الدفع، ويتوقّف تلقائياً بعد ثلاث دورات.', 'matjar-pro' ),
 			'section'     => 'matjar_pro_cro',
 			'type'        => 'checkbox',
 			'priority'    => 40,
+		)
+	);
+
+	$wp_customize->add_setting(
+		'matjar_pro_proof_real',
+		array(
+			'default'           => $defaults['matjar_pro_proof_real'],
+			'sanitize_callback' => 'matjar_pro_sanitize_checkbox',
+		)
+	);
+	$wp_customize->add_control(
+		'matjar_pro_proof_real',
+		array(
+			'label'       => __( 'عرض مشتريات حقيقية من متجرك', 'matjar-pro' ),
+			'description' => __( 'يقرأ القالب آخر الطلبات المدفوعة خلال أسبوع ويعرض اسم المنتج ووقتاً تقريبياً — بلا اسم مشترٍ ولا عنوان. إن لم يكن هناك بيع، لا يظهر شيء: الصمت أصدق من اختلاق حركة.', 'matjar-pro' ),
+			'section'     => 'matjar_pro_cro',
+			'type'        => 'checkbox',
+			'priority'    => 45,
 		)
 	);
 
@@ -596,8 +614,8 @@ function matjar_pro_customize_register( $wp_customize ) {
 	$wp_customize->add_control(
 		'matjar_pro_proof_messages',
 		array(
-			'label'       => __( 'نصوص الإشعارات', 'matjar-pro' ),
-			'description' => __( 'سطر لكل إشعار، وخمسة على الأكثر. مثال: نورة من الرياض طلبت عباية كلاسيك قبل ١٢ دقيقة.', 'matjar-pro' ),
+			'label'       => __( 'حقائق عن متجرك', 'matjar-pro' ),
+			'description' => __( 'سطر لكل جملة. اكتب ما هو صحيح في متجرك فعلاً: «الشحن مجاني فوق ٢٠٠ ريال» أو «الدفع عند الاستلام متاح لكل مدن المملكة» أو «الإرجاع خلال ١٤ يوماً». هذه الأسطر تظهر بأيقونة معلومة لا بأيقونة شراء، فلا تُقرأ إشعارَ بيع مهما كُتب فيها — ولا تكتب هنا شراءً لم يقع: إشعار البيع مصدره طلبات متجرك وحدها.', 'matjar-pro' ),
 			'section'     => 'matjar_pro_cro',
 			'type'        => 'textarea',
 			'priority'    => 50,

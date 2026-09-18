@@ -290,6 +290,7 @@ function matjar_pro_defaults() {
 		'matjar_pro_exit_text'               => 'خصم خاص على طلبك الأول — انسخ الكود واستخدمه عند الدفع.',
 		'matjar_pro_exit_coupon'             => '',
 		'matjar_pro_proof_enabled'           => false,
+		'matjar_pro_proof_real'              => true,
 		'matjar_pro_proof_messages'          => '',
 		'matjar_pro_proof_interval'          => 10,
 
@@ -584,13 +585,4 @@ function matjar_pro_grouped_payment_methods() {
 	}
 
 	return $out;
-}
-
-/**
- * هل الدفع عند الاستلام مُفعَّل.
- *
- * @return bool
- */
-function matjar_pro_has_cod() {
-	return array_key_exists( 'cod', matjar_pro_active_badges() );
 }

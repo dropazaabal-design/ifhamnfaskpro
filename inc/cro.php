@@ -2,18 +2,25 @@
 /**
  * ميزات تعزيز التحويل: الدعم الفني، نيّة الخروج، إشعارات النشاط.
  *
- * ثلاث قواعد تحكم هذا الملف:
+ * أربع قواعد تحكم هذا الملف:
  *
  * ١ — لا شيء يُحمَّل ما لم يُفعّله التاجر. الحزمة cro.js لا تُدرَج إطلاقاً
  *     إن كانت الميزتان مُطفأتين، والقوالب لا تُطبع، فالمتجر الذي لا
  *     يستخدمها لا يدفع بايتاً واحداً ثمنها.
  *
- * ٢ — لا استعلام ولا AJAX. نصوص الإشعارات تُطبع مصفوفةَ JSON في الصفحة
- *     مرّة واحدة، ويدوّرها JavaScript. لا طلب شبكة ولا استعلام قاعدة
- *     بيانات عند التحميل.
+ * ٢ — لا AJAX ولا استعلام على كل تحميل. الإشعارات تُطبع مصفوفةَ JSON في
+ *     الصفحة مرّة واحدة ويدوّرها JavaScript. وحين تُفعَّل المبيعات
+ *     الحقيقية يُستعلَم عنها مرّة كل عشر دقائق ويُخزَّن الناتج، فتقرأ
+ *     الصفحة صفّاً واحداً لا استعلام طلبات.
  *
  * ٣ — لا مقاطعة داخل قُمع الدفع. زائرٌ يكتب عنوانه لا تُعرض عليه نافذة
  *     خصم ولا إشعار: المقاطعة في تلك اللحظة تُفقد طلباً لا تكسبه.
+ *
+ * ٤ — لا إشعار كاذب. الإشعار الذي يدّعي شراءً لم يقع إعلانٌ مضلّل يعرّض
+ *     التاجر للمساءلة، ويُفقده ثقة المشتري إن انكشف — ولن يعجز مشترٍ
+ *     واحد عن كشفه: يكفي أن يفتح الصفحة مرّتين فيرى «نفس الشراء» يتكرّر.
+ *     لذلك مصدر الشراء هنا هو طلبات المتجر نفسها، وحقل التاجر النصّي
+ *     لا يلبس ثوب الشراء إطلاقاً مهما كتب فيه.
  *
  * @package MatjarPro
  */
@@ -34,11 +41,114 @@ function matjar_pro_cro_quiet_zone() {
 }
 
 /**
- * نصوص إشعارات النشاط، سطراً بسطر كما كتبها التاجر.
+ * مشتريات حقيقية من طلبات المتجر.
  *
- * @return string[]
+ * تُقرأ من ووكومرس لا من حقل نصّي: هذا هو الفرق بين دليلٍ اجتماعي ودعاية
+ * كاذبة. وإن لم يكن في المتجر بيعٌ خلال المدّة، لا يُعرض شيء — الصمت
+ * أصدق من اختلاق حركة لا وجود لها.
+ *
+ * الخصوصية: لا اسم مشترٍ ولا عنوان ولا رقم طلب. اسم المنتج علنيٌّ أصلاً
+ * في صفحته، ووقتٌ تقريبيّ لا يدلّ على شخص.
+ *
+ * الكلفة: استعلام واحد كل عشر دقائق، لا استعلام على كل تحميل.
+ *
+ * @return array<int,array{text: string, kind: string}>
  */
-function matjar_pro_proof_messages() {
+function matjar_pro_proof_orders() {
+	static $cache = null;
+
+	if ( null !== $cache ) {
+		return $cache;
+	}
+
+	$cache = array();
+
+	if ( ! matjar_pro_has_woocommerce() || ! function_exists( 'wc_get_orders' ) ) {
+		return $cache;
+	}
+
+	$rows = get_transient( 'matjar_pro_proof_orders' );
+
+	if ( false === $rows ) {
+		$rows = array();
+
+		/**
+		 * تصفية المدّة التي تُقرأ منها المبيعات (بالأيام).
+		 *
+		 * @param int $days الأيام.
+		 */
+		$days = max( 1, (int) apply_filters( 'matjar_pro_proof_window_days', 7 ) );
+
+		$orders = wc_get_orders(
+			array(
+				'limit'        => 12,
+				'status'       => array( 'processing', 'completed' ),
+				'date_created' => '>' . ( time() - ( $days * DAY_IN_SECONDS ) ),
+				'orderby'      => 'date',
+				'order'        => 'DESC',
+				'return'       => 'objects',
+			)
+		);
+
+		foreach ( (array) $orders as $order ) {
+			if ( ! $order instanceof WC_Order ) {
+				continue;
+			}
+
+			$created = $order->get_date_created();
+
+			foreach ( $order->get_items() as $item ) {
+				$name = trim( wp_strip_all_tags( (string) $item->get_name() ) );
+
+				if ( '' === $name || ! $created ) {
+					continue;
+				}
+
+				$rows[] = array(
+					'name' => $name,
+					'time' => (int) $created->getTimestamp(),
+				);
+
+				break;
+			}
+
+			if ( count( $rows ) >= 5 ) {
+				break;
+			}
+		}
+
+		set_transient( 'matjar_pro_proof_orders', $rows, 10 * MINUTE_IN_SECONDS );
+	}
+
+	foreach ( (array) $rows as $row ) {
+		if ( empty( $row['name'] ) || empty( $row['time'] ) ) {
+			continue;
+		}
+
+		$cache[] = array(
+			'kind' => 'order',
+			'text' => sprintf(
+				/* translators: 1: اسم المنتج. 2: مدّة مثل «١٢ دقيقة». */
+				__( 'تم شراء %1$s قبل %2$s', 'matjar-pro' ),
+				$row['name'],
+				human_time_diff( (int) $row['time'], time() )
+			),
+		);
+	}
+
+	return $cache;
+}
+
+/**
+ * حقائق المتجر التي كتبها التاجر.
+ *
+ * هذه ليست إشعارات شراء ولا تُعرض بمظهرها: تأخذ أيقونة معلومة لا أيقونة
+ * سلّة، ويُعلَّم صنفها في الـ JSON. فحتى لو كتب التاجر جملةً تدّعي شراءً،
+ * لا تخرج للزائر في هيئة إشعار شراء.
+ *
+ * @return array<int,array{text: string, kind: string}>
+ */
+function matjar_pro_proof_facts() {
 	$raw = (string) matjar_pro_mod( 'matjar_pro_proof_messages' );
 	$out = array();
 
@@ -46,11 +156,31 @@ function matjar_pro_proof_messages() {
 		$line = trim( wp_strip_all_tags( $line ) );
 
 		if ( '' !== $line ) {
-			$out[] = $line;
+			$out[] = array(
+				'kind' => 'fact',
+				'text' => $line,
+			);
 		}
 	}
 
-	// خمسة تكفي للإيهام بالحركة، وأكثر منها يُثقل الصفحة بلا فائدة.
+	return $out;
+}
+
+/**
+ * الإشعارات كلّها: مشتريات حقيقية أوّلاً، ثم حقائق المتجر.
+ *
+ * @return array<int,array{text: string, kind: string}>
+ */
+function matjar_pro_proof_messages() {
+	$out = array();
+
+	if ( matjar_pro_mod( 'matjar_pro_proof_real' ) ) {
+		$out = matjar_pro_proof_orders();
+	}
+
+	$out = array_merge( $out, matjar_pro_proof_facts() );
+
+	// خمسة تكفي، وأكثر منها يُثقل الصفحة بلا فائدة.
 	return array_slice( $out, 0, 5 );
 }
 

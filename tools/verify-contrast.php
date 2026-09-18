@@ -110,6 +110,12 @@ foreach ( array_keys( matjar_pro_palettes() ) as $name ) {
 		array( 'sale badge + computed', matjar_pro_readable_foreground( $t['sale'], '#FFFFFF', $darkest ), $t['sale'], 4.5 ),
 		array( 'COD tick + computed', matjar_pro_readable_foreground( $t['success'], '#FFFFFF', $darkest ), $t['success'], 4.5 ),
 		array( 'field border on card', $t['field'], $t['surface'], 3.0 ),
+		// شارات حالة الطلب: المصمتتان نصّهما محسوب، والمفرّغة نصّ متن على الصفحة.
+		array( 'order live + computed', $t['info-fg'], $t['info'], 4.5 ),
+		array( 'order done + computed', $t['success-fg'], $t['success'], 4.5 ),
+		array( 'order wait text', $t['text'], $t['bg'], 4.5 ),
+		array( 'order wait border', $t['field'], $t['surface'], 3.0 ),
+		array( 'order stop + computed', $t['sale-fg'], $t['sale'], 4.5 ),
 		array( 'saved pill on tint', $t['sale-ink'], mp_blend( $t['sale-ink'], $t['surface'], 0.08 ), 4.5 ),
 		// مِلء شريط الشحن رسم واجهة: حدّه 3:1 مقابل المجرى الذي يُرسم عليه.
 		array( 'ship bar fill on track', $t['progress'], $t['border'], 3.0 ),

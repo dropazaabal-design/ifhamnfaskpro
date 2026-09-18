@@ -389,11 +389,12 @@ function matjar_pro_resolved_tokens() {
 	}
 
 	/*
-	 * الشارات المصمتة: شارة نسبة الخصم وعلامة تأكيد الاستلام تُرسمان بلونٍ
+	 * الشارات المصمتة: نسبة الخصم، وتأكيد الاستلام، وحالة الطلب الجارية
+	 * تُرسم بلونٍ
 	 * كامل، فنصّهما يُحسَب كنصّ الزر. بلا هذا لا يستطيع لون دلالي أن يكون
 	 * فاتحاً على لوحة داكنة ومصمتاً بنصٍّ أبيض في الوقت نفسه.
 	 */
-	foreach ( array( 'sale', 'success' ) as $solid ) {
+	foreach ( array( 'sale', 'success', 'info' ) as $solid ) {
 		$tokens[ $solid . '-fg' ] = matjar_pro_readable_foreground( $tokens[ $solid ], '#FFFFFF', $darkest );
 	}
 

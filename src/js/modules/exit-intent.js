@@ -72,12 +72,81 @@ export default function exitIntent() {
 		}
 	};
 
-	document.addEventListener( 'mouseleave', ( event ) => {
-		// الخروج من أعلى النافذة وحده: الخروج من الجوانب تنقّلٌ عادي.
-		if ( event.clientY <= 0 && ! event.relatedTarget ) {
-			open();
-		}
-	} );
+	/*
+	 * محفّزان لا واحد.
+	 *
+	 * mouseleave لا يقع على شاشة اللمس: لا مؤشّر يغادر النافذة. وبناء
+	 * الميزة عليه وحده يعني أنها لا تعمل عند الأغلبية العظمى من زوّار
+	 * متجرٍ يأتيه الناس من تيك توك وسناب شات — أي أنها ميزة سطح مكتب
+	 * في قالبٍ جوّالٍ أولاً.
+	 *
+	 * فعلى اللمس نقرأ نيّة المغادرة من السلوك بدل المؤشّر: تمرير صاعد
+	 * حاسم بعد أن يكون الزائر نزل في الصفحة ومكث فيها. ولا نخطف زرّ
+	 * الرجوع: خطفه يكسر أهم زرّ في متصفّح الجوال ليربح عرضاً واحداً.
+	 */
+	const fine = window.matchMedia( '(hover: hover) and (pointer: fine)' );
+
+	if ( fine.matches ) {
+		document.addEventListener( 'mouseleave', ( event ) => {
+			// الخروج من أعلى النافذة وحده: الخروج من الجوانب تنقّلٌ عادي.
+			if ( event.clientY <= 0 && ! event.relatedTarget ) {
+				open();
+			}
+		} );
+	} else {
+		const START = Date.now();
+		const DWELL = 8000;
+		const DEPTH = 0.25;
+		const RISE = 200;
+		const WINDOW = 700;
+
+		let last = window.scrollY;
+		let from = 0;
+		let since = 0;
+		let deep = false;
+
+		/*
+		 * السرعة تُقاس على نافذة زمنية لا على الفرق بين حدثين.
+		 *
+		 * ‎scroll-behavior: smooth‎ مُعلَن في هذا القالب، فالمتصفّح يفتّت
+		 * أي قفزة إلى عشرات الأحداث الصغيرة ولا يبلغ فرقُ حدثين واحدين
+		 * أي عتبة معقولة. قياس مجموع الصعود خلال نافذة يعطي النيّة نفسها
+		 * ولا ينكسر مع التمرير الناعم ولا مع اختلاف معدّل التحديث.
+		 */
+		window.addEventListener(
+			'scroll',
+			() => {
+				const now = window.scrollY;
+				const height = Math.max( 1, document.documentElement.scrollHeight - window.innerHeight );
+				const stamp = Date.now();
+
+				if ( now / height >= DEPTH ) {
+					deep = true;
+				}
+
+				if ( now >= last ) {
+					// نزول أو ثبات: تنتهي جولة الصعود الجارية.
+					from = 0;
+					since = 0;
+					last = now;
+
+					return;
+				}
+
+				if ( ! from || stamp - since > WINDOW ) {
+					from = last;
+					since = stamp;
+				}
+
+				last = now;
+
+				if ( deep && from - now >= RISE && stamp - START >= DWELL ) {
+					open();
+				}
+			},
+			{ passive: true }
+		);
+	}
 
 	qsa( '[data-mp-exit-close]', modal ).forEach( ( node ) =>
 		node.addEventListener( 'click', close )

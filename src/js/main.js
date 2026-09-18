@@ -14,6 +14,7 @@ import cart from './modules/cart.js';
 import quickAdd from './modules/quick-add.js';
 import quantity from './modules/quantity.js';
 import cartDrawer from './modules/cart-drawer.js';
+import pwa from './modules/pwa.js';
 
 const boot = () => {
 	announcement();
@@ -25,6 +26,7 @@ const boot = () => {
 	quickAdd();
 	quantity();
 	cartDrawer();
+	pwa();
 };
 
 if ( 'loading' === document.readyState ) {

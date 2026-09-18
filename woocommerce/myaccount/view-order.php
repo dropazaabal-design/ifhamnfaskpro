@@ -8,6 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $mp_progress = matjar_pro_order_progress( $order );
+$mp_status   = matjar_pro_order_status_meta( $order->get_status() );
 ?>
 <div class="flex flex-col gap-5">
 
@@ -24,10 +25,14 @@ $mp_progress = matjar_pro_order_progress( $order );
 			<time class="grow text-xs text-faint" datetime="<?php echo esc_attr( $order->get_date_created()->date( 'c' ) ); ?>">
 				<?php echo esc_html( wc_format_datetime( $order->get_date_created() ) ); ?>
 			</time>
-			<span class="mp-order__status mp-order__status--<?php echo esc_attr( $order->get_status() ); ?>">
+			<span class="mp-order__status <?php echo esc_attr( $mp_status['class'] ); ?>">
 				<?php echo esc_html( wc_get_order_status_name( $order->get_status() ) ); ?>
 			</span>
 		</div>
+
+		<?php if ( '' !== $mp_status['note'] ) : ?>
+			<p class="m-0 text-sm leading-relaxed text-body"><?php echo esc_html( $mp_status['note'] ); ?></p>
+		<?php endif; ?>
 
 		<?php if ( $mp_progress ) : ?>
 			<ol class="mp-progress">

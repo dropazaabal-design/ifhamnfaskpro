@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 ?>
 
-<div class="mx-auto max-w-screen-xl px-3 pb-8 pt-3 lg:px-4 lg:pt-6">
+<?php do_action( 'woocommerce_before_main_content' ); ?>
 	<?php woocommerce_breadcrumb(); ?>
 
 	<?php while ( have_posts() ) : ?>
@@ -19,7 +19,8 @@ get_header();
 		wc_get_template_part( 'content', 'single-product' );
 		?>
 	<?php endwhile; ?>
-</div>
 
 <?php
+do_action( 'woocommerce_after_main_content' );
+
 get_footer();

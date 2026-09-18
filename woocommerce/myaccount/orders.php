@@ -21,6 +21,7 @@ do_action( 'woocommerce_before_account_orders', $has_orders );
 			$mp_progress = matjar_pro_order_progress( $mp_order );
 			$mp_thumbs   = matjar_pro_order_thumbnails( $mp_order, 4 );
 			$mp_count    = matjar_pro_order_item_count( $mp_order );
+			$mp_status   = matjar_pro_order_status_meta( $mp_order->get_status() );
 			?>
 			<article class="mp-order">
 				<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
@@ -30,7 +31,7 @@ do_action( 'woocommerce_before_account_orders', $has_orders );
 					<time class="grow text-xs text-faint" datetime="<?php echo esc_attr( $mp_order->get_date_created()->date( 'c' ) ); ?>">
 						<?php echo esc_html( wc_format_datetime( $mp_order->get_date_created() ) ); ?>
 					</time>
-					<span class="mp-order__status mp-order__status--<?php echo esc_attr( $mp_order->get_status() ); ?>">
+					<span class="mp-order__status <?php echo esc_attr( $mp_status['class'] ); ?>">
 						<?php echo esc_html( wc_get_order_status_name( $mp_order->get_status() ) ); ?>
 					</span>
 				</div>
