@@ -27,6 +27,33 @@ function matjar_pro_customize_register( $wp_customize ) {
 		)
 	);
 
+	/* ---------- الهوية ---------- */
+
+	$wp_customize->add_section(
+		'matjar_pro_identity',
+		array(
+			'title'       => __( 'هوية المتجر', 'matjar-pro' ),
+			'description' => __( 'الشعار واسم المتجر. يظهر الشعار في الهيدر وفي قُمع الدفع.', 'matjar-pro' ),
+			'panel'       => 'matjar_pro_panel',
+			'priority'    => 5,
+		)
+	);
+
+	/*
+	 * شعار ووردبريس الأساسي يُنقل إلى لوحة القالب بدل تكراره: التاجر يجد كل
+	 * إعداداته في موضع واحد، ويبقى الشعار مرفوعاً بآلية ووردبريس نفسها
+	 * فتعمل معه أحجام الصور والـ srcset بلا كود إضافي.
+	 */
+	if ( $wp_customize->get_control( 'custom_logo' ) ) {
+		$wp_customize->get_control( 'custom_logo' )->section  = 'matjar_pro_identity';
+		$wp_customize->get_control( 'custom_logo' )->priority = 10;
+	}
+
+	if ( $wp_customize->get_control( 'blogname' ) ) {
+		$wp_customize->get_control( 'blogname' )->section  = 'matjar_pro_identity';
+		$wp_customize->get_control( 'blogname' )->priority = 20;
+	}
+
 	/* ---------- الهوية البصرية ---------- */
 
 	$wp_customize->add_section(
@@ -85,25 +112,55 @@ function matjar_pro_customize_register( $wp_customize ) {
 		)
 	);
 
-	$wp_customize->add_setting(
-		'matjar_pro_cta_custom',
-		array(
-			'default'           => $defaults['matjar_pro_cta_custom'],
-			'sanitize_callback' => 'sanitize_hex_color',
-			'transport'         => 'refresh',
-		)
+	/*
+	 * ألوان التاجر الأربعة. الوصف يشرح ما سيحدث فعلاً: القالب يقبل أي لون
+	 * ثم يدفعه إلى حدّ التباين المطلوب، فلا يخرج متجر بنصّ لا يُقرأ.
+	 */
+	$mp_colors = array(
+		'matjar_pro_color_primary' => array(
+			'label'       => __( 'لون العلامة الأساسي', 'matjar-pro' ),
+			'description' => __( 'العناوين والتذييل والنصوص. يُشتَقّ منه لون النص والنص الباهت والحدود، ويُعتَّم تلقائياً حتى يعبر ٧:١ على خلفيتك.', 'matjar-pro' ),
+		),
+		'matjar_pro_color_cta'     => array(
+			'label'       => __( 'لون زر الشراء', 'matjar-pro' ),
+			'description' => __( 'الزر الوحيد الذي يحمل مساحة لون مشبعة في الصفحة. لون نصّه يُحسَب تلقائياً بأعلى تباين.', 'matjar-pro' ),
+		),
+		'matjar_pro_color_bg'      => array(
+			'label'       => __( 'لون خلفية الصفحات', 'matjar-pro' ),
+			'description' => __( 'أرضية الموقع. الأسطح والبطاقات تُشتَقّ منها، فتبقى متمايزة عنها.', 'matjar-pro' ),
+		),
+		'matjar_pro_color_accent'  => array(
+			'label'       => __( 'لون الإبراز', 'matjar-pro' ),
+			'description' => __( 'الشارات والعناصر الثانوية. لا يُستخدم للزر حتى لا يُزاحمه.', 'matjar-pro' ),
+		),
 	);
-	$wp_customize->add_control(
-		new WP_Customize_Color_Control(
-			$wp_customize,
-			'matjar_pro_cta_custom',
+
+	$mp_color_priority = 30;
+
+	foreach ( $mp_colors as $mp_key => $mp_meta ) {
+		$wp_customize->add_setting(
+			$mp_key,
 			array(
-				'label'       => __( 'لون مخصّص لزر الشراء', 'matjar-pro' ),
-				'description' => __( 'يعلو على النمط أعلاه. لون نص الزر يُحسَب تلقائياً بأعلى تباين، فلا يمكن أن ينتج زر غير مقروء.', 'matjar-pro' ),
-				'section'     => 'matjar_pro_visual',
+				'default'           => $defaults[ $mp_key ],
+				'sanitize_callback' => 'sanitize_hex_color',
+				'transport'         => 'refresh',
 			)
-		)
-	);
+		);
+		$wp_customize->add_control(
+			new WP_Customize_Color_Control(
+				$wp_customize,
+				$mp_key,
+				array(
+					'label'       => $mp_meta['label'],
+					'description' => $mp_meta['description'],
+					'section'     => 'matjar_pro_visual',
+					'priority'    => $mp_color_priority,
+				)
+			)
+		);
+
+		$mp_color_priority += 10;
+	}
 
 	$font_choices = array();
 	foreach ( matjar_pro_fonts() as $key => $font ) {
@@ -228,6 +285,51 @@ function matjar_pro_customize_register( $wp_customize ) {
 		}
 	}
 
+	/*
+	 * صورة شارات الدفع: القالب لا يشحن شعارات مدى وApple Pay وVisa وتابي —
+	 * ملكيّتها لأصحابها، وشحنها في قالب يُباع مسألة ترخيص لا تصميم. التاجر
+	 * يحصل على الصورة الرسمية من مزوّد الدفع ويرفعها هنا، فتظهر بدل
+	 * الشارات النصّية.
+	 */
+	$wp_customize->add_setting(
+		'matjar_pro_payment_badges_image',
+		array(
+			'default'           => $defaults['matjar_pro_payment_badges_image'],
+			'sanitize_callback' => 'absint',
+		)
+	);
+	$wp_customize->add_control(
+		new WP_Customize_Media_Control(
+			$wp_customize,
+			'matjar_pro_payment_badges_image',
+			array(
+				'label'       => __( 'صورة شارات الدفع', 'matjar-pro' ),
+				'description' => __( 'صورة واحدة تجمع شعارات وسائل الدفع، تحصل عليها من مزوّد الدفع. ترفعها هنا فتظهر بدل الشارات النصّية. القالب لا يشحن شعارات العلامات التجارية.', 'matjar-pro' ),
+				'section'     => 'matjar_pro_badges',
+				'mime_type'   => 'image',
+				'priority'    => 150,
+			)
+		)
+	);
+
+	$wp_customize->add_setting(
+		'matjar_pro_cod_highlight',
+		array(
+			'default'           => $defaults['matjar_pro_cod_highlight'],
+			'sanitize_callback' => 'matjar_pro_sanitize_checkbox',
+		)
+	);
+	$wp_customize->add_control(
+		'matjar_pro_cod_highlight',
+		array(
+			'label'       => __( 'إبراز الدفع عند الاستلام ببطاقة مستقلّة', 'matjar-pro' ),
+			'description' => __( 'مُفعَّلاً: بطاقة بلون النقد وسطر شرح في صفحة المنتج والسلة والقُمع. مُطفأً: شارة نصّية كبقيّة الوسائل.', 'matjar-pro' ),
+			'section'     => 'matjar_pro_badges',
+			'type'        => 'checkbox',
+			'priority'    => 160,
+		)
+	);
+
 	$wp_customize->add_setting(
 		'matjar_pro_cod_note',
 		array(
@@ -289,6 +391,42 @@ function matjar_pro_customize_register( $wp_customize ) {
 				'priority'    => 220,
 			)
 		);
+	}
+
+	/* ---------- التذييل والتواصل ---------- */
+
+	$wp_customize->add_section(
+		'matjar_pro_social',
+		array(
+			'title'       => __( 'روابط التواصل', 'matjar-pro' ),
+			'description' => __( 'تظهر أيقونةً في التذييل. اترك الحقل فارغاً ولا تُطبع أيقونته إطلاقاً.', 'matjar-pro' ),
+			'panel'       => 'matjar_pro_panel',
+		)
+	);
+
+	$mp_social_priority = 10;
+
+	foreach ( matjar_pro_social_networks() as $mp_slug => $mp_network ) {
+		$wp_customize->add_setting(
+			'matjar_pro_social_' . $mp_slug,
+			array(
+				'default'           => $defaults[ 'matjar_pro_social_' . $mp_slug ],
+				'sanitize_callback' => 'esc_url_raw',
+				'transport'         => 'refresh',
+			)
+		);
+		$wp_customize->add_control(
+			'matjar_pro_social_' . $mp_slug,
+			array(
+				'label'       => $mp_network['label'],
+				'section'     => 'matjar_pro_social',
+				'type'        => 'url',
+				'input_attrs' => array( 'placeholder' => 'https://' ),
+				'priority'    => $mp_social_priority,
+			)
+		);
+
+		$mp_social_priority += 10;
 	}
 
 	/* ---------- بيانات المتجر ---------- */

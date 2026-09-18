@@ -1194,6 +1194,10 @@ $GLOBALS['mp_smoke_mods'] = array(
 	'matjar_pro_cr_number'               => '1010123456',
 	'matjar_pro_vat_number'              => '300012345600003',
 	'matjar_pro_whatsapp'                => '+966 55 123 4567',
+	'matjar_pro_font'                    => in_array( '--plex', $argv, true ) ? 'plex' : 'cairo',
+	'matjar_pro_social_instagram'        => 'https://instagram.com/demo',
+	'matjar_pro_social_tiktok'           => 'https://tiktok.com/@demo',
+	'matjar_pro_social_snapchat'         => 'https://snapchat.com/add/demo',
 	'matjar_pro_free_shipping_threshold' => 200,
 );
 
@@ -1225,6 +1229,24 @@ set_error_handler(
  * --catalog يُطبع وحده بلا تنسيق: جدول المنتجات التجريبية بصيغة JSON،
  * ليقرأه المحاكي بدل تكرار الأسماء والأسعار يدوياً.
  */
+foreach ( $argv as $mp_arg ) {
+	if ( 0 !== strpos( $mp_arg, '--tokens=' ) ) {
+		continue;
+	}
+
+	$mp_parts = array_pad( explode( ',', substr( $mp_arg, 9 ) ), 4, '' );
+
+	foreach ( array( 'primary', 'bg', 'cta', 'accent' ) as $mp_i => $mp_name ) {
+		if ( '' !== $mp_parts[ $mp_i ] ) {
+			$GLOBALS['mp_smoke_mods'][ 'matjar_pro_color_' . $mp_name ] = '#' . ltrim( $mp_parts[ $mp_i ], '#' );
+		}
+	}
+
+	echo matjar_pro_css_variables();
+	echo matjar_pro_font_faces_css();
+	exit( 0 );
+}
+
 if ( in_array( '--catalog', $argv, true ) ) {
 	$mp_catalog = array();
 

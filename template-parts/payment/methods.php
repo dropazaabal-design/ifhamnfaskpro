@@ -31,11 +31,19 @@ if ( empty( $mp_groups ) ) {
 	return;
 }
 
-$mp_show_cod = ! isset( $args['cod'] ) || $args['cod'];
-$mp_cod      = $mp_show_cod && isset( $mp_groups['cash'] ) ? $mp_groups['cash'] : null;
+/*
+ * إبراز الدفع عند الاستلام خيار التاجر: مُفعَّلاً يُفرد ببطاقة، ومُطفأً
+ * يبقى شارةً في مجموعته كبقيّة الوسائل. لا يُحجب في الحالتين.
+ */
+$mp_show_cod = ( ! isset( $args['cod'] ) || $args['cod'] )
+	&& matjar_pro_mod( 'matjar_pro_cod_highlight' );
 
-// الدفع عند الاستلام يُعرض بطاقةً مستقلّة، فيُرفع من صفّ المجموعات.
-unset( $mp_groups['cash'] );
+$mp_cod = $mp_show_cod && isset( $mp_groups['cash'] ) ? $mp_groups['cash'] : null;
+
+if ( $mp_cod ) {
+	// أُفرد ببطاقة، فيُرفع من صفّ المجموعات حتى لا يُعرض مرّتين.
+	unset( $mp_groups['cash'] );
+}
 
 // مجموعات يطلب السياق حجبها: صفحة المنتج تعرض التقسيط فوق الزر بسعره،
 // فلا تُعاد أسماء مزوّديه في اللوحة أسفله.
@@ -90,7 +98,29 @@ if ( 'row' === $mp_variant || 'funnel' === $mp_variant ) {
 		</div>
 	<?php endif; ?>
 
-	<?php if ( ! empty( $mp_groups ) ) : ?>
+	<?php
+	$mp_badges_image = (int) matjar_pro_mod( 'matjar_pro_payment_badges_image' );
+	?>
+
+	<?php if ( $mp_badges_image ) : ?>
+		<?php
+		/*
+		 * صورة التاجر الرسمية تعلو على الشارات النصّية: شعار مدى الحقيقي
+		 * أقوى طمأنينةً من كلمة «مدى». الشارات النصّية تبقى للبديل النصّي
+		 * فيقرأها قارئ الشاشة ومن لم تُحمَّل عنده الصورة.
+		 */
+		echo wp_get_attachment_image(
+			$mp_badges_image,
+			'full',
+			false,
+			array(
+				'class'   => 'mp-pay__image',
+				'alt'     => esc_attr( implode( ' · ', matjar_pro_active_badges() ) ),
+				'loading' => 'lazy',
+			)
+		);
+		?>
+	<?php elseif ( ! empty( $mp_groups ) ) : ?>
 		<ul class="mp-pay__groups">
 			<?php foreach ( $mp_groups as $mp_key => $mp_group ) : ?>
 				<li class="mp-pay__group" data-mp-pay-group="<?php echo esc_attr( $mp_key ); ?>">

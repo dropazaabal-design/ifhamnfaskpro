@@ -261,16 +261,94 @@ function matjar_pro_resolved_tokens() {
 		$tokens['cta-hover'] = $styles[ $style ]['hover'];
 	}
 
-	// لون مخصّص كامل من التاجر، إن أدخله.
-	$custom = matjar_pro_mod( 'matjar_pro_cta_custom' );
+	/*
+	 * ألوان التاجر تعلو على اللوحة الجاهزة، لكنّها لا تُعتمد كما جاءت: كل
+	 * لون يمرّ على matjar_pro_ensure_contrast قبل أن يدخل الرموز. هكذا
+	 * يملك التاجر حريّة كاملة في الاختيار ولا يملك القدرة على نشر متجر
+	 * بنصّ لا يُقرأ.
+	 */
+	$primary = matjar_pro_custom_color( 'matjar_pro_color_primary' );
+	$page    = matjar_pro_custom_color( 'matjar_pro_color_bg' );
 
-	if ( '' !== $custom && preg_match( '/^#[0-9a-fA-F]{6}$/', $custom ) ) {
+	if ( '' !== $primary || '' !== $page ) {
+		$tokens = array_merge(
+			$tokens,
+			matjar_pro_derive_neutrals(
+				'' !== $primary ? $primary : $tokens['ink'],
+				'' !== $page ? $page : $tokens['bg']
+			)
+		);
+	}
+
+	// لون الإبراز: شارات العلامة والعناصر الثانوية. حدّه ٣:١ كرسم واجهة.
+	$accent = matjar_pro_custom_color( 'matjar_pro_color_accent' );
+
+	if ( '' !== $accent ) {
+		$tokens['accent']     = matjar_pro_ensure_contrast( $accent, $tokens['surface'], 3.0, 3 );
+		$tokens['accent-ink'] = matjar_pro_ensure_contrast( $accent, $tokens['ink'], 3.0, 3 );
+	}
+
+	// لون مخصّص كامل لزر الشراء، إن أدخله التاجر.
+	$custom = matjar_pro_custom_color( 'matjar_pro_color_cta' );
+
+	if ( '' !== $custom ) {
 		$tokens['cta']       = $custom;
 		$tokens['cta-hover'] = matjar_pro_darken( $custom, 14 );
 	}
 
 	// هنا تُفرض المقروئية: لون نص الزر ليس خياراً بل نتيجة حساب.
 	$tokens['cta-fg'] = matjar_pro_readable_foreground( $tokens['cta'], '#FFFFFF', $tokens['ink'] );
+
+	/*
+	 * الزر مساحة لون مشبعة كبيرة: إن لم يعبر أيٌّ من الأبيض أو الحبر حدّ
+	 * ٤٫٥ فوقه، فاللون نفسه هو المشكلة لا نصّه، فيُعتَّم حتى يعبر الأبيض.
+	 */
+	if ( matjar_pro_contrast_ratio( $tokens['cta-fg'], $tokens['cta'] ) < 4.5 ) {
+		$tokens['cta']       = matjar_pro_ensure_contrast( $tokens['cta'], '#FFFFFF', 4.5 );
+		$tokens['cta-hover'] = matjar_pro_darken( $tokens['cta'], 14 );
+		$tokens['cta-fg']    = matjar_pro_readable_foreground( $tokens['cta'], '#FFFFFF', $tokens['ink'] );
+	}
+
+	/*
+	 * حالة الزر الفاتح: لون زر نصّه الأبيض عند ٤٫٦ يصبح عند ٤٫١ بعد تعتيمه
+	 * ١٤٪ للتحويم. فيُصحَّح لون التحويم مقابل نص الزر نفسه لا مقابل شيء آخر.
+	 */
+	$tokens['cta-hover'] = matjar_pro_ensure_contrast( $tokens['cta-hover'], $tokens['cta-fg'], 4.5 );
+
+	/*
+	 * الألوان الدلالية تُصحَّح مقابل السطح ومقابل طبقتها الشفّافة فوقه: كتلة
+	 * الدفع عند الاستلام مثلاً نصُّها بلون النقد فوق النقد بشفافية ٠٫٠٨.
+	 * التصحيح يُعاد مرّتين لأن الطبقة تتغيّر بتغيّر اللون.
+	 */
+	foreach ( array( 'sale', 'success', 'info', 'bnpl' ) as $semantic ) {
+		$tokens[ $semantic ] = matjar_pro_ensure_contrast_on_tint(
+			$tokens[ $semantic ],
+			$tokens['surface'],
+			4.5
+		);
+	}
+
+	// والنص العادي يظهر أيضاً فوق هذه الطبقات (سطر شرح الاستلام مثلاً).
+	$tokens['text'] = matjar_pro_ensure_contrast(
+		$tokens['text'],
+		array(
+			$tokens['bg'],
+			$tokens['surface'],
+			matjar_pro_blend( $tokens['success'], $tokens['surface'] ),
+			matjar_pro_blend( $tokens['sale'], $tokens['surface'] ),
+			matjar_pro_blend( $tokens['info'], $tokens['surface'] ),
+			matjar_pro_blend( $tokens['bnpl'], $tokens['surface'] ),
+			matjar_pro_blend( $tokens['amber'], $tokens['surface'] ),
+		),
+		4.5
+	);
+
+	/*
+	 * العنبري مِلء شريط الشحن. الحدّ الذي يُقرأ منه الزائر المسافة المتبقّية
+	 * هو حدّ المِلء على المجرى — والمجرى بلون الحدود — لا حدّه على السطح
+	 * تحت الكتلة. اشتراط الاثنين معاً كان يُسقط تركيبات لا مشكلة فيها.
+	 */
+	$tokens['amber'] = matjar_pro_ensure_contrast( $tokens['amber'], $tokens['border'], 3.0, 3 );
 
 	/**
 	 * تصفية رموز التصميم النهائية.
@@ -298,6 +376,241 @@ function matjar_pro_darken( $hex, $percent = 12 ) {
 	}
 
 	return strtoupper( $out );
+}
+
+/**
+ * يُفتِح لوناً نحو الأبيض بنسبة مئوية.
+ *
+ * @param string $hex     اللون.
+ * @param int    $percent النسبة.
+ * @return string
+ */
+function matjar_pro_lighten( $hex, $percent = 12 ) {
+	$rgb   = matjar_pro_hex_to_rgb( $hex );
+	$ratio = max( 0, min( 100, $percent ) ) / 100;
+
+	$out = '#';
+	foreach ( $rgb as $channel ) {
+		$out .= str_pad( dechex( (int) round( $channel + ( 255 - $channel ) * $ratio ) ), 2, '0', STR_PAD_LEFT );
+	}
+
+	return strtoupper( $out );
+}
+
+/**
+ * يدفع لوناً حتى يعبر حدّ التباين مقابل كل خلفية قد يظهر عليها.
+ *
+ * هذه الدالة هي ما يجعل حرية التاجر في اختيار الألوان آمنة: يختار لوناً
+ * لعلامته، والقالب لا يرفضه ولا يقبله كما هو، بل يجرّب الاتجاهين — نحو
+ * العتمة ونحو الفتح — ويأخذ أوّل قيمة تعبر الحدّ بأقلّ تغيير عن اختياره.
+ *
+ * تجريب الاتجاهين ليس ترفاً: خلفية متوسطة السطوع لا يعبر عليها التفتيح
+ * إطلاقاً ويعبر عليها التعتيم، والعكس. وقياس اتجاه واحد من سطوع الخلفية
+ * كان يُنتج نصوصاً عند ٤٫٠٧:١ على خلفيات بنفسجية — وهو ما كشفه فحص
+ * verify-custom-colors.php على ٢٠٠٠ تركيبة.
+ *
+ * @param string          $hex         اللون المطلوب.
+ * @param string|string[] $backgrounds الخلفية أو الخلفيات.
+ * @param float           $minimum     حدّ التباين.
+ * @param int             $step        خطوة التعديل بالنسبة المئوية.
+ * @return string
+ */
+function matjar_pro_ensure_contrast( $hex, $backgrounds, $minimum = 4.5, $step = 4 ) {
+	$backgrounds = (array) $backgrounds;
+
+	/**
+	 * أدنى تباين للّون مقابل كل الخلفيات.
+	 *
+	 * @param string $candidate اللون المُرشَّح.
+	 * @return float
+	 */
+	$worst = static function ( $candidate ) use ( $backgrounds ) {
+		$min = INF;
+
+		foreach ( $backgrounds as $background ) {
+			$min = min( $min, matjar_pro_contrast_ratio( $candidate, $background ) );
+		}
+
+		return $min;
+	};
+
+	if ( $worst( $hex ) >= $minimum ) {
+		return strtoupper( $hex );
+	}
+
+	// الاتجاهان معاً: يُؤخذ أوّل ما يعبر، والأقرب إلى اختيار التاجر أولاً.
+	for ( $i = $step; $i <= 100; $i += $step ) {
+		foreach ( array( matjar_pro_darken( $hex, $i ), matjar_pro_lighten( $hex, $i ) ) as $candidate ) {
+			if ( $worst( $candidate ) >= $minimum ) {
+				return $candidate;
+			}
+		}
+	}
+
+	// لم يعبر أيٌّ منهما: تُؤخذ النهاية الأفضل. المقروئية ليست خياراً.
+	return $worst( '#000000' ) >= $worst( '#FFFFFF' ) ? '#000000' : '#FFFFFF';
+}
+
+/**
+ * يدفع لوناً حتى يُقرأ على السطح وعلى طبقته الشفّافة فوقه معاً.
+ *
+ * كتل القالب الملوّنة تُبنى بلونٍ فوق طبقةٍ من اللون نفسه بشفافية ٠٫٠٨:
+ * نصّ «الدفع عند الاستلام» بلون النقد فوق خلفية من النقد. الخلفية هنا
+ * تتحرّك مع اللون، فلا يصحّ تثبيتها قبل البحث — وهذا ما جعل التصحيح
+ * بمرورَين لا يتقارب. الحلّ أن يُحسَب المزيج من المُرشَّح نفسه في كل خطوة.
+ *
+ * @param string $hex     اللون.
+ * @param string $surface السطح تحت الطبقة.
+ * @param float  $minimum حدّ التباين.
+ * @param float  $alpha   شفافية الطبقة.
+ * @param int    $step    خطوة التعديل.
+ * @return string
+ */
+function matjar_pro_ensure_contrast_on_tint( $hex, $surface, $minimum = 4.5, $alpha = 0.08, $step = 4 ) {
+	/**
+	 * هل يعبر المُرشَّح على السطح وعلى مزيجه فوقه.
+	 *
+	 * @param string $candidate اللون المُرشَّح.
+	 * @return bool
+	 */
+	$passes = static function ( $candidate ) use ( $surface, $minimum, $alpha ) {
+		return matjar_pro_contrast_ratio( $candidate, $surface ) >= $minimum
+			&& matjar_pro_contrast_ratio( $candidate, matjar_pro_blend( $candidate, $surface, $alpha ) ) >= $minimum;
+	};
+
+	if ( $passes( $hex ) ) {
+		return strtoupper( $hex );
+	}
+
+	for ( $i = $step; $i <= 100; $i += $step ) {
+		foreach ( array( matjar_pro_darken( $hex, $i ), matjar_pro_lighten( $hex, $i ) ) as $candidate ) {
+			if ( $passes( $candidate ) ) {
+				return $candidate;
+			}
+		}
+	}
+
+	return $passes( '#000000' ) || ! $passes( '#FFFFFF' ) ? '#000000' : '#FFFFFF';
+}
+
+/**
+ * يدفع لون الخلفية حتى يصبح قادراً على حمل نصّ مقروء.
+ *
+ * بعض الألوان لا تحمل نصّاً يعبر ٤٫٥:١ إطلاقاً — لا بالأسود ولا بالأبيض.
+ * ‎#5E71B3‎ مثلاً أقصى تباين عليه ٤٫٤٩ بالأسود و٤٫٦٨ بالأبيض، وسطحه
+ * المشتَقّ يعكس الترتيب، فلا يوجد لون نصّ واحد يعبر على الاثنين. المسألة
+ * حسابية لا خطأ في الحساب: الخلفيات متوسطة السطوع منطقة ميّتة.
+ *
+ * فيُدفع لون الخلفية نفسه إلى أقرب درجة تحمل نصّاً، بدل أن يُبحَث عن نصّ
+ * غير موجود. التاجر يرى لوناً قريباً من اختياره، ولا يرى متجراً لا يُقرأ.
+ *
+ * @param string $page    لون الخلفية المطلوب.
+ * @param float  $minimum حدّ التباين المطلوب للنص العادي.
+ * @return string
+ */
+function matjar_pro_usable_ground( $page, $minimum = 4.5 ) {
+	$dark = matjar_pro_relative_luminance( $page ) <= 0.35;
+
+	for ( $i = 0; $i <= 100; $i += 3 ) {
+		$candidate = 0 === $i
+			? strtoupper( $page )
+			: ( $dark ? matjar_pro_darken( $page, $i ) : matjar_pro_lighten( $page, $i ) );
+
+		$surface = $dark ? matjar_pro_lighten( $candidate, 7 ) : '#FFFFFF';
+
+		// يجب أن يعبر لونُ نصٍّ واحد على الخلفية وعلى السطح معاً: نصّ يعبر
+		// على الأرضية ويسقط على البطاقة لا يحلّ شيئاً.
+		foreach ( array( '#000000', '#FFFFFF' ) as $candidate_text ) {
+			// والطبقات الشفّافة كذلك: كتلة ملوّنة بشفافية ٠٫٠٨ فوق السطح
+			// تُزيح سطوعه قليلاً، وهذا القليل يكفي لإسقاط زوج عند الحدّ.
+			$tint = matjar_pro_blend( $candidate_text, $surface );
+
+			if ( matjar_pro_contrast_ratio( $candidate_text, $candidate ) >= $minimum
+				&& matjar_pro_contrast_ratio( $candidate_text, $surface ) >= $minimum
+				&& matjar_pro_contrast_ratio( $candidate_text, $tint ) >= $minimum ) {
+				return $candidate;
+			}
+		}
+	}
+
+	return $dark ? '#0B0F14' : '#FFFFFF';
+}
+
+/**
+ * يبني الرموز المحيّدة من لون علامة التاجر ولون خلفيته.
+ *
+ * التاجر يختار لونين فقط — علامته وخلفية صفحاته — ويُشتَقّ منهما ما يبقى.
+ * كل مشتَقّ يُفحَص مقابل كل سطح قد يظهر عليه لا مقابل واحد: النص يظهر على
+ * الصفحة وعلى البطاقة، وفرقهما يكفي لإسقاط زوج تحت الحدّ.
+ *
+ * @param string $primary لون العلامة.
+ * @param string $page    لون خلفية الصفحة.
+ * @return array
+ */
+function matjar_pro_derive_neutrals( $primary, $page ) {
+	// أوّل خطوة: أن تكون الأرضية قادرة على حمل نصّ أصلاً.
+	$page = matjar_pro_usable_ground( $page );
+	$dark = matjar_pro_relative_luminance( $page ) <= 0.35;
+
+	// الأسطح ورقة أفتح (أو أغمق) من الصفحة بقليل، فيتمايز الكرت عن الأرضية.
+	$surface = $dark ? matjar_pro_lighten( $page, 7 ) : '#FFFFFF';
+	$grounds = array( $page, $surface );
+
+	// العناوين أكبر ما يُقرأ في الصفحة، ولا يكفيها الحدّ الأدنى.
+	$ink = matjar_pro_ensure_contrast( $primary, $grounds, 7.0 );
+
+	// النص والنص الباهت: من الحبر، مخفَّفان نحو الخلفية ثم مُصحَّحان.
+	$text  = matjar_pro_ensure_contrast(
+		$dark ? matjar_pro_darken( $ink, 25 ) : matjar_pro_lighten( $ink, 25 ),
+		$grounds,
+		4.5
+	);
+	$muted = matjar_pro_ensure_contrast(
+		$dark ? matjar_pro_darken( $ink, 40 ) : matjar_pro_lighten( $ink, 40 ),
+		$grounds,
+		4.5
+	);
+
+	// الحدود رسم واجهة لا نص: حدّها ٣:١ مقابل السطح الذي تُرسم عليه.
+	$border = matjar_pro_ensure_contrast(
+		$dark ? matjar_pro_lighten( $page, 18 ) : matjar_pro_darken( $page, 12 ),
+		$surface,
+		3.0,
+		3
+	);
+
+	return array(
+		'ink'     => $ink,
+		'bg'      => strtoupper( $page ),
+		'surface' => $surface,
+		'border'  => $border,
+		'text'    => $text,
+		'muted'   => $muted,
+		'shadow'  => $ink,
+	);
+}
+
+/**
+ * يمزج لوناً بخلفية بنسبة شفافية.
+ *
+ * الطبقات الملوّنة في القالب شفّافة بنسبة ٠٫٠٨ فوق السطح، وما يقرأه الزائر
+ * هو الناتج المُركَّب. فحص اللون الأصلي وحده يُمرّر أزواجاً تفشل فعلاً.
+ *
+ * @param string $hex   اللون.
+ * @param string $over  الخلفية.
+ * @param float  $alpha الشفافية.
+ * @return string
+ */
+function matjar_pro_blend( $hex, $over, $alpha = 0.08 ) {
+	$a = matjar_pro_hex_to_rgb( $hex );
+	$b = matjar_pro_hex_to_rgb( $over );
+
+	return sprintf(
+		'#%02X%02X%02X',
+		(int) round( $a[0] * $alpha + $b[0] * ( 1 - $alpha ) ),
+		(int) round( $a[1] * $alpha + $b[1] * ( 1 - $alpha ) ),
+		(int) round( $a[2] * $alpha + $b[2] * ( 1 - $alpha ) )
+	);
 }
 
 /**

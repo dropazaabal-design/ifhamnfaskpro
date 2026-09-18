@@ -156,6 +156,20 @@
 	 * أي قيمة خارج السلّم تُقرأ كخطأ، لا كاختيار.
 	 */
 
+	/* ---------- روابط التواصل ---------- */
+
+	.mp-social {
+		@apply mb-6 flex list-none flex-wrap gap-2 p-0;
+	}
+
+	.mp-social__link {
+		@apply grid h-10 w-10 place-items-center rounded-xl border border-white/15 bg-white/[0.08] text-white/80 transition;
+	}
+
+	.mp-social__link:hover {
+		@apply border-white/30 bg-white/15 text-white;
+	}
+
 	/* ---------- طرق الدفع ---------- */
 
 	/*
@@ -197,6 +211,15 @@
 
 	.mp-pay__marks {
 		@apply flex flex-wrap items-center gap-1.5 ms-auto;
+	}
+
+	.mp-pay__image {
+		@apply h-auto max-w-full;
+	}
+
+	.mp-pay--row .mp-pay__image,
+	.mp-pay--funnel .mp-pay__image {
+		@apply max-h-8 w-auto;
 	}
 
 	.mp-pay__mark {

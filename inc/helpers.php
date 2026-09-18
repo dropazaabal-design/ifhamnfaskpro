@@ -202,6 +202,11 @@ function matjar_pro_icon_paths() {
 		'truck'    => '<path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/>',
 		'cash'     => '<path d="M3 7h18v10H3z"/><circle cx="12" cy="12" r="2.4"/>',
 		'return'   => '<path d="M3.5 12a8.5 8.5 0 1 0 2.8-6.3"/><path d="M3 4.5V10h5.5"/>',
+		'instagram' => '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1.1" fill="currentColor" stroke="none"/>',
+		'tiktok'   => '<path d="M14 4v9.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c0 2.5 2 4.5 4.5 4.5"/>',
+		'snapchat' => '<path d="M12 3.5c2.8 0 4.2 2 4.2 4.6 0 1 .2 2 .2 2s.8-.4 1.3-.2c.6.2.5.9 0 1.3-.6.5-1.6.8-1.6 1.4 0 1 2.2 3 3.4 3.3.4.1.4.6 0 .8-.8.4-1.9.3-2.3.7-.3.3-.2 1-.7 1.1-.7.2-1.7-.4-2.8-.4-1.1 0-2.1.6-2.8.4-.5-.1-.4-.8-.7-1.1-.4-.4-1.5-.3-2.3-.7-.4-.2-.4-.7 0-.8 1.2-.3 3.4-2.3 3.4-3.3 0-.6-1-.9-1.6-1.4-.5-.4-.6-1.1 0-1.3.5-.2 1.3.2 1.3.2s.2-1 .2-2C7.8 5.5 9.2 3.5 12 3.5z"/>',
+		'x'        => '<path d="M4 4l16 16"/><path d="M20 4L4 20"/>',
+		'youtube'  => '<rect x="2.5" y="6" width="19" height="12" rx="3.5"/><path d="M10.5 9.5l5 2.5-5 2.5z"/>',
 		'whatsapp' => '<path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.5 9 9 0 0 1-3.8-.85L4.5 20.5l1.35-4.1A8.4 8.4 0 0 1 4 11.5 8.4 8.4 0 0 1 12.5 3 8.4 8.4 0 0 1 21 11.5z"/>',
 		'lock'     => '<path d="M6 11V8a6 6 0 0 1 12 0v3"/><path d="M5 11h14v9H5z"/>',
 		'check'    => '<path d="M5 13l4 4L19 7"/>',
@@ -240,7 +245,6 @@ function matjar_pro_defaults() {
 	return array(
 		'matjar_pro_palette'                 => 'trust',
 		'matjar_pro_cta_style'               => 'burnt',
-		'matjar_pro_cta_custom'              => '',
 		'matjar_pro_font'                    => 'cairo',
 		'matjar_pro_announcement_enabled'    => true,
 		'matjar_pro_announcement_text'       => '',
@@ -256,12 +260,27 @@ function matjar_pro_defaults() {
 		'matjar_pro_sticky_buy_bar'          => true,
 		'matjar_pro_bottom_nav'              => true,
 
+		// ألوان التاجر — فارغة تعني: اتبع اللوحة الجاهزة.
+		'matjar_pro_color_primary'           => '',
+		'matjar_pro_color_cta'               => '',
+		'matjar_pro_color_bg'                => '',
+		'matjar_pro_color_accent'            => '',
+
 		// طرق الدفع والضمانات
+		'matjar_pro_payment_badges_image'    => 0,
+		'matjar_pro_cod_highlight'           => true,
 		'matjar_pro_cod_note'                => 'ادفع نقداً للمندوب عند وصول الطلب',
 		'matjar_pro_returns_label'           => 'إرجاع مجاني خلال ١٤ يوماً',
 		'matjar_pro_secure_label'            => 'دفع آمن ومشفّر',
 		'matjar_pro_payment_on_product'      => true,
 		'matjar_pro_payment_in_cart'         => true,
+
+		// روابط التواصل في التذييل
+		'matjar_pro_social_instagram'        => '',
+		'matjar_pro_social_tiktok'           => '',
+		'matjar_pro_social_snapchat'         => '',
+		'matjar_pro_social_x'                => '',
+		'matjar_pro_social_youtube'          => '',
 
 		// الهيرو
 		'matjar_pro_hero_enabled'            => true,
@@ -314,6 +333,78 @@ function matjar_pro_mod( $key ) {
 	$default  = $defaults[ $key ] ?? '';
 
 	return get_theme_mod( $key, $default );
+}
+
+/**
+ * شبكات التواصل المدعومة في التذييل.
+ *
+ * الترتيب ترتيب أهمّيتها لسوق الخليج: إنستغرام وتيك توك وسناب شات هي
+ * مصادر الزيارة الفعلية للمتاجر هنا، ثم إكس ويوتيوب.
+ *
+ * @return array<string,array>
+ */
+function matjar_pro_social_networks() {
+	return array(
+		'instagram' => array(
+			'label' => __( 'إنستغرام', 'matjar-pro' ),
+			'icon'  => 'instagram',
+		),
+		'tiktok'    => array(
+			'label' => __( 'تيك توك', 'matjar-pro' ),
+			'icon'  => 'tiktok',
+		),
+		'snapchat'  => array(
+			'label' => __( 'سناب شات', 'matjar-pro' ),
+			'icon'  => 'snapchat',
+		),
+		'x'         => array(
+			'label' => __( 'إكس', 'matjar-pro' ),
+			'icon'  => 'x',
+		),
+		'youtube'   => array(
+			'label' => __( 'يوتيوب', 'matjar-pro' ),
+			'icon'  => 'youtube',
+		),
+	);
+}
+
+/**
+ * روابط التواصل التي عبّأها التاجر.
+ *
+ * @return array<string,array> slug => array( label، icon، url )
+ */
+function matjar_pro_active_social_links() {
+	$out = array();
+
+	foreach ( matjar_pro_social_networks() as $slug => $network ) {
+		$url = trim( (string) matjar_pro_mod( 'matjar_pro_social_' . $slug ) );
+
+		if ( '' === $url ) {
+			continue;
+		}
+
+		$out[ $slug ] = array(
+			'label' => $network['label'],
+			'icon'  => $network['icon'],
+			'url'   => $url,
+		);
+	}
+
+	return $out;
+}
+
+/**
+ * يقرأ لوناً مخصّصاً من إعدادات التاجر بعد التحقّق من صيغته.
+ *
+ * ما لم يكن ستّ خانات ست عشرية يُعَدّ غير مضبوط، فتُستخدم قيمة اللوحة.
+ *
+ * @param string $key اسم الإعداد.
+ * @return string اللون، أو سلسلة فارغة.
+ */
+function matjar_pro_custom_color( $key ) {
+	$value = trim( (string) matjar_pro_mod( $key ) );
+
+	return preg_match( '/^#[0-9a-fA-F]{6}$/', $value ) ? strtoupper( $value ) : '';
 }
 
 /**

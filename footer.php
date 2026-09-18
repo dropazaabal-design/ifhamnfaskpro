@@ -88,6 +88,8 @@ $mp_whatsapp = preg_replace( '/[^0-9]/', '', (string) matjar_pro_mod( 'matjar_pr
 				</nav>
 			<?php endif; ?>
 
+			<?php get_template_part( 'template-parts/footer/social' ); ?>
+
 			<?php if ( ! empty( $mp_badges ) ) : ?>
 				<div class="mb-6">
 					<?php

@@ -17,9 +17,11 @@
     "dev": "npm run css:dev & npm run js:dev",
     "verify:contrast": "php tools/verify-contrast.php",
     "smoke": "php tools/render-smoke.php && php tools/render-smoke.php --woocommerce && php tools/render-smoke.php --woocommerce --overlay && php tools/render-smoke.php --card && php tools/render-smoke.php --archive && php tools/render-smoke.php --product && php tools/render-smoke.php --product --variable && php tools/render-smoke.php --funnel && php tools/render-smoke.php --checkout && php tools/render-smoke.php --filter && php tools/render-smoke.php --account && php tools/render-smoke.php --cart && php tools/render-smoke.php --minicart",
-    "verify": "npm run verify:contrast && npm run smoke && npm run pot",
+    "verify": "npm run verify:contrast && npm run verify:colors && npm run verify:settings && npm run smoke && npm run pot",
     "preview": "node tools/preview.mjs",
-    "pot": "php tools/make-pot.php"
+    "pot": "php tools/make-pot.php",
+    "verify:colors": "php tools/verify-custom-colors.php 4000",
+    "verify:settings": "php tools/verify-settings.php"
   },
   "devDependencies": {
     "@fontsource-variable/cairo": "^5.3.0",

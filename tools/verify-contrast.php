@@ -97,8 +97,9 @@ foreach ( matjar_pro_palettes() as $name => $palette ) {
 		array( 'sale badge + white', '#FFFFFF', $t['sale'], 4.5 ),
 		array( 'success badge + white', '#FFFFFF', $t['success'], 4.5 ),
 		array( 'info badge + white', '#FFFFFF', $t['info'], 4.5 ),
-		// العنبري شريط تقدّم لا خلفية نص: حدّه 3:1 كرسم واجهة.
-		array( 'amber bar on card', $t['amber'], $t['surface'], 3.0 ),
+		// العنبري شريط تقدّم لا خلفية نص: حدّه 3:1 كرسم واجهة، ومقابل
+		// المجرى الذي يُرسم عليه لا مقابل السطح تحت الكتلة.
+		array( 'amber bar on track', $t['amber'], $t['border'], 3.0 ),
 		array( 'ship bar fill on track', $t['amber'], $t['border'], 3.0 ),
 		array( 'accent graphic on card', $t['accent'], $t['surface'], 3.0 ),
 		array( 'accent graphic on ink', $t['accent-ink'], $t['ink'], 3.0 ),
