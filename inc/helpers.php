@@ -209,6 +209,8 @@ function matjar_pro_icon_paths() {
 		'chevron'  => '<path d="M6 9l6 6 6-6"/>',
 		'back'     => '<path d="M10 6l6 6-6 6"/>',
 		'card'     => '<path d="M3 6h18v12H3z"/><path d="M3 10h18"/>',
+		'wallet'   => '<path d="M3 8a2 2 0 0 1 2-2h11l3 3v3"/><path d="M3 8v9a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-2h-5a2.5 2.5 0 0 1 0-5h5"/><circle cx="16" cy="12.5" r="0.9" fill="currentColor" stroke="none"/>',
+		'split'    => '<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17"/><path d="M3.5 12h17"/>',
 		'arrow'    => '<path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/>',
 		'heart'    => '<path d="M12 20s-7-4.4-7-9.2A4.1 4.1 0 0 1 12 8a4.1 4.1 0 0 1 7 2.8C19 15.6 12 20 12 20z"/>',
 		'shield'   => '<path d="M12 3l7.5 3v5c0 4.6-3.2 8.2-7.5 10C7.7 19.2 4.5 15.6 4.5 11V6z"/>',
@@ -253,6 +255,13 @@ function matjar_pro_defaults() {
 		'matjar_pro_delivery_max_days'       => 4,
 		'matjar_pro_sticky_buy_bar'          => true,
 		'matjar_pro_bottom_nav'              => true,
+
+		// طرق الدفع والضمانات
+		'matjar_pro_cod_note'                => 'ادفع نقداً للمندوب عند وصول الطلب',
+		'matjar_pro_returns_label'           => 'إرجاع مجاني خلال ١٤ يوماً',
+		'matjar_pro_secure_label'            => 'دفع آمن ومشفّر',
+		'matjar_pro_payment_on_product'      => true,
+		'matjar_pro_payment_in_cart'         => true,
 
 		// الهيرو
 		'matjar_pro_hero_enabled'            => true,
@@ -308,57 +317,105 @@ function matjar_pro_mod( $key ) {
 }
 
 /**
+ * أدوار طرق الدفع.
+ *
+ * التصنيف ليس تجميلاً: منصّات المنطقة القيادية تعرض خياراتها في هذه
+ * المجموعات نفسها — محفظة رقمية، بطاقة بنكية، تقسيط، نقداً عند الاستلام —
+ * فالمشتري العربي يقرأ الصفّ بلمحة لأنه رآه قبلاً في كل متجر تعامل معه.
+ *
+ * ولكل دور لون من رموز اللوحة لا لون علامة تجارية: يظلّ الصفّ متناغماً مع
+ * القالب أيّاً كانت اللوحة، ولا يشحن القالب شعارات مملوكة لغيره.
+ *
+ * @return array<string,array>
+ */
+function matjar_pro_payment_groups() {
+	return array(
+		'cash'   => array(
+			'label' => __( 'نقداً عند الاستلام', 'matjar-pro' ),
+			'icon'  => 'cash',
+		),
+		'card'   => array(
+			'label' => __( 'البطاقات البنكية', 'matjar-pro' ),
+			'icon'  => 'card',
+		),
+		'wallet' => array(
+			'label' => __( 'المحافظ الرقمية', 'matjar-pro' ),
+			'icon'  => 'wallet',
+		),
+		'split'  => array(
+			'label' => __( 'قسّمها على دفعات', 'matjar-pro' ),
+			'icon'  => 'split',
+		),
+	);
+}
+
+/**
  * شارات الثقة وطرق الدفع المتاحة للتاجر.
  *
  * القالب منتج عام: التاجر يُفعّل ما يخصّ سوقه فقط. الافتراضيات المُعلَّمة
  * هنا تناسب العرض التجريبي السعودي، ولا تفرض شيئاً على غيره.
  *
+ * الترتيب هو ترتيب العرض: الدفع عند الاستلام أولاً لأنه ما يفتح الثقة
+ * للمشتري الذي يشتري من المتجر أول مرة، ثم البطاقات ثم المحافظ ثم التقسيط.
+ *
  * @return array<string,array>
  */
 function matjar_pro_badge_choices() {
 	return array(
-		'applepay'   => array(
-			'label'   => __( 'Apple Pay', 'matjar-pro' ),
+		'cod'        => array(
+			'label'   => __( 'الدفع عند الاستلام', 'matjar-pro' ),
+			'group'   => 'cash',
+			'note'    => __( 'ادفع نقداً للمندوب عند وصول الطلب', 'matjar-pro' ),
 			'default' => true,
 		),
 		'mada'       => array(
 			'label'   => __( 'مدى', 'matjar-pro' ),
+			'group'   => 'card',
 			'default' => true,
 		),
 		'visa'       => array(
 			'label'   => __( 'Visa', 'matjar-pro' ),
+			'group'   => 'card',
 			'default' => true,
 		),
 		'mastercard' => array(
 			'label'   => __( 'Mastercard', 'matjar-pro' ),
+			'group'   => 'card',
 			'default' => true,
-		),
-		'tabby'      => array(
-			'label'   => __( 'تابي', 'matjar-pro' ),
-			'default' => true,
-		),
-		'tamara'     => array(
-			'label'   => __( 'تمارا', 'matjar-pro' ),
-			'default' => true,
-		),
-		'stcpay'     => array(
-			'label'   => __( 'STC Pay', 'matjar-pro' ),
-			'default' => false,
 		),
 		'knet'       => array(
 			'label'   => __( 'KNET', 'matjar-pro' ),
+			'group'   => 'card',
 			'default' => false,
 		),
 		'benefit'    => array(
 			'label'   => __( 'BENEFIT', 'matjar-pro' ),
+			'group'   => 'card',
+			'default' => false,
+		),
+		'applepay'   => array(
+			'label'   => __( 'Apple Pay', 'matjar-pro' ),
+			'group'   => 'wallet',
+			'default' => true,
+		),
+		'stcpay'     => array(
+			'label'   => __( 'STC Pay', 'matjar-pro' ),
+			'group'   => 'wallet',
 			'default' => false,
 		),
 		'paypal'     => array(
 			'label'   => __( 'PayPal', 'matjar-pro' ),
+			'group'   => 'wallet',
 			'default' => false,
 		),
-		'cod'        => array(
-			'label'   => __( 'الدفع عند الاستلام', 'matjar-pro' ),
+		'tabby'      => array(
+			'label'   => __( 'تابي', 'matjar-pro' ),
+			'group'   => 'split',
+			'default' => true,
+		),
+		'tamara'     => array(
+			'label'   => __( 'تمارا', 'matjar-pro' ),
+			'group'   => 'split',
 			'default' => true,
 		),
 	);
@@ -379,4 +436,52 @@ function matjar_pro_active_badges() {
 	}
 
 	return $active;
+}
+
+/**
+ * طرق الدفع المُفعَّلة مُجمَّعة بأدوارها.
+ *
+ * تُعيد المجموعات غير الفارغة فقط وبترتيب matjar_pro_payment_groups، فلا
+ * يُطبع عنوان مجموعة لا وسيلة تحتها.
+ *
+ * @return array<string,array> دور => array( label، icon، methods )
+ */
+function matjar_pro_grouped_payment_methods() {
+	$choices = matjar_pro_badge_choices();
+	$active  = matjar_pro_active_badges();
+	$out     = array();
+
+	foreach ( matjar_pro_payment_groups() as $group => $meta ) {
+		$methods = array();
+
+		foreach ( $active as $slug => $label ) {
+			if ( ( $choices[ $slug ]['group'] ?? '' ) !== $group ) {
+				continue;
+			}
+
+			$methods[ $slug ] = array(
+				'label' => $label,
+				'note'  => $choices[ $slug ]['note'] ?? '',
+			);
+		}
+
+		if ( $methods ) {
+			$out[ $group ] = array(
+				'label'   => $meta['label'],
+				'icon'    => $meta['icon'],
+				'methods' => $methods,
+			);
+		}
+	}
+
+	return $out;
+}
+
+/**
+ * هل الدفع عند الاستلام مُفعَّل.
+ *
+ * @return bool
+ */
+function matjar_pro_has_cod() {
+	return array_key_exists( 'cod', matjar_pro_active_badges() );
 }

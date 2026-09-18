@@ -194,20 +194,99 @@ function matjar_pro_customize_register( $wp_customize ) {
 		)
 	);
 
-	foreach ( matjar_pro_badge_choices() as $slug => $badge ) {
+	// الاختيارات مرتّبة بأدوارها، فيرى التاجر في الإعدادات التجميع نفسه
+	// الذي سيراه المشتري في الصفحة.
+	$mp_groups   = matjar_pro_payment_groups();
+	$mp_choices  = matjar_pro_badge_choices();
+	$mp_priority = 10;
+
+	foreach ( $mp_groups as $mp_group => $mp_meta ) {
+		foreach ( $mp_choices as $slug => $badge ) {
+			if ( ( $badge['group'] ?? '' ) !== $mp_group ) {
+				continue;
+			}
+
+			$wp_customize->add_setting(
+				'matjar_pro_badge_' . $slug,
+				array(
+					'default'           => $badge['default'],
+					'sanitize_callback' => 'matjar_pro_sanitize_checkbox',
+				)
+			);
+			$wp_customize->add_control(
+				'matjar_pro_badge_' . $slug,
+				array(
+					/* translators: 1: اسم وسيلة الدفع. 2: دورها. */
+					'label'    => sprintf( __( '%1$s — %2$s', 'matjar-pro' ), $badge['label'], $mp_meta['label'] ),
+					'section'  => 'matjar_pro_badges',
+					'type'     => 'checkbox',
+					'priority' => $mp_priority,
+				)
+			);
+
+			$mp_priority += 10;
+		}
+	}
+
+	$wp_customize->add_setting(
+		'matjar_pro_cod_note',
+		array(
+			'default'           => $defaults['matjar_pro_cod_note'],
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
+	$wp_customize->add_control(
+		'matjar_pro_cod_note',
+		array(
+			'label'       => __( 'سطر شرح الدفع عند الاستلام', 'matjar-pro' ),
+			'description' => __( 'يظهر تحت عنوان الوسيلة في صفحة المنتج والسلة وقائمة بوابات الدفع. اتركه فارغاً لإخفائه.', 'matjar-pro' ),
+			'section'     => 'matjar_pro_badges',
+			'type'        => 'text',
+			'priority'    => 200,
+		)
+	);
+
+	foreach ( array(
+		'matjar_pro_payment_on_product' => __( 'إظهار طرق الدفع في صفحة المنتج', 'matjar-pro' ),
+		'matjar_pro_payment_in_cart'    => __( 'إظهار طرق الدفع في السلة', 'matjar-pro' ),
+	) as $mp_key => $mp_label ) {
 		$wp_customize->add_setting(
-			'matjar_pro_badge_' . $slug,
+			$mp_key,
 			array(
-				'default'           => $badge['default'],
+				'default'           => $defaults[ $mp_key ],
 				'sanitize_callback' => 'matjar_pro_sanitize_checkbox',
 			)
 		);
 		$wp_customize->add_control(
-			'matjar_pro_badge_' . $slug,
+			$mp_key,
 			array(
-				'label'   => $badge['label'],
-				'section' => 'matjar_pro_badges',
-				'type'    => 'checkbox',
+				'label'    => $mp_label,
+				'section'  => 'matjar_pro_badges',
+				'type'     => 'checkbox',
+				'priority' => 210,
+			)
+		);
+	}
+
+	foreach ( array(
+		'matjar_pro_returns_label' => __( 'ضمان الإرجاع', 'matjar-pro' ),
+		'matjar_pro_secure_label'  => __( 'ضمان أمان الدفع', 'matjar-pro' ),
+	) as $mp_key => $mp_label ) {
+		$wp_customize->add_setting(
+			$mp_key,
+			array(
+				'default'           => $defaults[ $mp_key ],
+				'sanitize_callback' => 'sanitize_text_field',
+			)
+		);
+		$wp_customize->add_control(
+			$mp_key,
+			array(
+				'label'       => $mp_label,
+				'description' => __( 'يظهر شارةً أسفل طرق الدفع في صفحة المنتج. اتركه فارغاً لإخفائه.', 'matjar-pro' ),
+				'section'     => 'matjar_pro_badges',
+				'type'        => 'text',
+				'priority'    => 220,
 			)
 		);
 	}

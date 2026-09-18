@@ -54,6 +54,29 @@ if ( ! function_exists( 'esc_url' ) ) {
 require_once dirname( __DIR__ ) . '/inc/helpers.php';
 require_once dirname( __DIR__ ) . '/inc/tokens.php';
 
+/**
+ * يمزج لوناً بخلفية بنسبة شفافية.
+ *
+ * كتل طرق الدفع تُبنى بخلفيات شفّافة فوق السطح (‎pay-cash/0.07‎ مثلاً)، وما
+ * يراه المستخدم هو الناتج المُركَّب لا اللون الأصلي. لذلك يُفحص المزيج.
+ *
+ * @param string $hex   اللون الأمامي.
+ * @param string $over  الخلفية.
+ * @param float  $alpha الشفافية.
+ * @return string
+ */
+function mp_blend( $hex, $over, $alpha ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
+	$a = matjar_pro_hex_to_rgb( $hex );
+	$b = matjar_pro_hex_to_rgb( $over );
+
+	return sprintf(
+		'#%02X%02X%02X',
+		(int) round( $a[0] * $alpha + $b[0] * ( 1 - $alpha ) ),
+		(int) round( $a[1] * $alpha + $b[1] * ( 1 - $alpha ) ),
+		(int) round( $a[2] * $alpha + $b[2] * ( 1 - $alpha ) )
+	);
+}
+
 $failures = 0;
 $total    = 0;
 
@@ -74,9 +97,24 @@ foreach ( matjar_pro_palettes() as $name => $palette ) {
 		array( 'sale badge + white', '#FFFFFF', $t['sale'], 4.5 ),
 		array( 'success badge + white', '#FFFFFF', $t['success'], 4.5 ),
 		array( 'info badge + white', '#FFFFFF', $t['info'], 4.5 ),
-		array( 'amber badge + ink', $t['ink'], $t['amber'], 4.5 ),
+		// العنبري شريط تقدّم لا خلفية نص: حدّه 3:1 كرسم واجهة.
+		array( 'amber bar on card', $t['amber'], $t['surface'], 3.0 ),
+		array( 'ship bar fill on track', $t['amber'], $t['border'], 3.0 ),
 		array( 'accent graphic on card', $t['accent'], $t['surface'], 3.0 ),
 		array( 'accent graphic on ink', $t['accent-ink'], $t['ink'], 3.0 ),
+
+		// كتل طرق الدفع: النص فوق المزيج المُركَّب الذي يراه المستخدم.
+		array( 'COD label on COD card', $t['success'], mp_blend( $t['success'], $t['surface'], 0.07 ), 4.5 ),
+		array( 'COD note on COD card', $t['text'], mp_blend( $t['success'], $t['surface'], 0.07 ), 4.5 ),
+		array( 'COD tick + white', '#FFFFFF', $t['success'], 4.5 ),
+		array( 'COD gateway label', $t['ink'], mp_blend( $t['success'], $t['surface'], 0.07 ), 4.5 ),
+		array( 'card group icon', $t['info'], mp_blend( $t['info'], $t['surface'], 0.10 ), 3.0 ),
+		array( 'wallet group icon', $t['ink'], mp_blend( $t['ink'], $t['surface'], 0.08 ), 3.0 ),
+		array( 'split group icon', $t['bnpl'], mp_blend( $t['bnpl'], $t['surface'], 0.10 ), 3.0 ),
+		array( 'split mark text', $t['bnpl'], mp_blend( $t['bnpl'], $t['surface'], 0.07 ), 4.5 ),
+		array( 'BNPL line on block', $t['bnpl'], mp_blend( $t['bnpl'], $t['surface'], 0.07 ), 4.5 ),
+		array( 'pay mark text on cream', $t['text'], $t['bg'], 4.5 ),
+		array( 'saved pill on card', $t['sale'], mp_blend( $t['sale'], $t['surface'], 0.08 ), 4.5 ),
 	);
 
 	foreach ( $pairs as $pair ) {

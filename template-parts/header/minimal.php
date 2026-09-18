@@ -11,10 +11,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$mp_badges = array_intersect_key(
-	matjar_pro_active_badges(),
-	array_flip( array( 'applepay', 'mada', 'visa', 'mastercard', 'cod' ) )
-);
 ?>
 <header class="mp-checkout-header">
 	<div class="mx-auto flex h-14 max-w-screen-md items-center gap-2 px-3">
@@ -42,13 +38,20 @@ $mp_badges = array_intersect_key(
 		</span>
 	</div>
 
-	<?php if ( ! empty( $mp_badges ) ) : ?>
-		<div class="mp-checkout-header__badges">
-			<?php foreach ( $mp_badges as $mp_slug => $mp_label ) : ?>
-				<span class="mp-pill mp-pill--outline mp-badge--<?php echo esc_attr( $mp_slug ); ?>">
-					<?php echo esc_html( $mp_label ); ?>
-				</span>
-			<?php endforeach; ?>
-		</div>
-	<?php endif; ?>
+	<?php
+	/*
+	 * الشريط كامل لا منتقىً: كان يُخفي التقسيط في القُمع، فيصل الزائر إلى
+	 * الخطوة الأخيرة ليكتشف خياراً لم يعلم به. ما يراه في صفحة المنتج هو
+	 * ما يراه هنا.
+	 */
+	?>
+	<div class="mp-checkout-header__badges">
+		<?php
+		get_template_part(
+			'template-parts/payment/methods',
+			null,
+			array( 'variant' => 'funnel' )
+		);
+		?>
+	</div>
 </header>

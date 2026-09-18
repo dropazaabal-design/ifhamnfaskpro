@@ -89,6 +89,20 @@ $mp_progress = matjar_pro_free_shipping_progress();
 	<?php do_action( 'woocommerce_mini_cart_contents' ); ?>
 
 	<div class="mp-mini-cart__foot">
+		<?php
+		/*
+		 * طرق الدفع قبل زر الإتمام لا بعده: السؤال «كيف أدفع؟» يأتي في
+		 * اللحظة التي يتردّد فيها الزائر أمام الزر، لا بعد أن يضغطه.
+		 */
+		if ( matjar_pro_mod( 'matjar_pro_payment_in_cart' ) ) {
+			get_template_part(
+				'template-parts/payment/methods',
+				null,
+				array( 'variant' => 'row' )
+			);
+		}
+		?>
+
 		<div class="mp-mini-cart__total">
 			<span><?php esc_html_e( 'الإجمالي', 'matjar-pro' ); ?></span>
 			<strong><?php echo wp_kses_post( WC()->cart->get_cart_subtotal() ); ?></strong>

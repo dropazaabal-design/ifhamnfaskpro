@@ -89,12 +89,17 @@ $mp_whatsapp = preg_replace( '/[^0-9]/', '', (string) matjar_pro_mod( 'matjar_pr
 			<?php endif; ?>
 
 			<?php if ( ! empty( $mp_badges ) ) : ?>
-				<div class="mb-6 flex flex-wrap gap-1.5" aria-label="<?php esc_attr_e( 'طرق الدفع المتاحة', 'matjar-pro' ); ?>">
-					<?php foreach ( $mp_badges as $mp_slug => $mp_label ) : ?>
-						<span class="mp-badge mp-badge--<?php echo esc_attr( $mp_slug ); ?>">
-							<?php echo esc_html( $mp_label ); ?>
-						</span>
-					<?php endforeach; ?>
+				<div class="mb-6">
+					<?php
+					get_template_part(
+						'template-parts/payment/methods',
+						null,
+						array(
+							'variant' => 'row',
+							'dark'    => true,
+						)
+					);
+					?>
 				</div>
 			<?php endif; ?>
 

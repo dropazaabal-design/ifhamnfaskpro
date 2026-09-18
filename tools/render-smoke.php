@@ -175,7 +175,18 @@ function the_custom_logo() {}                                  // phpcs:ignore
 function has_nav_menu( $l ) { return in_array( $l, array( 'primary', 'footer', 'legal' ), true ); } // phpcs:ignore
 function wp_nav_menu( $a = array() ) { printf( '<ul class="%s"><li><a href="#">عنصر</a></li></ul>', esc_attr( $a['menu_class'] ?? '' ) ); } // phpcs:ignore
 function number_format_i18n( $n ) { return (string) $n; }      // phpcs:ignore
-function wp_date( $f, $t = null ) { return gmdate( $f, $t ?? time() ); } // phpcs:ignore
+function wp_date( $f, $t = null ) {                            // phpcs:ignore
+	// ووردبريس العربي يُعرِّب أسماء الشهور؛ الاسم الإنجليزي هنا يُضلّل عن
+	// القالب لا عنه، فتُستبدل الشهور في المعاينة.
+	$months = array(
+		'January' => 'يناير', 'February' => 'فبراير', 'March' => 'مارس',
+		'April' => 'أبريل', 'May' => 'مايو', 'June' => 'يونيو',
+		'July' => 'يوليو', 'August' => 'أغسطس', 'September' => 'سبتمبر',
+		'October' => 'أكتوبر', 'November' => 'نوفمبر', 'December' => 'ديسمبر',
+	);
+
+	return str_replace( array_keys( $months ), array_values( $months ), gmdate( $f, $t ?? time() ) );
+}
 function current_time( $t ) { return time(); }                 // phpcs:ignore
 function is_active_sidebar( $id ) { return false; }            // phpcs:ignore
 function dynamic_sidebar( $id ) {}                             // phpcs:ignore

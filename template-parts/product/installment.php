@@ -22,7 +22,7 @@ $mp_badges = array_intersect_key(
 );
 ?>
 <div class="mp-single__bnpl">
-	<p class="m-0 text-sm font-bold text-[#7C2D12]"><?php echo wp_kses_post( $mp_line ); ?></p>
+	<p class="mp-bnpl__line"><?php echo wp_kses_post( $mp_line ); ?></p>
 
 	<?php if ( ! empty( $mp_badges ) ) : ?>
 		<div class="flex flex-wrap items-center gap-1.5">

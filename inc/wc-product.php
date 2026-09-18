@@ -102,7 +102,7 @@ function matjar_pro_single_price() {
 
 		if ( $saved > 0 ) {
 			printf(
-				'<span class="mp-pill mp-pill--success mp-single__saved">%1$s %2$s</span>',
+				'<span class="mp-pill mp-pill--discount mp-single__saved">%1$s %2$s</span>',
 				matjar_pro_get_icon( 'tag', array( 'size' => 13 ) ),
 				wp_kses_post(
 					sprintf(

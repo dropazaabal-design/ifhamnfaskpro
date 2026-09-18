@@ -37,6 +37,8 @@ module.exports = {
 		'form-row',
 		'input-text',
 		'required',
+		// يُبنى في مرشِّح PHP لا في القالب، فلا يراه مُحلّل Tailwind.
+		'mp-optional',
 		'star-rating',
 		'stars',
 		'price',
@@ -46,6 +48,8 @@ module.exports = {
 		// السلة والدفع: كلها من مخرَج ووكومرس لا من قوالبنا.
 		'wc_payment_methods',
 		'wc_payment_method',
+		// معرّف بوابة الدفع عند الاستلام: ووكومرس يبنيه، فلا يراه المُحلّل.
+		'payment_method_cod',
 		'payment_box',
 		'woocommerce-checkout-payment',
 		'woocommerce-terms-and-conditions-wrapper',
@@ -128,8 +132,9 @@ module.exports = {
 				'2xl': '1rem',
 			},
 			boxShadow: {
-				bar: '0 -6px 20px -12px rgb(15 30 51 / 0.28)',
-				card: '0 2px 10px -6px rgb(15 30 51 / 0.18)',
+				// مشتقّ من حبر اللوحة: ظلّ كحلي تحت لوحة دافئة يُقرأ غريباً.
+				bar: '0 -6px 20px -12px rgb(var(--mp-shadow) / 0.28)',
+				card: '0 2px 10px -6px rgb(var(--mp-shadow) / 0.18)',
 			},
 			maxWidth: {
 				'screen-xl': '1280px',

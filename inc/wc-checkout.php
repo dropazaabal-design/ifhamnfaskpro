@@ -285,3 +285,48 @@ function matjar_pro_continue_shopping_url() {
 	return wc_get_page_permalink( 'shop' );
 }
 add_filter( 'woocommerce_continue_shopping_redirect', 'matjar_pro_continue_shopping_url' );
+
+/**
+ * يشرح «الدفع عند الاستلام» في قائمة بوابات الدفع.
+ *
+ * ووكومرس يعرض عنوان البوابة وحده، فيقرأ الزائر «الدفع عند الاستلام» ولا
+ * يعرف إن كان سيدفع للمندوب أم يُحوِّل لاحقاً. السطر يُضاف فقط إن لم يكتب
+ * التاجر وصفاً بنفسه: إعداده في ووكومرس أحقّ من إعداد القالب.
+ *
+ * @param string $description وصف البوابة.
+ * @param string $gateway_id  معرّف البوابة.
+ * @return string
+ */
+function matjar_pro_cod_description( $description, $gateway_id ) {
+	if ( 'cod' !== $gateway_id || '' !== trim( wp_strip_all_tags( (string) $description ) ) ) {
+		return $description;
+	}
+
+	$note = (string) matjar_pro_mod( 'matjar_pro_cod_note' );
+
+	if ( '' === $note ) {
+		return $description;
+	}
+
+	return '<span class="mp-cod-note">' . esc_html( $note ) . '</span>';
+}
+add_filter( 'woocommerce_gateway_description', 'matjar_pro_cod_description', 10, 2 );
+
+/**
+ * طرق الدفع في صفحة السلة، فوق زر الإتمام.
+ *
+ * الموضع نفسه الذي تشغله في لوح السلة، فلا يختلف ترتيب ما يراه الزائر بين
+ * اللوح والصفحة.
+ */
+function matjar_pro_cart_payment_row() {
+	if ( ! matjar_pro_mod( 'matjar_pro_payment_in_cart' ) ) {
+		return;
+	}
+
+	get_template_part(
+		'template-parts/payment/methods',
+		null,
+		array( 'variant' => 'row' )
+	);
+}
+add_action( 'woocommerce_proceed_to_checkout', 'matjar_pro_cart_payment_row', 5 );
