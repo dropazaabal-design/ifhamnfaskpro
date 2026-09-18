@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Matjar Pro 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-18 16:00+0000\n"
+"POT-Creation-Date: 2026-09-18 18:53+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Generator: matjar-pro tools/make-pot.php\n"
 "X-Domain: matjar-pro\n"
 
-#: inc/customizer.php:277
+#: inc/customizer.php:281
 msgid "%1$s — %2$s"
 msgstr ""
 
@@ -35,39 +35,39 @@ msgstr[1] ""
 msgid "(اختياري)"
 msgstr ""
 
-#: inc/helpers.php:488
+#: inc/helpers.php:489
 msgid "Apple Pay"
 msgstr ""
 
-#: inc/helpers.php:483
+#: inc/helpers.php:484
 msgid "BENEFIT"
 msgstr ""
 
-#: inc/tokens.php:231
+#: inc/tokens.php:265
 msgid "Cairo متغيّر — الافتراضي، الأخف (‎63KB / ملفان)"
 msgstr ""
 
-#: inc/tokens.php:192
+#: inc/tokens.php:226
 msgid "IBM Plex Sans Arabic — أعلى مقروئية، أثقل (‎187KB / 6 ملفات)"
 msgstr ""
 
-#: inc/helpers.php:478
+#: inc/helpers.php:479
 msgid "KNET"
 msgstr ""
 
-#: inc/helpers.php:473
+#: inc/helpers.php:474
 msgid "Mastercard"
 msgstr ""
 
-#: inc/helpers.php:498
+#: inc/helpers.php:499
 msgid "PayPal"
 msgstr ""
 
-#: inc/helpers.php:493
+#: inc/helpers.php:494
 msgid "STC Pay"
 msgstr ""
 
-#: inc/helpers.php:468
+#: inc/helpers.php:469
 msgid "Visa"
 msgstr ""
 
@@ -87,11 +87,11 @@ msgid_plural "آخر %s قطع"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/tokens.php:106
+#: inc/tokens.php:140
 msgid "أحادي — إلكترونيات"
 msgstr ""
 
-#: inc/tokens.php:168
+#: inc/tokens.php:202
 msgid "أخضر زمردي"
 msgstr ""
 
@@ -108,10 +108,14 @@ msgid "أربع لوحات مُتحقَّق من تباينها بالكامل �
 msgstr ""
 
 #: inc/customizer.php:130
-msgid "أرضية الموقع. الأسطح والبطاقات تُشتَقّ منها، فتبقى متمايزة عنها."
+msgid "أرضية الموقع. الخلفيات متوسطة السطوع لا تحمل نصّاً مقروءاً، فيُدفع اللون إلى أقرب درجة تحمله."
 msgstr ""
 
-#: inc/tokens.php:173
+#: inc/tokens.php:106
+msgid "أزرق ملكي — عام وتقني"
+msgstr ""
+
+#: inc/tokens.php:207
 msgid "أسود كربوني"
 msgstr ""
 
@@ -132,11 +136,11 @@ msgstr ""
 msgid "أعلى سعر"
 msgstr ""
 
-#: inc/customizer.php:528
+#: inc/customizer.php:532
 msgid "أقل عدد أيام للتوصيل"
 msgstr ""
 
-#: inc/customizer.php:533
+#: inc/customizer.php:537
 msgid "أكثر عدد أيام للتوصيل"
 msgstr ""
 
@@ -152,7 +156,7 @@ msgstr ""
 msgid "أول طلب لك سيظهر هنا مع حالته ومواعيد توصيله."
 msgstr ""
 
-#: inc/customizer.php:325
+#: inc/customizer.php:329
 msgid "إبراز الدفع عند الاستلام ببطاقة مستقلّة"
 msgstr ""
 
@@ -177,11 +181,11 @@ msgstr ""
 msgid "إظهار الهيرو في الصفحة الأولى"
 msgstr ""
 
-#: inc/customizer.php:509
+#: inc/customizer.php:513
 msgid "إظهار سطر التقسيط في صفحة المنتج"
 msgstr ""
 
-#: inc/customizer.php:209
+#: inc/customizer.php:213
 msgid "إظهار شريط الإعلان"
 msgstr ""
 
@@ -189,11 +193,11 @@ msgstr ""
 msgid "إظهار شريط الثقة"
 msgstr ""
 
-#: inc/customizer.php:353
+#: inc/customizer.php:357
 msgid "إظهار طرق الدفع في السلة"
 msgstr ""
 
-#: inc/customizer.php:352
+#: inc/customizer.php:356
 msgid "إظهار طرق الدفع في صفحة المنتج"
 msgstr ""
 
@@ -205,7 +209,7 @@ msgstr ""
 msgid "إعدادات Matjar Pro"
 msgstr ""
 
-#: inc/customizer.php:472
+#: inc/customizer.php:476
 msgid "إعدادات التحويل"
 msgstr ""
 
@@ -229,7 +233,7 @@ msgstr ""
 msgid "إغلاق القائمة"
 msgstr ""
 
-#: inc/helpers.php:361
+#: inc/helpers.php:362
 msgid "إكس"
 msgstr ""
 
@@ -237,7 +241,7 @@ msgstr ""
 msgid "إلغاء الاختيار"
 msgstr ""
 
-#: inc/helpers.php:349
+#: inc/helpers.php:350
 msgid "إنستغرام"
 msgstr ""
 
@@ -265,7 +269,7 @@ msgstr ""
 msgid "اتركه فارغاً ليتجه إلى صفحة المتجر."
 msgstr ""
 
-#: inc/customizer.php:227
+#: inc/customizer.php:231
 msgid "اتركه فارغاً ليُبنى تلقائياً من حدّ الشحن المجاني بعملة متجرك."
 msgstr ""
 
@@ -273,7 +277,7 @@ msgstr ""
 msgid "اختر الخيارات"
 msgstr ""
 
-#: inc/helpers.php:459
+#: inc/helpers.php:460
 msgid "ادفع نقداً للمندوب عند وصول الطلب"
 msgstr ""
 
@@ -329,11 +333,11 @@ msgstr ""
 msgid "البريد الإلكتروني أو اسم المستخدم"
 msgstr ""
 
-#: inc/customizer.php:571
+#: inc/customizer.php:575
 msgid "البريد الإلكتروني اختياري في الدفع"
 msgstr ""
 
-#: inc/helpers.php:429
+#: inc/helpers.php:430
 msgid "البطاقات البنكية"
 msgstr ""
 
@@ -357,7 +361,7 @@ msgstr ""
 msgid "التنقل السريع"
 msgstr ""
 
-#: inc/customizer.php:572
+#: inc/customizer.php:576
 msgid "الجوال هو الهوية الفعلية في السوق المستهدف، وإجبار البريد يرفع ترك السلة. تنبيه: بعض بوّابات الدفع تطلب بريداً، ورسالة تأكيد الطلب لا تُرسل بدونه — أطفئه إن كانت بوّابتك تحتاجه."
 msgstr ""
 
@@ -381,11 +385,11 @@ msgstr ""
 msgid "الخانة الرابعة — أيقونة واتساب"
 msgstr ""
 
-#: inc/customizer.php:181
+#: inc/customizer.php:185
 msgid "الخط"
 msgstr ""
 
-#: inc/helpers.php:457
+#: inc/helpers.php:458
 msgid "الدفع عند الاستلام"
 msgstr ""
 
@@ -393,7 +397,7 @@ msgstr ""
 msgid "الرئيسية"
 msgstr ""
 
-#: footer.php:47 footer.php:119 inc/customizer.php:445
+#: footer.php:47 footer.php:119 inc/customizer.php:449
 msgid "الرقم الضريبي"
 msgstr ""
 
@@ -431,7 +435,7 @@ msgstr ""
 msgid "السلة"
 msgstr ""
 
-#: inc/customizer.php:134
+#: inc/customizer.php:138
 msgid "الشارات والعناصر الثانوية. لا يُستخدم للزر حتى لا يُزاحمه."
 msgstr ""
 
@@ -460,7 +464,7 @@ msgstr ""
 msgid "الطلب الجاري"
 msgstr ""
 
-#: inc/customizer.php:182
+#: inc/customizer.php:186
 msgid "العائلتان مرفقتان في القالب ومستضافتان ذاتياً، ولا يُحمَّل على الزائر إلا المختارة. لا اتصال بأي خدمة خطوط خارجية."
 msgstr ""
 
@@ -492,7 +496,7 @@ msgstr ""
 msgid "المجموع الفرعي"
 msgstr ""
 
-#: inc/helpers.php:433
+#: inc/helpers.php:434
 msgid "المحافظ الرقمية"
 msgstr ""
 
@@ -516,7 +520,7 @@ msgstr ""
 msgid "الوصف"
 msgstr ""
 
-#: inc/customizer.php:489
+#: inc/customizer.php:493
 msgid "بعملة متجرك الحالية (%s). صفر يعني تعطيل شريط تقدّم الشحن."
 msgstr ""
 
@@ -524,7 +528,11 @@ msgstr ""
 msgid "بلاطتا الترويج"
 msgstr ""
 
-#: inc/customizer.php:437
+#: inc/tokens.php:120
+msgid "بنفسجي — عناية وعطور"
+msgstr ""
+
+#: inc/customizer.php:441
 msgid "بيانات المتجر"
 msgstr ""
 
@@ -536,7 +544,7 @@ msgstr ""
 msgid "تابعنا على"
 msgstr ""
 
-#: inc/helpers.php:503
+#: inc/helpers.php:504
 msgid "تابي"
 msgstr ""
 
@@ -580,7 +588,7 @@ msgstr ""
 msgid "تطبيق"
 msgstr ""
 
-#: inc/customizer.php:402
+#: inc/customizer.php:406
 msgid "تظهر أيقونةً في التذييل. اترك الحقل فارغاً ولا تُطبع أيقونته إطلاقاً."
 msgstr ""
 
@@ -588,7 +596,7 @@ msgstr ""
 msgid "تظهر في الصفحة الأولى تحت بلاطات الترويج، وتُسحب أفقياً على الجوال."
 msgstr ""
 
-#: inc/customizer.php:438
+#: inc/customizer.php:442
 msgid "تظهر في الفوتر. عرض السجل التجاري والرقم الضريبي مطلب امتثال في عدة دول، وإشارة ثقة في كل الأحوال."
 msgstr ""
 
@@ -628,7 +636,7 @@ msgstr ""
 msgid "تم التسليم"
 msgstr ""
 
-#: inc/helpers.php:508
+#: inc/helpers.php:509
 msgid "تمارا"
 msgstr ""
 
@@ -648,11 +656,11 @@ msgstr ""
 msgid "تواصل معنا عبر واتساب"
 msgstr ""
 
-#: inc/customizer.php:619
+#: inc/customizer.php:623
 msgid "توصيل مجاني للطلبات فوق %s"
 msgstr ""
 
-#: inc/helpers.php:353
+#: inc/helpers.php:354
 msgid "تيك توك"
 msgstr ""
 
@@ -672,11 +680,11 @@ msgstr ""
 msgid "جرّب كلمة أخرى، أو تصفّح الأقسام من القائمة."
 msgstr ""
 
-#: inc/customizer.php:487
+#: inc/customizer.php:491
 msgid "حدّ الشحن المجاني"
 msgstr ""
 
-#: inc/customizer.php:523
+#: inc/customizer.php:527
 msgid "حدّ تحذير قلّة المخزون"
 msgstr ""
 
@@ -697,7 +705,7 @@ msgstr ""
 msgid "حسابي وطلباتي"
 msgstr ""
 
-#: inc/tokens.php:158
+#: inc/tokens.php:192
 msgid "حسب اللوحة المختارة"
 msgstr ""
 
@@ -734,7 +742,7 @@ msgstr ""
 msgid "رقم الجوال"
 msgstr ""
 
-#: inc/customizer.php:444
+#: inc/customizer.php:448
 msgid "رقم السجل التجاري"
 msgstr ""
 
@@ -747,11 +755,11 @@ msgstr ""
 msgid "رقم طلبك %s. سنتواصل معك لتأكيد التوصيل."
 msgstr ""
 
-#: inc/customizer.php:446
+#: inc/customizer.php:450
 msgid "رقم واتساب بالصيغة الدولية"
 msgstr ""
 
-#: inc/customizer.php:401
+#: inc/customizer.php:405
 msgid "روابط التواصل"
 msgstr ""
 
@@ -767,6 +775,10 @@ msgstr ""
 msgid "زيادة الكمية"
 msgstr ""
 
+#: inc/customizer.php:134
+msgid "سطح بطاقات المنتجات والحقول. اتركه فارغاً ليُشتَقّ من خلفية الصفحات."
+msgstr ""
+
 #: inc/front-page.php:279
 msgid "سطر التفصيل"
 msgstr ""
@@ -775,7 +787,7 @@ msgstr ""
 msgid "سطر الوصف"
 msgstr ""
 
-#: inc/customizer.php:343
+#: inc/customizer.php:347
 msgid "سطر شرح الدفع عند الاستلام"
 msgstr ""
 
@@ -795,7 +807,7 @@ msgstr ""
 msgid "سلتك فارغة"
 msgstr ""
 
-#: inc/helpers.php:357
+#: inc/helpers.php:358
 msgid "سناب شات"
 msgstr ""
 
@@ -804,7 +816,7 @@ msgstr ""
 msgid "سنتواصل معك على %s"
 msgstr ""
 
-#: inc/customizer.php:248
+#: inc/customizer.php:252
 msgid "شارات الثقة وطرق الدفع"
 msgstr ""
 
@@ -812,11 +824,11 @@ msgstr ""
 msgid "شريط الأكثر مبيعاً"
 msgstr ""
 
-#: inc/customizer.php:194
+#: inc/customizer.php:198
 msgid "شريط الإعلان العلوي"
 msgstr ""
 
-#: inc/customizer.php:580
+#: inc/customizer.php:584
 msgid "شريط التنقل السفلي على الجوال"
 msgstr ""
 
@@ -824,7 +836,7 @@ msgstr ""
 msgid "شريط الثقة"
 msgstr ""
 
-#: inc/customizer.php:579
+#: inc/customizer.php:583
 msgid "شريط الشراء الثابت في صفحة المنتج"
 msgstr ""
 
@@ -848,11 +860,11 @@ msgstr ""
 msgid "صورة الهيرو"
 msgstr ""
 
-#: inc/customizer.php:306
+#: inc/customizer.php:310
 msgid "صورة شارات الدفع"
 msgstr ""
 
-#: inc/customizer.php:307
+#: inc/customizer.php:311
 msgid "صورة واحدة تجمع شعارات وسائل الدفع، تحصل عليها من مزوّد الدفع. ترفعها هنا فتظهر بدل الشارات النصّية. القالب لا يشحن شعارات العلامات التجارية."
 msgstr ""
 
@@ -865,11 +877,11 @@ msgctxt "صيغة تاريخ موعد التوصيل"
 msgid "j F"
 msgstr ""
 
-#: inc/customizer.php:375
+#: inc/customizer.php:379
 msgid "ضمان أمان الدفع"
 msgstr ""
 
-#: inc/customizer.php:374
+#: inc/customizer.php:378
 msgid "ضمان الإرجاع"
 msgstr ""
 
@@ -897,7 +909,7 @@ msgstr ""
 msgid "طلبك الجاري"
 msgstr ""
 
-#: inc/customizer.php:518
+#: inc/customizer.php:522
 msgid "عدد دفعات التقسيط"
 msgstr ""
 
@@ -958,7 +970,7 @@ msgstr ""
 msgid "غير متوفر حالياً"
 msgstr ""
 
-#: inc/customizer.php:249
+#: inc/customizer.php:253
 msgid "فعّل ما يخصّ سوقك فقط. الشارات المُطفأة لا تُطبع في الصفحة إطلاقاً."
 msgstr ""
 
@@ -982,7 +994,7 @@ msgstr ""
 msgid "قائمة المتجر"
 msgstr ""
 
-#: inc/helpers.php:437
+#: inc/helpers.php:438
 msgid "قسّمها على دفعات"
 msgstr ""
 
@@ -996,7 +1008,7 @@ msgstr[1] ""
 msgid "قيد التجهيز"
 msgstr ""
 
-#: inc/tokens.php:163
+#: inc/tokens.php:197
 msgid "كحلي عميق"
 msgstr ""
 
@@ -1004,7 +1016,7 @@ msgstr ""
 msgid "كحلي عميق — الافتراضي"
 msgstr ""
 
-#: inc/tokens.php:120
+#: inc/tokens.php:154
 msgid "كربوني — متجر داكن"
 msgstr ""
 
@@ -1073,6 +1085,10 @@ msgid "لم يُضف بعد."
 msgstr ""
 
 #: inc/customizer.php:133
+msgid "لون أسطح البطاقات"
+msgstr ""
+
+#: inc/customizer.php:137
 msgid "لون الإبراز"
 msgstr ""
 
@@ -1092,7 +1108,7 @@ msgstr ""
 msgid "مثال: اتصل قبل الوصول"
 msgstr ""
 
-#: inc/helpers.php:463
+#: inc/helpers.php:464
 msgid "مدى"
 msgstr ""
 
@@ -1134,7 +1150,7 @@ msgstr ""
 msgid "مواصلة التصفّح"
 msgstr ""
 
-#: inc/customizer.php:326
+#: inc/customizer.php:330
 msgid "مُفعَّلاً: بطاقة بلون النقد وسطر شرح في صفحة المنتج والسلة والقُمع. مُطفأً: شارة نصّية كبقيّة الوسائل."
 msgstr ""
 
@@ -1151,7 +1167,7 @@ msgstr ""
 msgid "نسيت كلمة المرور؟"
 msgstr ""
 
-#: inc/customizer.php:226
+#: inc/customizer.php:230
 msgid "نص الشريط"
 msgstr ""
 
@@ -1167,7 +1183,7 @@ msgstr ""
 msgid "نفدت الكمية"
 msgstr ""
 
-#: inc/helpers.php:425
+#: inc/helpers.php:426
 msgid "نقداً عند الاستلام"
 msgstr ""
 
@@ -1204,11 +1220,11 @@ msgstr ""
 msgid "يجب تسجيل الدخول لإتمام الطلب."
 msgstr ""
 
-#: inc/customizer.php:344
+#: inc/customizer.php:348
 msgid "يظهر تحت عنوان الوسيلة في صفحة المنتج والسلة وقائمة بوابات الدفع. اتركه فارغاً لإخفائه."
 msgstr ""
 
-#: inc/customizer.php:388
+#: inc/customizer.php:392
 msgid "يظهر شارةً أسفل طرق الدفع في صفحة المنتج. اتركه فارغاً لإخفائه."
 msgstr ""
 
@@ -1220,7 +1236,7 @@ msgstr ""
 msgid "يظهر في صفحة الأقسام على الشاشات الكبيرة، وكلوح فلترة سفلي على الجوال."
 msgstr ""
 
-#: inc/helpers.php:365
+#: inc/helpers.php:366
 msgid "يوتيوب"
 msgstr ""
 
@@ -1232,7 +1248,7 @@ msgstr ""
 msgid "يوصلك في %s"
 msgstr ""
 
-#: inc/customizer.php:510
+#: inc/customizer.php:514
 msgid "يُحسب القسط بقسمة السعر ويُنسَّق بعملة متجرك عبر ووكومرس."
 msgstr ""
 

@@ -102,6 +102,40 @@ function matjar_pro_palettes() {
 				)
 			),
 		),
+		'royal'   => array(
+			'label'  => __( 'أزرق ملكي — عام وتقني', 'matjar-pro' ),
+			'tokens' => array_merge(
+				$neutral,
+				$semantic,
+				array(
+					'cta'        => '#334FB4',   // Dawn scheme-5 background
+					'cta-hover'  => '#0043CE',   // Carbon blue-70
+					'accent'     => '#005BD3',   // Polaris emphasis
+					'accent-ink' => '#0F62FE',   // Carbon blue-60
+					'progress'   => '#005BD3',
+				)
+			),
+		),
+		'violet'  => array(
+			'label'  => __( 'بنفسجي — عناية وعطور', 'matjar-pro' ),
+			'tokens' => array_merge(
+				$neutral,
+				$semantic,
+				array(
+					'cta'        => '#7F54B3',   // WooCommerce Storefront accent
+					'cta-hover'  => '#6C4798',   // مُشتَقّ: أغمق ١٥٪
+					'accent'     => '#7F54B3',
+					'accent-ink' => '#B48FE0',   // مُشتَقّ ليعبر على السطح المعكوس
+					'progress'   => '#7F54B3',
+					/*
+					 * التقسيط أزرق في هذه اللوحة وحدها: لونه الافتراضي بنفسجي
+					 * ووكومرس نفسه، وهو هنا لون الزر — فلو بقي بنفسجياً
+					 * لالتبس سطرُ التقسيط بزرّ الشراء.
+					 */
+					'bnpl'       => '#005BD3',   // Polaris emphasis
+				)
+			),
+		),
 		'mono'    => array(
 			'label'  => __( 'أحادي — إلكترونيات', 'matjar-pro' ),
 			'tokens' => array_merge(
@@ -301,13 +335,15 @@ function matjar_pro_resolved_tokens() {
 	 */
 	$primary = matjar_pro_custom_color( 'matjar_pro_color_primary' );
 	$page    = matjar_pro_custom_color( 'matjar_pro_color_bg' );
+	$surface = matjar_pro_custom_color( 'matjar_pro_color_surface' );
 
-	if ( '' !== $primary || '' !== $page ) {
+	if ( '' !== $primary || '' !== $page || '' !== $surface ) {
 		$tokens = array_merge(
 			$tokens,
 			matjar_pro_derive_neutrals(
 				'' !== $primary ? $primary : $tokens['ink'],
-				'' !== $page ? $page : $tokens['bg']
+				'' !== $page ? $page : $tokens['bg'],
+				'' !== $surface ? $surface : ''
 			)
 		);
 	}
@@ -570,46 +606,65 @@ function matjar_pro_ensure_contrast_on_tint( $hex, $surface, $minimum = 4.5, $al
 }
 
 /**
- * يدفع لون الخلفية حتى يصبح قادراً على حمل نصّ مقروء.
+ * يدفع الأرضية والسطح حتى يصبحا قادرين على حمل نصّ مقروء.
  *
  * بعض الألوان لا تحمل نصّاً يعبر ٤٫٥:١ إطلاقاً — لا بالأسود ولا بالأبيض.
- * ‎#5E71B3‎ مثلاً أقصى تباين عليه ٤٫٤٩ بالأسود و٤٫٦٨ بالأبيض، وسطحه
- * المشتَقّ يعكس الترتيب، فلا يوجد لون نصّ واحد يعبر على الاثنين. المسألة
- * حسابية لا خطأ في الحساب: الخلفيات متوسطة السطوع منطقة ميّتة.
+ * ‎#5E71B3‎ مثلاً أقصى تباين عليه ٤٫٤٩ بالأسود و٤٫٦٨ بالأبيض، وسطحه يعكس
+ * الترتيب، فلا يوجد لون نصّ واحد يعبر على الاثنين. المسألة حسابية لا خطأ
+ * في الحساب: الخلفيات متوسطة السطوع منطقة ميّتة.
  *
- * فيُدفع لون الخلفية نفسه إلى أقرب درجة تحمل نصّاً، بدل أن يُبحَث عن نصّ
- * غير موجود. التاجر يرى لوناً قريباً من اختياره، ولا يرى متجراً لا يُقرأ.
+ * فتُدفَع الأرضية والسطح معاً في الاتجاه نفسه إلى أقرب درجة يحملان فيها
+ * نصّاً، بدل أن يُبحَث عن نصّ غير موجود. والشرط يشمل الطبقات الشفّافة:
+ * كتلة ملوّنة بشفافية ٠٫٠٨ تُزيح السطوع قليلاً، وهذا القليل يكفي لإسقاط
+ * زوج عند الحدّ.
  *
- * @param string $page    لون الخلفية المطلوب.
+ * @param string $page    لون الأرضية المطلوب.
+ * @param string $surface لون الأسطح، أو '' ليُشتَقّ من الأرضية.
  * @param float  $minimum حدّ التباين المطلوب للنص العادي.
- * @return string
+ * @return array{0:string,1:string} الأرضية والسطح بعد الدفع.
  */
-function matjar_pro_usable_ground( $page, $minimum = 4.5 ) {
+function matjar_pro_usable_grounds( $page, $surface = '', $minimum = 4.5 ) {
 	$dark = matjar_pro_relative_luminance( $page ) <= 0.35;
 
 	for ( $i = 0; $i <= 100; $i += 3 ) {
-		$candidate = 0 === $i
-			? strtoupper( $page )
-			: ( $dark ? matjar_pro_darken( $page, $i ) : matjar_pro_lighten( $page, $i ) );
+		$push = static function ( $hex ) use ( $i, $dark ) {
+			if ( 0 === $i ) {
+				return strtoupper( $hex );
+			}
 
-		$surface = $dark ? matjar_pro_lighten( $candidate, 7 ) : '#FFFFFF';
+			return $dark ? matjar_pro_darken( $hex, $i ) : matjar_pro_lighten( $hex, $i );
+		};
 
-		// يجب أن يعبر لونُ نصٍّ واحد على الخلفية وعلى السطح معاً: نصّ يعبر
-		// على الأرضية ويسقط على البطاقة لا يحلّ شيئاً.
+		$candidate_page = $push( $page );
+
+		$candidate_surface = '' !== $surface
+			? $push( $surface )
+			: ( $dark ? matjar_pro_lighten( $candidate_page, 7 ) : '#FFFFFF' );
+
 		foreach ( array( '#000000', '#FFFFFF' ) as $candidate_text ) {
-			// والطبقات الشفّافة كذلك: كتلة ملوّنة بشفافية ٠٫٠٨ فوق السطح
-			// تُزيح سطوعه قليلاً، وهذا القليل يكفي لإسقاط زوج عند الحدّ.
-			$tint = matjar_pro_blend( $candidate_text, $surface );
+			$grounds = array(
+				$candidate_page,
+				$candidate_surface,
+				matjar_pro_blend( $candidate_text, $candidate_page ),
+				matjar_pro_blend( $candidate_text, $candidate_surface ),
+			);
 
-			if ( matjar_pro_contrast_ratio( $candidate_text, $candidate ) >= $minimum
-				&& matjar_pro_contrast_ratio( $candidate_text, $surface ) >= $minimum
-				&& matjar_pro_contrast_ratio( $candidate_text, $tint ) >= $minimum ) {
-				return $candidate;
+			$passes = true;
+
+			foreach ( $grounds as $ground ) {
+				if ( matjar_pro_contrast_ratio( $candidate_text, $ground ) < $minimum ) {
+					$passes = false;
+					break;
+				}
+			}
+
+			if ( $passes ) {
+				return array( $candidate_page, $candidate_surface );
 			}
 		}
 	}
 
-	return $dark ? '#0B0F14' : '#FFFFFF';
+	return $dark ? array( '#0B0F14', '#171C22' ) : array( '#FFFFFF', '#F3F3F3' );
 }
 
 /**
@@ -623,13 +678,11 @@ function matjar_pro_usable_ground( $page, $minimum = 4.5 ) {
  * @param string $page    لون خلفية الصفحة.
  * @return array
  */
-function matjar_pro_derive_neutrals( $primary, $page ) {
-	// أوّل خطوة: أن تكون الأرضية قادرة على حمل نصّ أصلاً.
-	$page = matjar_pro_usable_ground( $page );
-	$dark = matjar_pro_relative_luminance( $page ) <= 0.35;
+function matjar_pro_derive_neutrals( $primary, $page, $surface = '' ) {
+	// أوّل خطوة: أن تكون الأرضية والسطح قادرين على حمل نصّ أصلاً.
+	list( $page, $surface ) = matjar_pro_usable_grounds( $page, $surface );
 
-	// الأسطح ورقة أفتح (أو أغمق) من الصفحة بقليل، فيتمايز الكرت عن الأرضية.
-	$surface = $dark ? matjar_pro_lighten( $page, 7 ) : '#FFFFFF';
+	$dark    = matjar_pro_relative_luminance( $page ) <= 0.35;
 	$grounds = array( $page, $surface );
 
 	// العناوين أكبر ما يُقرأ في الصفحة، ولا يكفيها الحدّ الأدنى.

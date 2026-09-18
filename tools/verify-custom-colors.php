@@ -143,6 +143,7 @@ for ( $round = 0; $round < $rounds; $round++ ) {
 		'matjar_pro_cta_style'     => 'palette',
 		'matjar_pro_color_primary' => mp_random_color(),
 		'matjar_pro_color_bg'      => $bg,
+		'matjar_pro_color_surface' => 0 === $round % 3 ? mp_random_color() : '',
 		'matjar_pro_color_cta'     => mp_random_color(),
 		'matjar_pro_color_accent'  => mp_random_color(),
 	);
@@ -157,13 +158,14 @@ for ( $round = 0; $round < $rounds; $round++ ) {
 
 		if ( $ratio < $minimum ) {
 			$failures[] = sprintf(
-				"%-20s %5.2f < %.1f  |  primary %s  bg %s  cta %s  accent %s",
+				"%-20s %5.2f < %.1f  |  primary %s  bg %s  cta %s  surface %s  accent %s",
 				$label,
 				$ratio,
 				$minimum,
 				$GLOBALS['mp_mods']['matjar_pro_color_primary'],
 				$GLOBALS['mp_mods']['matjar_pro_color_bg'],
 				$GLOBALS['mp_mods']['matjar_pro_color_cta'],
+				$GLOBALS['mp_mods']['matjar_pro_color_surface'],
 				$GLOBALS['mp_mods']['matjar_pro_color_accent']
 			);
 		}

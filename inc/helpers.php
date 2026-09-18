@@ -264,6 +264,7 @@ function matjar_pro_defaults() {
 		'matjar_pro_color_primary'           => '',
 		'matjar_pro_color_cta'               => '',
 		'matjar_pro_color_bg'                => '',
+		'matjar_pro_color_surface'           => '',
 		'matjar_pro_color_accent'            => '',
 
 		// طرق الدفع والضمانات

@@ -127,7 +127,11 @@ function matjar_pro_customize_register( $wp_customize ) {
 		),
 		'matjar_pro_color_bg'      => array(
 			'label'       => __( 'لون خلفية الصفحات', 'matjar-pro' ),
-			'description' => __( 'أرضية الموقع. الأسطح والبطاقات تُشتَقّ منها، فتبقى متمايزة عنها.', 'matjar-pro' ),
+			'description' => __( 'أرضية الموقع. الخلفيات متوسطة السطوع لا تحمل نصّاً مقروءاً، فيُدفع اللون إلى أقرب درجة تحمله.', 'matjar-pro' ),
+		),
+		'matjar_pro_color_surface' => array(
+			'label'       => __( 'لون أسطح البطاقات', 'matjar-pro' ),
+			'description' => __( 'سطح بطاقات المنتجات والحقول. اتركه فارغاً ليُشتَقّ من خلفية الصفحات.', 'matjar-pro' ),
 		),
 		'matjar_pro_color_accent'  => array(
 			'label'       => __( 'لون الإبراز', 'matjar-pro' ),
