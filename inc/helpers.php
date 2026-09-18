@@ -276,6 +276,23 @@ function matjar_pro_defaults() {
 		'matjar_pro_payment_on_product'      => true,
 		'matjar_pro_payment_in_cart'         => true,
 
+		// تطبيق ويب تقدّمي
+		'matjar_pro_pwa_enabled'             => false,
+		'matjar_pro_pwa_name'                => '',
+		'matjar_pro_pwa_short_name'          => '',
+		'matjar_pro_pwa_icon'                => 0,
+		'matjar_pro_pwa_offline_text'        => '',
+
+		// تعزيز التحويل
+		'matjar_pro_chat_script'             => '',
+		'matjar_pro_exit_enabled'            => false,
+		'matjar_pro_exit_title'              => 'لحظة قبل أن تذهب',
+		'matjar_pro_exit_text'               => 'خصم خاص على طلبك الأول — انسخ الكود واستخدمه عند الدفع.',
+		'matjar_pro_exit_coupon'             => '',
+		'matjar_pro_proof_enabled'           => false,
+		'matjar_pro_proof_messages'          => '',
+		'matjar_pro_proof_interval'          => 10,
+
 		// روابط التواصل في التذييل
 		'matjar_pro_social_instagram'        => '',
 		'matjar_pro_social_tiktok'           => '',

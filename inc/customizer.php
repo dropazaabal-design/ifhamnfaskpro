@@ -397,6 +397,232 @@ function matjar_pro_customize_register( $wp_customize ) {
 		);
 	}
 
+	/* ---------- تطبيق ويب تقدّمي ---------- */
+
+	$wp_customize->add_section(
+		'matjar_pro_pwa',
+		array(
+			'title'       => __( 'تطبيق الجوال (PWA)', 'matjar-pro' ),
+			'description' => __( 'يتيح للزائر إضافة المتجر إلى شاشته الرئيسية وتصفّح ما زاره وهو بلا اتصال. السلة والدفع والحساب لا تُخزَّن إطلاقاً.', 'matjar-pro' ),
+			'panel'       => 'matjar_pro_panel',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'matjar_pro_pwa_enabled',
+		array(
+			'default'           => $defaults['matjar_pro_pwa_enabled'],
+			'sanitize_callback' => 'matjar_pro_sanitize_checkbox',
+		)
+	);
+	$wp_customize->add_control(
+		'matjar_pro_pwa_enabled',
+		array(
+			'label'       => __( 'تفعيل تطبيق الجوال', 'matjar-pro' ),
+			'description' => __( 'يحتاج HTTPS. بعد التفعيل احفظ الروابط الدائمة مرّة واحدة من إعدادات ← روابط دائمة.', 'matjar-pro' ),
+			'section'     => 'matjar_pro_pwa',
+			'type'        => 'checkbox',
+		)
+	);
+
+	foreach ( array(
+		'matjar_pro_pwa_name'       => array(
+			'label'       => __( 'اسم التطبيق', 'matjar-pro' ),
+			'description' => __( 'يظهر في شاشة التثبيت. اتركه فارغاً ليُستخدم اسم المتجر.', 'matjar-pro' ),
+		),
+		'matjar_pro_pwa_short_name' => array(
+			'label'       => __( 'الاسم المختصر', 'matjar-pro' ),
+			'description' => __( 'تحت الأيقونة في الشاشة الرئيسية — أبقه تحت ١٢ حرفاً.', 'matjar-pro' ),
+		),
+	) as $mp_key => $mp_meta ) {
+		$wp_customize->add_setting(
+			$mp_key,
+			array(
+				'default'           => $defaults[ $mp_key ],
+				'sanitize_callback' => 'sanitize_text_field',
+			)
+		);
+		$wp_customize->add_control(
+			$mp_key,
+			array(
+				'label'       => $mp_meta['label'],
+				'description' => $mp_meta['description'],
+				'section'     => 'matjar_pro_pwa',
+				'type'        => 'text',
+			)
+		);
+	}
+
+	$wp_customize->add_setting(
+		'matjar_pro_pwa_icon',
+		array(
+			'default'           => $defaults['matjar_pro_pwa_icon'],
+			'sanitize_callback' => 'absint',
+		)
+	);
+	$wp_customize->add_control(
+		new WP_Customize_Media_Control(
+			$wp_customize,
+			'matjar_pro_pwa_icon',
+			array(
+				'label'       => __( 'أيقونة التطبيق', 'matjar-pro' ),
+				'description' => __( 'مربّعة ٥١٢×٥١٢ بصيغة PNG. اتركها فارغة لتُستخدم أيقونة الموقع.', 'matjar-pro' ),
+				'section'     => 'matjar_pro_pwa',
+				'mime_type'   => 'image',
+			)
+		)
+	);
+
+	$wp_customize->add_setting(
+		'matjar_pro_pwa_offline_text',
+		array(
+			'default'           => $defaults['matjar_pro_pwa_offline_text'],
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
+	$wp_customize->add_control(
+		'matjar_pro_pwa_offline_text',
+		array(
+			'label'   => __( 'نصّ صفحة الانقطاع', 'matjar-pro' ),
+			'section' => 'matjar_pro_pwa',
+			'type'    => 'text',
+		)
+	);
+
+	/* ---------- تعزيز التحويل ---------- */
+
+	$wp_customize->add_section(
+		'matjar_pro_cro',
+		array(
+			'title'       => __( 'تعزيز التحويل', 'matjar-pro' ),
+			'description' => __( 'لا شيء هنا يُحمَّل ما لم تُفعّله. ولا شيء منه يظهر في السلة أو الدفع: مقاطعة زائرٍ يكتب عنوانه تُفقد طلباً لا تكسبه.', 'matjar-pro' ),
+			'panel'       => 'matjar_pro_panel',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'matjar_pro_chat_script',
+		array(
+			'default'           => $defaults['matjar_pro_chat_script'],
+			'sanitize_callback' => 'matjar_pro_sanitize_script',
+		)
+	);
+	$wp_customize->add_control(
+		'matjar_pro_chat_script',
+		array(
+			'label'       => __( 'كود منصّة المحادثة', 'matjar-pro' ),
+			'description' => __( 'الصق كود التتبّع كما أعطتك إياه المنصّة (Crisp أو Tawk أو غيرها). يُطبع في تذييل الصفحة كما هو. لا يحفظه إلا مدير يملك صلاحية unfiltered_html.', 'matjar-pro' ),
+			'section'     => 'matjar_pro_cro',
+			'type'        => 'textarea',
+			'priority'    => 10,
+		)
+	);
+
+	$wp_customize->add_setting(
+		'matjar_pro_exit_enabled',
+		array(
+			'default'           => $defaults['matjar_pro_exit_enabled'],
+			'sanitize_callback' => 'matjar_pro_sanitize_checkbox',
+		)
+	);
+	$wp_customize->add_control(
+		'matjar_pro_exit_enabled',
+		array(
+			'label'       => __( 'تفعيل نافذة نيّة الخروج', 'matjar-pro' ),
+			'description' => __( 'تظهر مرّة واحدة لكل جلسة، وعلى أجهزة الفأرة وحدها.', 'matjar-pro' ),
+			'section'     => 'matjar_pro_cro',
+			'type'        => 'checkbox',
+			'priority'    => 20,
+		)
+	);
+
+	foreach ( array(
+		'matjar_pro_exit_title'  => array(
+			'label' => __( 'عنوان النافذة', 'matjar-pro' ),
+			'type'  => 'text',
+		),
+		'matjar_pro_exit_text'   => array(
+			'label' => __( 'نصّ النافذة', 'matjar-pro' ),
+			'type'  => 'textarea',
+		),
+		'matjar_pro_exit_coupon' => array(
+			'label' => __( 'كود الخصم', 'matjar-pro' ),
+			'type'  => 'text',
+		),
+	) as $mp_key => $mp_meta ) {
+		$wp_customize->add_setting(
+			$mp_key,
+			array(
+				'default'           => $defaults[ $mp_key ],
+				'sanitize_callback' => 'sanitize_text_field',
+			)
+		);
+		$wp_customize->add_control(
+			$mp_key,
+			array(
+				'label'    => $mp_meta['label'],
+				'section'  => 'matjar_pro_cro',
+				'type'     => $mp_meta['type'],
+				'priority' => 30,
+			)
+		);
+	}
+
+	$wp_customize->add_setting(
+		'matjar_pro_proof_enabled',
+		array(
+			'default'           => $defaults['matjar_pro_proof_enabled'],
+			'sanitize_callback' => 'matjar_pro_sanitize_checkbox',
+		)
+	);
+	$wp_customize->add_control(
+		'matjar_pro_proof_enabled',
+		array(
+			'label'       => __( 'تفعيل إشعارات النشاط', 'matjar-pro' ),
+			'description' => __( 'اكتب إشعارات صادقة تصف نشاطاً حقيقياً في متجرك. الإشعارات المُختلَقة إعلانٌ مضلّل يعرّضك للمساءلة النظامية ويُفقد ثقة المشتري إن انكشف.', 'matjar-pro' ),
+			'section'     => 'matjar_pro_cro',
+			'type'        => 'checkbox',
+			'priority'    => 40,
+		)
+	);
+
+	$wp_customize->add_setting(
+		'matjar_pro_proof_messages',
+		array(
+			'default'           => $defaults['matjar_pro_proof_messages'],
+			'sanitize_callback' => 'sanitize_textarea_field',
+		)
+	);
+	$wp_customize->add_control(
+		'matjar_pro_proof_messages',
+		array(
+			'label'       => __( 'نصوص الإشعارات', 'matjar-pro' ),
+			'description' => __( 'سطر لكل إشعار، وخمسة على الأكثر. مثال: نورة من الرياض طلبت عباية كلاسيك قبل ١٢ دقيقة.', 'matjar-pro' ),
+			'section'     => 'matjar_pro_cro',
+			'type'        => 'textarea',
+			'priority'    => 50,
+		)
+	);
+
+	$wp_customize->add_setting(
+		'matjar_pro_proof_interval',
+		array(
+			'default'           => $defaults['matjar_pro_proof_interval'],
+			'sanitize_callback' => 'absint',
+		)
+	);
+	$wp_customize->add_control(
+		'matjar_pro_proof_interval',
+		array(
+			'label'       => __( 'الفاصل بين الإشعارات (ثانية)', 'matjar-pro' ),
+			'description' => __( 'تتوقّف الإشعارات تلقائياً بعد ثلاث دورات كاملة.', 'matjar-pro' ),
+			'section'     => 'matjar_pro_cro',
+			'type'        => 'number',
+			'input_attrs' => array( 'min' => 4, 'max' => 120, 'step' => 1 ),
+			'priority'    => 60,
+		)
+	);
+
 	/* ---------- التذييل والتواصل ---------- */
 
 	$wp_customize->add_section(
@@ -668,4 +894,30 @@ function matjar_pro_sanitize_font( $value ) {
  */
 function matjar_pro_sanitize_amount( $value ) {
 	return max( 0, (float) $value );
+}
+
+/**
+ * يُنقّي كود منصّة المحادثة.
+ *
+ * الكود يجب أن يُطبع كما هو وإلّا لم يعمل، فالتهذيب ليس خياراً. والحماية
+ * في من يملك الحفظ لا في ما يُحفظ: ووردبريس يمنح صلاحية unfiltered_html
+ * للمدير في التنصيب المفرد وللمدير الأعلى في الشبكة وحدهما، وهي الصلاحية
+ * نفسها التي تحكم أدوات «كود مخصّص» في ووردبريس. فمن لا يملكها لا يستطيع
+ * حقن كود عبر هذا الحقل، وتبقى القيمة المحفوظة سابقاً كما هي بدل أن
+ * يمحوها تعديلٌ من محرّر.
+ *
+ * @param string               $value   القيمة الجديدة.
+ * @param WP_Customize_Setting $setting الإعداد.
+ * @return string
+ */
+function matjar_pro_sanitize_script( $value, $setting = null ) {
+	if ( current_user_can( 'unfiltered_html' ) ) {
+		return (string) $value;
+	}
+
+	if ( $setting instanceof WP_Customize_Setting ) {
+		return (string) get_theme_mod( $setting->id, '' );
+	}
+
+	return '';
 }

@@ -35,7 +35,10 @@ $GLOBALS['mp_smoke_cartpage'] = in_array( '--cart', $argv, true );
 $GLOBALS['mp_smoke_funnel']   = $GLOBALS['mp_smoke_funnel'] || $GLOBALS['mp_smoke_checkout'];
 
 // الخطّافات تُطلق فقط في الأنماط التي تحتاج دورة ووكومرس الحقيقية.
-$GLOBALS['mp_smoke_hooks'] = $GLOBALS['mp_smoke_product']
+$GLOBALS['mp_smoke_cro'] = in_array( '--cro', $argv, true );
+
+$GLOBALS['mp_smoke_hooks'] = $GLOBALS['mp_smoke_cro']
+	|| $GLOBALS['mp_smoke_product']
 	|| $GLOBALS['mp_smoke_checkout']
 	|| $GLOBALS['mp_smoke_cartpage']
 	|| $GLOBALS['mp_smoke_minicart'];
@@ -93,15 +96,21 @@ function add_filter( $hook, $cb, $priority = 10, $args = 1 ) { // phpcs:ignore
 	add_action( $hook, $cb, $priority, $args );
 }
 function remove_action( $hook, $cb, $priority = 10 ) {         // phpcs:ignore
-	$bucket = &$GLOBALS['mp_hooks'][ $hook ][ (int) $priority ];
+	$priority = (int) $priority;
 
-	if ( empty( $bucket ) ) {
+	/*
+	 * بلا isset تُنشئ الإشارة إلى مفتاح غير موجود المفتاحَ نفسه بقيمة null،
+	 * فتبقى دلوٌ فارغ في الخريطة يسقط عليه التكرار لاحقاً. وهو ما وقع فعلاً
+	 * حين صار wp_head يُطلق خطّافه: القالب يُزيل خطّافات ووردبريس التي لم
+	 * تُسجَّل في المُحاكي أصلاً.
+	 */
+	if ( ! isset( $GLOBALS['mp_hooks'][ $hook ][ $priority ] ) ) {
 		return false;
 	}
 
-	foreach ( $bucket as $i => $registered ) {
+	foreach ( $GLOBALS['mp_hooks'][ $hook ][ $priority ] as $i => $registered ) {
 		if ( $registered === $cb ) {
-			unset( $bucket[ $i ] );
+			unset( $GLOBALS['mp_hooks'][ $hook ][ $priority ][ $i ] );
 
 			return true;
 		}
@@ -165,8 +174,8 @@ function get_template_directory_uri() { return MATJAR_PRO_URI; } // phpcs:ignore
 function language_attributes() { echo 'lang="ar" dir="rtl"'; } // phpcs:ignore
 function bloginfo( $s = '' ) { echo 'charset' === $s ? 'UTF-8' : 'متجر تجريبي'; } // phpcs:ignore
 function get_bloginfo( $s = '' ) { return 'متجر تجريبي'; }     // phpcs:ignore
-function wp_head() { echo "<!-- wp_head -->\n"; }              // phpcs:ignore
-function wp_footer() { echo "<!-- wp_footer -->\n"; }          // phpcs:ignore
+function wp_head() { echo "<!-- wp_head -->\n"; do_action( 'wp_head' ); }      // phpcs:ignore
+function wp_footer() { echo "<!-- wp_footer -->\n"; do_action( 'wp_footer' ); } // phpcs:ignore
 function wp_body_open() {}                                     // phpcs:ignore
 function body_class( $c = '' ) { echo 'class="' . esc_attr( is_array( $c ) ? implode( ' ', $c ) : $c ) . '"'; } // phpcs:ignore
 function is_rtl() { return true; }                             // phpcs:ignore
@@ -368,6 +377,14 @@ function wp_get_attachment_image( $id, $size = '', $icon = false, $attr = array(
 	}
 	return $out . ' width="1600" height="900">';
 }
+function get_site_icon_url( $size = 512 ) { return 'img/i-1.svg'; }          // phpcs:ignore
+function wp_get_attachment_image_src( $id, $size = '' ) { return array( 'img/i-1.svg', 512, 512 ); } // phpcs:ignore
+function add_rewrite_rule( ...$a ) {}                          // phpcs:ignore
+function flush_rewrite_rules( ...$a ) {}                       // phpcs:ignore
+function status_header( $c ) {}                                // phpcs:ignore
+function current_user_can( $c ) { return true; }               // phpcs:ignore
+function wp_enqueue_script( ...$a ) {}                         // phpcs:ignore
+function wp_script_add_data( ...$a ) {}                        // phpcs:ignore
 function get_search_query() { return ''; }                     // phpcs:ignore
 function is_front_page() { return empty( $GLOBALS['mp_smoke_product'] ) && empty( $GLOBALS['mp_smoke_checkout'] ); } // phpcs:ignore
 function is_singular( $t = '' ) { return ! empty( $GLOBALS['mp_smoke_product'] ); }   // phpcs:ignore
@@ -1198,6 +1215,16 @@ $GLOBALS['mp_smoke_mods'] = array(
 	'matjar_pro_social_instagram'        => 'https://instagram.com/demo',
 	'matjar_pro_social_tiktok'           => 'https://tiktok.com/@demo',
 	'matjar_pro_social_snapchat'         => 'https://snapchat.com/add/demo',
+	'matjar_pro_pwa_enabled'             => true,
+	'matjar_pro_pwa_name'                => 'متجر تجريبي',
+	'matjar_pro_pwa_short_name'          => 'متجري',
+	'matjar_pro_exit_enabled'            => in_array( '--cro', $argv, true ),
+	'matjar_pro_exit_title'              => 'لحظة قبل أن تذهب',
+	'matjar_pro_exit_text'               => 'خصم ١٠٪ على طلبك الأول — انسخ الكود واستخدمه عند الدفع.',
+	'matjar_pro_exit_coupon'             => 'WELCOME10',
+	'matjar_pro_proof_enabled'           => in_array( '--cro', $argv, true ),
+	'matjar_pro_proof_messages'          => "نورة من الرياض طلبت عباية كلاسيك قبل ١٢ دقيقة\nسارة من جدة طلبت شيلة حرير قبل ساعة\nمنى من الدمام طلبت حقيبة يد اليوم",
+	'matjar_pro_proof_interval'          => 10,
 	'matjar_pro_free_shipping_threshold' => 200,
 );
 
@@ -1218,6 +1245,9 @@ if ( function_exists( 'WC' ) ) {
 	require_once MATJAR_PRO_DIR . '/inc/wc-filter.php';
 	require_once MATJAR_PRO_DIR . '/inc/wc-account.php';
 }
+
+require_once MATJAR_PRO_DIR . '/inc/pwa.php';
+require_once MATJAR_PRO_DIR . '/inc/cro.php';
 
 set_error_handler(
 	function ( $severity, $message, $file, $line ) {
@@ -1261,8 +1291,15 @@ if ( in_array( '--catalog', $argv, true ) ) {
 }
 
 ob_start();
-matjar_pro_print_critical_css();
-matjar_pro_preload_fonts();
+
+/*
+ * في أنماط الخطّافات يُطلق wp_head هاتين الدالتين بنفسه، فاستدعاؤهما هنا
+ * أيضاً يطبع كتلة الرموز مرّتين بالمعرّف نفسه.
+ */
+if ( empty( $GLOBALS['mp_smoke_hooks'] ) ) {
+	matjar_pro_print_critical_css();
+	matjar_pro_preload_fonts();
+}
 
 if ( $GLOBALS['mp_smoke_card'] ) {
 	// بطاقة المنتج وحدها: أكثر قالب يُصيَّر في المتجر.

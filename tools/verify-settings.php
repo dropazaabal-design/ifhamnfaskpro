@@ -25,7 +25,7 @@ $problems = array();
 
 preg_match_all( "/add_setting\(\s*([^,]+),\s*array\((.*?)\)\s*\);/s", $src, $sets, PREG_SET_ORDER );
 
-$known_core = array( 'sanitize_hex_color', 'esc_url_raw', 'sanitize_text_field', 'absint', 'sanitize_key' );
+$known_core = array( 'sanitize_hex_color', 'esc_url_raw', 'sanitize_text_field', 'sanitize_textarea_field', 'absint', 'sanitize_key' );
 
 // المُنقّيات معرَّفة في نفس الملف، فتُستخرج منه نصّاً لا بتحميله.
 preg_match_all( '/function (matjar_pro_sanitize_[a-z_]+)/', $src, $local );

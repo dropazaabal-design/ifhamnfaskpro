@@ -33,6 +33,8 @@ require_once MATJAR_PRO_DIR . '/inc/setup.php';
 require_once MATJAR_PRO_DIR . '/inc/assets.php';
 require_once MATJAR_PRO_DIR . '/inc/customizer.php';
 require_once MATJAR_PRO_DIR . '/inc/front-page.php';
+require_once MATJAR_PRO_DIR . '/inc/pwa.php';
+require_once MATJAR_PRO_DIR . '/inc/cro.php';
 
 if ( matjar_pro_has_woocommerce() ) {
 	require_once MATJAR_PRO_DIR . '/inc/woocommerce.php';

@@ -156,6 +156,104 @@
 	 * أي قيمة خارج السلّم تُقرأ كخطأ، لا كاختيار.
 	 */
 
+	/* ---------- نافذة نيّة الخروج ---------- */
+
+	.mp-modal {
+		@apply fixed inset-0 z-50 grid place-items-center p-4;
+	}
+
+	.mp-modal__backdrop {
+		@apply absolute inset-0;
+		background: rgb( var( --mp-inverse ) / 0.55 );
+	}
+
+	.mp-modal__panel {
+		@apply relative w-full max-w-sm rounded-2xl border border-line bg-surface p-6 text-center shadow-card;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.mp-modal__panel {
+			animation: mp-modal-in 240ms cubic-bezier( 0.16, 1, 0.3, 1 );
+		}
+	}
+
+	@keyframes mp-modal-in {
+		from { opacity: 0; transform: translateY( 12px ) scale( 0.98 ); }
+		to   { opacity: 1; transform: none; }
+	}
+
+	.mp-modal__close {
+		@apply absolute end-3 top-3 grid h-9 w-9 place-items-center rounded-lg text-faint transition hover:bg-page hover:text-ink;
+	}
+
+	.mp-modal__title {
+		@apply m-0 mb-2 text-xl font-bold leading-snug text-ink;
+		text-wrap: balance;
+	}
+
+	.mp-modal__text {
+		@apply m-0 text-sm leading-relaxed text-body;
+	}
+
+	.mp-coupon-box {
+		@apply mt-5 flex items-stretch gap-2;
+	}
+
+	.mp-coupon-box__code {
+		@apply grow rounded-xl border border-dashed border-cta/[0.35] bg-cta/[0.08] px-3 py-3 text-base font-bold tracking-wider text-cta;
+		font-family: inherit;
+	}
+
+	.mp-coupon-box__copy {
+		@apply mp-btn mp-btn--cta shrink-0 px-4;
+	}
+
+	/* ---------- إشعارات النشاط ---------- */
+
+	/*
+	 * أسفل الشاشة وفوق شريط التنقّل السفلي، ومحصورة العرض على الجوال حتى
+	 * لا تحجب المحتوى. تخرج بالإزاحة والشفافية معاً لا بالعرض، فلا تُعيد
+	 * تخطيط الصفحة.
+	 */
+	.mp-toast {
+		@apply fixed z-40 flex max-w-[22rem] items-center gap-2.5 rounded-xl border border-line bg-surface px-3 py-2.5 shadow-card;
+		inset-inline-start: 0.75rem;
+		bottom: calc( 0.75rem + env( safe-area-inset-bottom, 0px ) );
+		opacity: 0;
+		transform: translateY( 0.75rem );
+		transition: opacity 300ms ease, transform 300ms cubic-bezier( 0.16, 1, 0.3, 1 );
+	}
+
+	.mp-has-bottom-nav .mp-toast {
+		bottom: calc( 4.5rem + env( safe-area-inset-bottom, 0px ) );
+	}
+
+	.mp-toast[data-mp-shown='true'] {
+		opacity: 1;
+		transform: none;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.mp-toast {
+			transition: none;
+			transform: none;
+		}
+	}
+
+	.mp-toast__mark {
+		@apply grid h-8 w-8 shrink-0 place-items-center rounded-lg;
+		background: rgb( var( --mp-success ) / 0.12 );
+		color: rgb( var( --mp-success ) );
+	}
+
+	.mp-toast__text {
+		@apply grow text-xs font-semibold leading-relaxed text-ink;
+	}
+
+	.mp-toast__close {
+		@apply grid h-7 w-7 shrink-0 place-items-center rounded-lg text-faint transition hover:bg-page hover:text-ink;
+	}
+
 	/* ---------- روابط التواصل ---------- */
 
 	.mp-social {
