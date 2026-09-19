@@ -127,7 +127,31 @@
             </div>
 
             <div class="card">
-              <div class="card-hd"><h3>⬇️ التصدير</h3></div>
+              <div class="card-hd"><h3>🎞️ الحركة والفيديو</h3>
+                <span class="n">13 ثانية</span></div>
+              <div class="grid grid-2" style="gap:12px">
+                <div class="field" style="margin:0"><label>نمط الحركة</label>
+                  <select id="motion"></select></div>
+                <div class="field" style="margin:0"><label>جودة الفيديو</label>
+                  <select id="vq"></select></div>
+              </div>
+              <label class="check" style="margin-top:6px">
+                <input type="checkbox" id="safeToggle">
+                <span>أظهر مناطق الأمان — ما تغطّيه واجهة إنستغرام</span>
+              </label>
+              <button class="btn btn-primary btn-block" id="expVideo" style="margin-top:10px">
+                🎬 صدّر الريل فيديو</button>
+              <div id="vidProg" hidden style="margin-top:12px">
+                <div class="chk-bar"><i id="vidBar"></i></div>
+                <p style="font-size:11.5px;color:var(--color-muted);text-align:center"
+                   id="vidMsg">…</p>
+              </div>
+              <p style="font-size:11.5px;color:var(--color-muted);margin-top:11px;line-height:1.9"
+                 id="vidNote"></p>
+            </div>
+
+            <div class="card">
+              <div class="card-hd"><h3>⬇️ تصدير الصور</h3></div>
               <div class="field">
                 <label>دقّة PNG</label>
                 <select id="expScale">
@@ -190,9 +214,11 @@
 <script src="js/themes.js"></script>
 <script src="js/storage.js"></script>
 <script src="js/canvas.js"></script>
+<script src="js/animate.js"></script>
 <script src="js/library.js"></script>
 <script src="js/caption.js"></script>
 <script src="js/export.js"></script>
+<script src="js/video.js"></script>
 <script>
 /* ═══ صفحة المعاينة والمقارنة ═══ */
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
@@ -209,20 +235,22 @@ function toast(msg, kind) {
   setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 260); }, 2600);
 }
 
+let showSafe = false;
+
 function setScreen(s) {
   screen = s;
   rc.render(P, s);
+  if (showSafe) drawSafeZones(rc);
   $('#scLabel').textContent = SC_LABEL[s];
   $$('#timeline .row').forEach(r => r.classList.toggle('on', r.dataset.sc === s));
 }
 
-/* ── محاكاة التسلسل الزمني: 0-3 هوك · 3-11 محتوى · 11-13 خاتمة ── */
+/* ── التشغيل الحقيقي: نفس المحرّك الذي يُسجَّل به الفيديو ── */
 const SEQ = [
-  { sc:'hook',    from:0,  to:3  },
-  { sc:'content', from:3,  to:11 },
-  { sc:'flow',    from:11, to:13 }
+  { sc:'hook',    from:T_HOOK[0],    to:T_HOOK[1]    },
+  { sc:'content', from:T_CONTENT[0], to:T_CONTENT[1] },
+  { sc:'flow',    from:T_FLOW[0],    to:T_FLOW[1]    }
 ];
-const TOTAL = 13;
 
 function play() {
   if (playing) { stop(); return; }
@@ -232,10 +260,14 @@ function play() {
   const tick = () => {
     if (!playing) return;
     const t = (performance.now() - t0) / 1000;
-    if (t >= TOTAL) { stop(); return; }
-    $('#prog').style.width = (t / TOTAL * 100) + '%';
-    const seg = SEQ.find(s => t >= s.from && t < s.to);
-    if (seg && seg.sc !== screen) setScreen(seg.sc);
+    if (t >= T_TOTAL) { stop(); return; }
+    $('#prog').style.width = (t / T_TOTAL * 100) + '%';
+    const sc = renderAt(rc, P, t);
+    if (sc !== screen) {
+      screen = sc;
+      $('#scLabel').textContent = SC_LABEL[sc];
+      $$('#timeline .row').forEach(r => r.classList.toggle('on', r.dataset.sc === sc));
+    }
     playTimer = requestAnimationFrame(tick);
   };
   playTimer = requestAnimationFrame(tick);
@@ -246,6 +278,7 @@ function stop() {
   cancelAnimationFrame(playTimer);
   $('#btnPlay').textContent = '▶️ تشغيل';
   $('#prog').style.width = '0%';
+  setScreen(screen);
 }
 
 function renderTimeline() {
@@ -354,6 +387,59 @@ $('#expPdf').addEventListener('click', () => {
   toast('صُدِّرت نسخة PDF من ثلاث صفحات');
 });
 
+/* ── الحركة والفيديو ── */
+MOTION_KEYS.forEach(k => $('#motion').appendChild(new Option(MOTION[k].label, k)));
+VIDEO_QUALITY.forEach(q => $('#vq').appendChild(new Option(q.label, q.key)));
+
+$('#motion').addEventListener('change', e => {
+  P.settings.motion = e.target.value;
+  saveProject(P);
+  toast('نمط الحركة: ' + MOTION[e.target.value].label);
+});
+
+$('#safeToggle').addEventListener('change', e => {
+  showSafe = e.target.checked;
+  setScreen(screen);
+});
+
+let recording = false;
+$('#expVideo').addEventListener('click', () => {
+  if (recording) return;
+  if (!videoSupported()) {
+    toast('متصفّحك لا يدعم تسجيل الفيديو — جرّب كروم أو إيدج حديثًا', 'err');
+    return;
+  }
+  const q = VIDEO_QUALITY.find(x => x.key === $('#vq').value) || VIDEO_QUALITY[0];
+  recording = true;
+  stop();
+  const wasSafe = showSafe;
+  showSafe = false;                       /* الدليل للمعاينة فقط، لا يُسجَّل */
+  $('#expVideo').disabled = true;
+  $('#vidProg').hidden = false;
+  $('#btnPlay').disabled = true;
+
+  exportVideo(rc, P, {
+    fps: q.fps, bitrate: q.bitrate,
+    onProgress: (p, t) => {
+      $('#vidBar').style.width = (p * 100) + '%';
+      $('#vidMsg').textContent = `يسجّل بالزمن الحقيقي… ${t.toFixed(1)} من ${T_TOTAL} ثانية`;
+    }
+  }).then(type => {
+    toast('نزل الريل فيديو بصيغة ' + type.label + ' ✓');
+    $('#vidMsg').textContent = 'تمّ — ' + type.label;
+  }).catch(err => {
+    toast(err.message, 'err');
+    $('#vidMsg').textContent = err.message;
+  }).then(() => {
+    recording = false;
+    showSafe = wasSafe;
+    $('#expVideo').disabled = false;
+    $('#btnPlay').disabled = false;
+    setTimeout(() => { $('#vidProg').hidden = true; $('#vidBar').style.width = '0%'; }, 2600);
+    setScreen(screen);
+  });
+});
+
 /* ── الإقلاع ── */
 P = loadOrCreateCurrent();
 rc  = new ReelCanvas($('#cv'));
@@ -363,6 +449,12 @@ rc.onReady = () => rc.render(P, screen);
 $('#pName').textContent = P.name;
 renderTimeline();
 renderChecklist();
+$('#motion').value = (P.settings && P.settings.motion) || 'slide';
+$('#vidNote').innerHTML = videoSupported()
+  ? 'التسجيل يجري بالزمن الحقيقي (13 ثانية) لأن المتصفّح يلتقط اللوحة إطارًا بإطار. '
+    + 'الفيديو <b>بلا صوت</b> — أضف المقطع الصوتي عند الرفع. '
+    + 'الصيغة المتاحة عندك: <b>' + pickVideoType().label + '</b>.'
+  : '⚠️ متصفّحك لا يدعم تسجيل الفيديو من اللوحة. صدّر الصور الثلاث وركّبها في CapCut.';
 setScreen('hook');
 waitForFonts().then(() => { rc.render(P, screen); });
 </script>
