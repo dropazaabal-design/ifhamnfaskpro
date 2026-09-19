@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مكتبة المواضيع · استوديو الريلات — كتاب وبس</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&family=Almarai:wght@300;400;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23dc2626'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3E%D9%83%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/themes.css">
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark">ك</span>
+      <span class="txt"><b>استوديو الريلات</b><span>كتاب وبس · @kitabwbs</span></span>
+    </div>
+    <nav class="nav">
+      <a href="index.html"><span class="ic">📊</span><span>لوحة التحكم</span></a>
+      <a href="editor.html"><span class="ic">🎬</span><span>المحرّر</span></a>
+      <a href="library.html" class="on"><span class="ic">📚</span><span>مكتبة المواضيع</span></a>
+      <a href="caption.html"><span class="ic">💬</span><span>مولّد الكابشن</span></a>
+      <a href="preview.html"><span class="ic">👁️</span><span>معاينة ومقارنة</span></a>
+    </nav>
+    <div class="foot"><span class="dot"></span><span id="libCount">—</span></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <h1>مكتبة المواضيع<span class="sub">مواضيع جاهزة تُحمَّل في المحرّر بضغطة</span></h1>
+      <button class="btn btn-primary" id="btnNewTopic">＋ موضوع جديد</button>
+    </header>
+
+    <div class="content">
+      <div class="card" style="margin-bottom:18px">
+        <input type="search" id="q" placeholder="ابحث في العناوين والنقاط والخواتيم…" style="margin-bottom:12px">
+        <div class="chip-row" id="axisFilter"></div>
+      </div>
+
+      <div class="section-title">
+        <h2>المواضيع</h2>
+        <span class="n" id="resultCount">—</span>
+      </div>
+
+      <div class="grid grid-3" id="topicGrid"></div>
+      <div class="empty" id="emptyState" hidden>
+        <div class="ic">🔍</div>
+        <b>ما فيه نتائج</b>
+        <p>جرّب كلمة أخرى أو اختر محورًا مختلفًا — أو أنشئ موضوعًا جديدًا من زر الأعلى.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- معاينة سريعة -->
+<div class="modal" id="mdPreview">
+  <div class="modal-box wide">
+    <div class="modal-hd"><h3 id="pvTitle">معاينة</h3>
+      <button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="modal-bd">
+      <div style="display:flex;gap:18px;flex-wrap:wrap;justify-content:center">
+        <div><canvas id="pvHook" style="width:210px;border-radius:12px;box-shadow:var(--shadow-md)"></canvas>
+          <p style="text-align:center;font-size:11px;color:var(--color-muted);margin-top:7px">الهوك</p></div>
+        <div><canvas id="pvContent" style="width:210px;border-radius:12px;box-shadow:var(--shadow-md)"></canvas>
+          <p style="text-align:center;font-size:11px;color:var(--color-muted);margin-top:7px">المحتوى</p></div>
+        <div><canvas id="pvFlow" style="width:210px;border-radius:12px;box-shadow:var(--shadow-md)"></canvas>
+          <p style="text-align:center;font-size:11px;color:var(--color-muted);margin-top:7px">المتدفّق</p></div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-primary" id="pvLoad">🎬 حمّل في المحرّر</button>
+      <button class="btn" data-close>إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- موضوع جديد -->
+<div class="modal" id="mdNew">
+  <div class="modal-box">
+    <div class="modal-hd"><h3>موضوع جديد</h3>
+      <button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="modal-bd">
+      <div class="field"><label>العنوان</label>
+        <input type="text" id="nTitle" placeholder="عادات تسرق تركيزك"></div>
+      <div class="grid grid-2" style="gap:12px">
+        <div class="field"><label>الإيموجي</label>
+          <input type="text" id="nEmoji" maxlength="4" value="📌" style="text-align:center;font-size:18px"></div>
+        <div class="field"><label>المحور</label><select id="nAxis"></select></div>
+        <div class="field"><label>الثيم</label><select id="nTheme"></select></div>
+        <div class="field"><label>صيغة الهوك</label><select id="nStyle"></select></div>
+      </div>
+      <div class="field"><label>نص الهوك</label>
+        <input type="text" id="nHook" placeholder="٦ عادات تسرق تركيزك.. وأنت ما تحسّ"></div>
+      <div class="field"><label>النقاط — سطر لكل نقطة بصيغة «العنوان: الشرح»</label>
+        <textarea id="nPoints" rows="7" placeholder="الهاتف أول ما تصحو: تبدأ يومك بأولويّات غيرك.&#10;تعدّد المهام: كل تنقّل يكلّفك دقائق استعادة تركيز."></textarea></div>
+      <div class="field"><label>الخاتمة</label>
+        <textarea id="nOutro" rows="2" placeholder="تركيزك مورد يُحمى أو يُستنزف."></textarea></div>
+      <div class="field"><label>سؤال الختام</label><select id="nCta"></select></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-primary" id="nSave">حفظ الموضوع</button>
+      <button class="btn" data-close>إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script src="js/themes.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/canvas.js"></script>
+<script src="js/library.js"></script>
+<script>
+/* ═══ صفحة المكتبة ═══ */
+const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
+let axis = 'all', query = '', pvTopic = null;
+
+function toast(msg, kind) {
+  const el = document.createElement('div');
+  el.className = 'toast' + (kind ? ' ' + kind : '');
+  el.textContent = msg;
+  $('#toasts').appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 260); }, 2600);
+}
+
+function renderFilters() {
+  const box = $('#axisFilter');
+  box.innerHTML = '';
+  Object.keys(AXES).forEach(k => {
+    const n = k === 'all' ? allTopics().length : allTopics().filter(t => t.axis === k).length;
+    const b = document.createElement('button');
+    b.className = 'chip' + (axis === k ? ' on' : '');
+    b.type = 'button';
+    b.textContent = AXES[k].label + ' · ' + toArabicDigits(n);
+    b.addEventListener('click', () => { axis = k; renderFilters(); renderGrid(); });
+    box.appendChild(b);
+  });
+}
+
+function renderGrid() {
+  const list = filterTopics(axis, query);
+  const g = $('#topicGrid');
+  g.innerHTML = '';
+  $('#resultCount').textContent = toArabicDigits(list.length) + ' موضوعًا';
+  $('#emptyState').hidden = list.length > 0;
+
+  list.forEach(t => {
+    const el = document.createElement('article');
+    el.className = 'topic';
+    el.innerHTML = `
+      <div class="t-hd">
+        <span class="t-emoji">${t.emoji || '📌'}</span>
+        <h4>${t.title}</h4>
+      </div>
+      <div class="t-meta">
+        <span class="chip" style="border-color:${AXES[t.axis].color}55;color:${AXES[t.axis].color}">${AXES[t.axis].label}</span>
+        <span class="chip">${toArabicDigits((t.points || []).length)} نقاط</span>
+        <span class="chip">${(HOOK_STYLES[t.hookStyle] || HOOK_STYLES.pov).label}</span>
+        ${t.custom ? '<span class="chip ok">مخصّص</span>' : ''}
+        <span class="t-swatch" style="background:${(THEMES[t.theme] || THEMES.classic).accent}" title="${(THEMES[t.theme]||THEMES.classic).name}"></span>
+      </div>
+      <div class="t-acts">
+        <button class="btn btn-sm btn-primary" data-load>🎬 حمّل في المحرّر</button>
+        <button class="btn btn-sm" data-pv>👁️ معاينة</button>
+        ${t.custom ? '<button class="btn btn-sm" data-del title="حذف">🗑️</button>' : ''}
+      </div>`;
+    el.querySelector('[data-load]').addEventListener('click', () => loadTopic(t));
+    el.querySelector('[data-pv]').addEventListener('click', () => openPreview(t));
+    const d = el.querySelector('[data-del]');
+    if (d) d.addEventListener('click', () => {
+      if (!confirm('حذف «' + t.title + '»؟')) return;
+      deleteCustomTopic(t.id); renderFilters(); renderGrid(); updateCount();
+      toast('تم الحذف');
+    });
+    g.appendChild(el);
+  });
+}
+
+function loadTopic(t) {
+  const p = topicToProject(t, newProject(t.title));
+  const r = saveProject(p);
+  if (!r.ok) { toast(r.msg, 'err'); return; }
+  setCurrentId(p.id);
+  location.href = 'editor.html';
+}
+
+/* ── المعاينة السريعة: نرسم الشاشات الثلاث فعليًا ── */
+function openPreview(t) {
+  pvTopic = t;
+  $('#pvTitle').textContent = t.title;
+  const p = topicToProject(t, newProject(t.title));
+  [['#pvHook','hook'], ['#pvContent','content'], ['#pvFlow','flow']].forEach(([sel, sc]) => {
+    const rc = new ReelCanvas($(sel));
+    rc.render(p, sc);
+  });
+  $('#mdPreview').classList.add('on');
+}
+
+function updateCount() {
+  $('#libCount').textContent = toArabicDigits(allTopics().length) + ' موضوعًا';
+}
+
+/* ── نافذة الموضوع الجديد ── */
+function fillSelects() {
+  const a = $('#nAxis');
+  Object.keys(AXES).filter(k => k !== 'all').forEach(k => {
+    a.appendChild(new Option(AXES[k].label, k));
+  });
+  const th = $('#nTheme');
+  THEME_KEYS.forEach(k => th.appendChild(new Option(THEMES[k].name, k)));
+  const st = $('#nStyle');
+  HOOK_STYLE_KEYS.forEach(k => st.appendChild(new Option(HOOK_STYLES[k].label, k)));
+  const c = $('#nCta');
+  CTA_TEMPLATES.forEach(t => c.appendChild(new Option(t, t)));
+}
+
+function saveNewTopic() {
+  const title = $('#nTitle').value.trim();
+  if (!title) { toast('العنوان مطلوب', 'err'); return; }
+
+  /* كل سطر «العنوان: الشرح» — والنقطتان اختياريتان */
+  const points = $('#nPoints').value.split('\n').map(l => l.trim()).filter(Boolean)
+    .map(l => {
+      const i = l.indexOf(':');
+      return i > 0
+        ? { head: l.slice(0, i).trim(), body: l.slice(i + 1).trim() }
+        : { head: l, body: '' };
+    }).slice(0, 10);
+
+  if (!points.length) { toast('أضف نقطة واحدة على الأقل', 'err'); return; }
+
+  const topic = {
+    title, emoji: $('#nEmoji').value || '📌',
+    axis: $('#nAxis').value, theme: $('#nTheme').value,
+    hookStyle: $('#nStyle').value,
+    hook: $('#nHook').value.trim() || title,
+    sub: '', points,
+    outro: $('#nOutro').value.trim(),
+    cta: $('#nCta').value
+  };
+  const r = saveCustomTopic(topic);
+  if (!r.ok) { toast(r.msg, 'err'); return; }
+  $('#mdNew').classList.remove('on');
+  ['#nTitle','#nHook','#nPoints','#nOutro'].forEach(s => $(s).value = '');
+  renderFilters(); renderGrid(); updateCount();
+  toast('تم حفظ الموضوع ✓');
+}
+
+/* ── الربط ── */
+$('#q').addEventListener('input', e => { query = e.target.value; renderGrid(); });
+$('#btnNewTopic').addEventListener('click', () => $('#mdNew').classList.add('on'));
+$('#nSave').addEventListener('click', saveNewTopic);
+$('#pvLoad').addEventListener('click', () => pvTopic && loadTopic(pvTopic));
+$$('[data-close]').forEach(b => b.addEventListener('click', () => {
+  b.closest('.modal').classList.remove('on');
+}));
+$$('.modal').forEach(m => m.addEventListener('click', e => {
+  if (e.target === m) m.classList.remove('on');
+}));
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') $$('.modal').forEach(m => m.classList.remove('on'));
+});
+
+fillSelects();
+renderFilters();
+renderGrid();
+updateCount();
+waitForFonts();
+</script>
+</body>
+</html>

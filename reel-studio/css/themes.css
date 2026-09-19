@@ -1,0 +1,75 @@
+/* ═══════════════════════════════════════════════════════
+   themes.css — ثيمات الألوان الثمانية
+   كل ثيم يعرّف 8 ألوان: accent · bg · card · panel
+                          title · quote · txt · cta
+   القيم هنا مطابقة لـ js/themes.js (المصدر الوحيد للحقيقة
+   هو THEMES في js/themes.js — هذا الملف للمعاينة في الواجهة)
+   ═══════════════════════════════════════════════════════ */
+
+/* كلاسيكي — أحمر على رمادي داكن */
+[data-theme="classic"]{
+  --t-accent:#dc2626; --t-bg:#1f2937; --t-card:#ffffff; --t-panel:#f1f5f9;
+  --t-title:#111827;  --t-quote:#047857; --t-txt:#1f2937; --t-cta:#111827;
+}
+/* ليلي ذهبي — ذهبي على أسود */
+[data-theme="golden"]{
+  --t-accent:#f59e0b; --t-bg:#0b0f19; --t-card:#15192a; --t-panel:#1e2338;
+  --t-title:#fdf6e3;  --t-quote:#fbbf24; --t-txt:#cbd5e1; --t-cta:#fdf6e3;
+}
+/* أزرق — أزرق على كحلي */
+[data-theme="blue"]{
+  --t-accent:#2563eb; --t-bg:#0f172a; --t-card:#ffffff; --t-panel:#eff6ff;
+  --t-title:#0f172a;  --t-quote:#1d4ed8; --t-txt:#1e293b; --t-cta:#0f172a;
+}
+/* زمرّدي — أخضر على أخضر داكن */
+[data-theme="emerald"]{
+  --t-accent:#059669; --t-bg:#052e2b; --t-card:#ffffff; --t-panel:#ecfdf5;
+  --t-title:#052e2b;  --t-quote:#047857; --t-txt:#134e4a; --t-cta:#052e2b;
+}
+/* بنفسجي — بنفسجي على أرجواني */
+[data-theme="purple"]{
+  --t-accent:#7c3aed; --t-bg:#1e1b31; --t-card:#ffffff; --t-panel:#f5f3ff;
+  --t-title:#1e1b31;  --t-quote:#6d28d9; --t-txt:#312e51; --t-cta:#1e1b31;
+}
+/* رملي — بني على كريمي */
+[data-theme="sandy"]{
+  --t-accent:#b45309; --t-bg:#231a12; --t-card:#fffbf3; --t-panel:#fdf3e3;
+  --t-title:#3b2a17;  --t-quote:#92400e; --t-txt:#4b3a26; --t-cta:#3b2a17;
+}
+/* وردي — وردي على غامق */
+[data-theme="pink"]{
+  --t-accent:#be185d; --t-bg:#2a0f1c; --t-card:#ffffff; --t-panel:#fdf2f8;
+  --t-title:#2a0f1c;  --t-quote:#9d174d; --t-txt:#500724; --t-cta:#2a0f1c;
+}
+/* فحمي — أبيض على أسود */
+[data-theme="carbon"]{
+  --t-accent:#e5e7eb; --t-bg:#000000; --t-card:#0d0d0d; --t-panel:#171717;
+  --t-title:#fafafa;  --t-quote:#a3a3a3; --t-txt:#d4d4d4; --t-cta:#fafafa;
+}
+
+/* ═ دوائر اختيار الثيم ═ */
+.theme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.theme-dot{
+  position:relative;aspect-ratio:1;border-radius:50%;cursor:pointer;border:2px solid transparent;
+  background:conic-gradient(var(--d-accent) 0 50%, var(--d-bg) 50% 100%);
+  transition:transform var(--transition),border-color var(--transition);
+  display:grid;place-items:center;
+}
+.theme-dot:hover{transform:scale(1.08)}
+.theme-dot[aria-pressed="true"]{border-color:var(--color-text);transform:scale(1.05)}
+.theme-dot[aria-pressed="true"]::after{
+  content:"✓";color:#fff;font-size:15px;font-weight:900;
+  text-shadow:0 1px 3px rgba(0,0,0,.9);line-height:1;
+}
+.theme-name{display:block;text-align:center;font-size:10px;color:var(--color-muted);margin-top:4px}
+
+/* ═ صف الألوان الخمسة القابلة للتعديل ═ */
+.swatches{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.swatch-row{display:flex;align-items:center;gap:9px}
+.swatch-row label{flex:1;font-size:11.5px;color:var(--color-muted)}
+.swatch-row input[type="color"]{
+  width:34px;height:26px;padding:0;border:1px solid var(--color-border);
+  border-radius:6px;background:none;cursor:pointer;flex-shrink:0;
+}
+.swatch-row .hex{font-size:10.5px;color:var(--color-muted);font-family:ui-monospace,monospace;
+  width:58px;text-align:left;direction:ltr}
