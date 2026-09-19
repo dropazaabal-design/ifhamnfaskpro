@@ -12,6 +12,7 @@ let rc = null;           // محرّك الرسم
 let screen = 'hook';     // الشاشة المعروضة
 let zoom = 100;
 let dirty = false;
+let playing = false, playRaf = null, showSafe = false;
 
 /* ── التنبيهات ── */
 function toast(msg, kind) {
@@ -64,10 +65,12 @@ function updateHistBtns() {
 let rafId = null, debTimer = null;
 
 function draw() {
+  if (playing) return;                 /* أثناء التشغيل يقود المحرّك الرسم */
   if (rafId) return;
   rafId = requestAnimationFrame(() => {
     rafId = null;
     rc.render(P, screen);
+    if (showSafe) drawSafeZones(rc);
     const note = $('#fitNote');
     if (note) {
       note.textContent = (screen === 'content' && rc.lastFit < 0.995)
@@ -133,6 +136,8 @@ function syncAll() {
   $('#titleLen').textContent = (c.title || '').length + ' حرفًا';
 
   setVal('#fFont', st.font);
+  setVal('#fMotion', st.motion || 'slide');
+  if ($('#motionHint')) $('#motionHint').textContent = (MOTION[st.motion || 'slide'] || MOTION.slide).hint;
   [['#sPt','#vPt','ptFontSize'], ['#sTitle','#vTitle','titleFontSize'],
    ['#sLh','#vLh','lineHeight'], ['#sGh','#vGh','graphicHeight'],
    ['#sRad','#vRad','cornerRadius'], ['#sMar','#vMar','margins'],
@@ -527,6 +532,20 @@ function bind() {
   $('#btnZoomIn').addEventListener('click',  () => setZoom(zoom + 10));
   $('#btnZoomOut').addEventListener('click', () => setZoom(zoom - 10));
   $('#btnRuler').addEventListener('click',   () => $('#stage').classList.toggle('ruler'));
+  $('#btnPlay').addEventListener('click', togglePlay);
+  $('#btnSafe').addEventListener('click', () => { showSafe = !showSafe; draw(); });
+  $('#btnVideo').addEventListener('click', doExportVideo);
+
+  /* نمط الحركة */
+  const msel = $('#fMotion');
+  MOTION_KEYS.forEach(k => msel.appendChild(new Option(MOTION[k].label, k)));
+  const showHint = k => $('#motionHint').textContent = MOTION[k].hint;
+  msel.addEventListener('change', e => {
+    P.settings.motion = e.target.value;
+    showHint(e.target.value);
+    snapshot(); markDirty();
+    togglePlay();                      /* عرض فوري للنمط الجديد */
+  });
   $('#btnFull').addEventListener('click', () => {
     const st = $('#stage');
     if (document.fullscreenElement) document.exitFullscreen();
@@ -546,6 +565,10 @@ function bind() {
 
   /* الاختصارات */
   document.addEventListener('keydown', e => {
+    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName || ''));
+    if (e.code === 'Space' && !typing && !(e.ctrlKey || e.metaKey)) {
+      e.preventDefault(); togglePlay(); return;
+    }
     if (!(e.ctrlKey || e.metaKey)) return;
     const k = e.key.toLowerCase();
     if (k === 's') { e.preventDefault(); save(); }
@@ -574,6 +597,69 @@ function setScreen(s) {
   screen = s;
   $$('.screens button').forEach(b => b.classList.toggle('on', b.dataset.screen === s));
   draw();
+}
+
+/* ═══ تشغيل الحركة داخل المحرّر ═══ */
+function togglePlay() {
+  if (playing) { stopPlay(); return; }
+  playing = true;
+  $('#btnPlay').textContent = '⏹️ إيقاف';
+  const t0 = performance.now();
+  const tick = () => {
+    if (!playing) return;
+    const t = (performance.now() - t0) / 1000;
+    if (t >= T_TOTAL) { stopPlay(); return; }
+    const sc = renderAt(rc, P, t);
+    if (sc !== screen) {
+      screen = sc;
+      $$('.screens button').forEach(b => b.classList.toggle('on', b.dataset.screen === sc));
+    }
+    playRaf = requestAnimationFrame(tick);
+  };
+  playRaf = requestAnimationFrame(tick);
+}
+
+function stopPlay() {
+  playing = false;
+  cancelAnimationFrame(playRaf);
+  $('#btnPlay').textContent = '▶️ شغّل';
+  draw();
+}
+
+/* ═══ تصدير الفيديو ═══ */
+let recording = false;
+function doExportVideo() {
+  if (recording) return;
+  if (!videoSupported()) {
+    toast('متصفّحك لا يدعم تسجيل الفيديو — جرّب كروم أو إيدج حديثًا', 'err');
+    return;
+  }
+  recording = true;
+  stopPlay();
+  const wasSafe = showSafe;
+  showSafe = false;                    /* الدليل للمعاينة فقط */
+  playing = true;                      /* نمنع draw من مقاطعة التسجيل */
+  $('#btnVideo').disabled = true;
+  $('#vidWrap').hidden = false;
+  save(true);
+
+  exportVideo(rc, P, {
+    onProgress: (p, t) => {
+      $('#vidBar').style.width = (p * 100) + '%';
+      $('#vidMsg').textContent = `يسجّل… ${t.toFixed(1)} / ${T_TOTAL} ثانية`;
+    }
+  }).then(type => {
+    toast('نزل الريل فيديو ' + type.label + ' ✓');
+    $('#vidMsg').textContent = 'تمّ — ' + type.label;
+  }).catch(err => {
+    toast(err.message, 'err');
+    $('#vidMsg').textContent = err.message;
+  }).then(() => {
+    recording = false; playing = false; showSafe = wasSafe;
+    $('#btnVideo').disabled = false;
+    setTimeout(() => { $('#vidWrap').hidden = true; $('#vidBar').style.width = '0%'; }, 2600);
+    draw();
+  });
 }
 
 function setZoom(z) {

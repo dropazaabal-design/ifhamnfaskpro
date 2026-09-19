@@ -13,7 +13,8 @@ const DEFAULTS = {
   handle: '@kitabwbs',
   settings: {
     font:'Tajawal', ptFontSize:34, titleFontSize:56, lineHeight:1.55,
-    cornerRadius:20, margins:42, graphicHeight:340, pointGap:12
+    cornerRadius:20, margins:42, graphicHeight:340, pointGap:12,
+    motion:'slide'
   }
 };
 

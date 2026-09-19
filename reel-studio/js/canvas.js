@@ -98,6 +98,24 @@ class ReelCanvas {
     ctx.fillText(text, x, y);
   }
 
+  /* يغلّف رسم عنصر واحد بتأثير الحركة الموافق لتقدّمه.
+     الحساب الهندسي يجري خارجه دائمًا، فالتغليف لا يزحزح التخطيط. */
+  withFx(p, motion, cx, cy, fn) {
+    const ctx = this.ctx;
+    if (p == null) { fn(); return; }
+    const e = fx(p, motion);
+    if (e.skip) return;
+    ctx.save();
+    ctx.globalAlpha *= e.a;
+    if (e.tx || e.ty || e.s !== 1) {
+      ctx.translate(cx + e.tx, cy + e.ty);
+      if (e.s !== 1) ctx.scale(e.s, e.s);
+      ctx.translate(-cx, -cy);
+    }
+    fn();
+    ctx.restore();
+  }
+
   /* صورة تملأ المساحة مع قصّ متوازن (object-fit: cover) */
   drawCover(img, x, y, w, h) {
     const ar = img.width / img.height, tr = w / h;
@@ -122,7 +140,7 @@ class ReelCanvas {
 
   /* ════════════ الشاشة ١: الهوك ════════════ */
 
-  drawHookScreen(data, theme, st) {
+  drawHookScreen(data, theme, st, anim) {
     const ctx = this.ctx, W = this.W, H = this.H;
     const fam = st.font || 'Tajawal';
     const M = (st.margins || 42) + 46;
@@ -152,6 +170,9 @@ class ReelCanvas {
 
     const maxW = W - M * 2;
     const cx = W / 2;
+    const A = anim || null;
+    ctx.save();
+    if (A && A.out != null) ctx.globalAlpha = A.out;
 
     /* قياس كتلة النص أولًا حتى نتوسّط رأسيًا */
     let size = 104;
@@ -172,44 +193,62 @@ class ReelCanvas {
 
     /* شارة الصيغة */
     if (data.badge) {
-      ctx.font = this.font(38, 800, fam);
-      ctx.direction = 'rtl';
-      const tw = ctx.measureText(data.badge).width;
-      const pw = tw + 62, ph = 68;
-      ctx.fillStyle = theme.accent;
-      this.roundRect(cx - pw / 2, y, pw, ph, ph / 2);
-      ctx.fill();
-      ctx.fillStyle = readableOn(theme.accent);
-      ctx.textBaseline = 'middle';
-      this.drawTextRTL(data.badge, cx, y + ph / 2 + 2, 'center');
+      const by = y;
+      this.withFx(A && A.badge, A && A.motion, cx, by + 34, () => {
+        ctx.font = this.font(38, 800, fam);
+        ctx.direction = 'rtl';
+        const tw = ctx.measureText(data.badge).width;
+        const pw = tw + 62, ph = 68;
+        ctx.fillStyle = theme.accent;
+        this.roundRect(cx - pw / 2, by, pw, ph, ph / 2);
+        ctx.fill();
+        ctx.fillStyle = readableOn(theme.accent);
+        ctx.textBaseline = 'middle';
+        this.drawTextRTL(data.badge, cx, by + ph / 2 + 2, 'center');
+      });
       y += badgeH;
     }
 
     /* نص الهوك */
-    ctx.font = this.font(size, 900, fam === 'Tajawal' ? 'Cairo' : fam);
-    ctx.fillStyle = '#ffffff';
-    ctx.textBaseline = 'middle';
-    ctx.shadowColor = 'rgba(0,0,0,.5)';
-    ctx.shadowBlur = 18;
-    ctx.shadowOffsetY = 4;
-    lines.forEach((ln, i) => this.drawTextRTL(ln, cx, y + lh * i + lh / 2, 'center'));
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur = 0;
-    ctx.shadowOffsetY = 0;
+    const ty = y;
+    /* الأسطر تظهر متتابعة قليلًا فيبدو النص وكأنه يُكتب */
+    lines.forEach((ln, i) => {
+      const lp = A ? Math.max(0, Math.min(1, A.text * lines.length - i)) : null;
+      this.withFx(lp, A && A.motion, cx, ty + lh * i + lh / 2, () => {
+        ctx.font = this.font(size, 900, fam === 'Tajawal' ? 'Cairo' : fam);
+        ctx.fillStyle = '#ffffff';
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(0,0,0,.5)';
+        ctx.shadowBlur = 18;
+        ctx.shadowOffsetY = 4;
+        this.drawTextRTL(ln, cx, ty + lh * i + lh / 2, 'center');
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+      });
+    });
     y += textH;
 
     /* سطر فرعي خافت */
     if (data.sub) {
-      ctx.font = this.font(36, 500, fam);
-      ctx.fillStyle = 'rgba(255,255,255,.62)';
-      this.drawTextRTL(data.sub, cx, y + 40, 'center');
+      const sy = y;
+      this.withFx(A && A.sub, A && A.motion, cx, sy + 40, () => {
+        ctx.font = this.font(36, 500, fam);
+        ctx.fillStyle = 'rgba(255,255,255,.62)';
+        ctx.textBaseline = 'middle';
+        this.drawTextRTL(data.sub, cx, sy + 40, 'center');
+      });
     }
 
     /* العلامة في الأسفل */
-    ctx.font = this.font(30, 700, fam);
-    ctx.fillStyle = 'rgba(255,255,255,.42)';
-    ctx.textBaseline = 'alphabetic';
-    this.drawTextLTR(data.brand || '@kitabwbs', cx, H - 72, 'center');
+    this.withFx(A && A.sub, A && A.motion, cx, H - 72, () => {
+      ctx.font = this.font(30, 700, fam);
+      ctx.fillStyle = 'rgba(255,255,255,.42)';
+      ctx.textBaseline = 'alphabetic';
+      this.drawTextLTR(data.brand || '@kitabwbs', cx, H - 72, 'center');
+    });
+
+    ctx.restore();
   }
 
   /* ════════════ الشاشة ٢: المحتوى ════════════ */
@@ -235,7 +274,7 @@ class ReelCanvas {
     return { blocks, total: Math.max(0, total - gap), numW, textW };
   }
 
-  drawContentScreen(data, theme, st) {
+  drawContentScreen(data, theme, st, anim) {
     const ctx = this.ctx, W = this.W, H = this.H;
     const fam = st.font || 'Tajawal';
     const M = st.margins || 42;
@@ -250,6 +289,14 @@ class ReelCanvas {
     const innerX = cardX + PAD, innerW = cardW - PAD * 2;
     const rightX = cardX + cardW - PAD;          // حافة البدء في RTL
 
+    /* البطاقة كلها تدخل ككتلة واحدة، ثم تتتابع عناصرها داخلها */
+    const A = anim || null;
+    ctx.save();
+    if (A) {
+      ctx.globalAlpha = (A.out != null ? A.out : 1) * fx(A.card, 'fade').a;
+      ctx.translate(0, (1 - ease.out(Math.max(0, Math.min(1, A.card)))) * 70);
+    }
+
     /* جسم البطاقة */
     ctx.fillStyle = theme.card;
     this.roundRect(cardX, cardY, cardW, cardH, RAD);
@@ -259,6 +306,7 @@ class ReelCanvas {
 
     /* ── الجرافيك العلوي ── */
     const gH = st.graphicHeight || 340;
+    this.withFx(A && A.graphic, A && A.motion, cardX + cardW / 2, cardY + gH / 2, () => {
     ctx.save();
     this.roundRectTop(cardX, cardY, cardW, gH, RAD);
     ctx.clip();
@@ -278,31 +326,35 @@ class ReelCanvas {
       this.drawTextRTL(data.emoji || '📌', cardX + cardW / 2, cardY + gH / 2, 'center');
     }
     ctx.restore();
-    y += gH;
-
     /* الحدّ المميّز تحت الجرافيك */
     ctx.fillStyle = theme.accent;
-    ctx.fillRect(cardX, y, cardW, 11);
-    y += 11 + 34;
+    ctx.fillRect(cardX, cardY + gH, cardW, 11);
+    });
+    y += gH + 11 + 34;
 
     /* ── سطر العنوان: إيموجي + عنوان ── */
     const titleF = (st.titleFontSize || 56) * 1.38;
     ctx.font = this.font(titleF * 0.94, 900, 'Cairo');
     ctx.textBaseline = 'middle';
     const emo = data.emoji || '';
-    let emoW = 0;
-    if (emo) {
-      emoW = ctx.measureText(emo).width + 20;
-      ctx.fillStyle = theme.title;
-      this.drawTextRTL(emo, rightX, y + titleF * 0.6, 'right');
-    }
+    let emoW = emo ? ctx.measureText(emo).width + 20 : 0;
     ctx.font = this.font(titleF, 900, 'Cairo');
-    ctx.fillStyle = theme.title;
-    const titleLines = this.wrapText(data.title || 'عنوان الريل', innerW - emoW);
-    titleLines.slice(0, 2).forEach((ln, i) => {
-      this.drawTextRTL(ln, rightX - emoW, y + titleF * 0.6 + i * titleF * 1.26, 'right');
+    const titleLines = this.wrapText(data.title || 'عنوان الريل', innerW - emoW).slice(0, 2);
+    const tY = y;
+    this.withFx(A && A.title, A && A.motion, rightX, tY + titleF * 0.6, () => {
+      if (emo) {
+        ctx.font = this.font(titleF * 0.94, 900, 'Cairo');
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = theme.title;
+        this.drawTextRTL(emo, rightX, tY + titleF * 0.6, 'right');
+      }
+      ctx.font = this.font(titleF, 900, 'Cairo');
+      ctx.fillStyle = theme.title;
+      titleLines.forEach((ln, i) => {
+        this.drawTextRTL(ln, rightX - emoW, tY + titleF * 0.6 + i * titleF * 1.26, 'right');
+      });
     });
-    y += titleLines.slice(0, 2).length * titleF * 1.26 + 30;
+    y += titleLines.length * titleF * 1.26 + 30;
 
     /* ── الخاتمة والتذييل: نحجز مساحتهما قبل توزيع النقاط ── */
     const outroF = 40, ctaF = 34;
@@ -338,17 +390,20 @@ class ReelCanvas {
       const numS = 52 * Math.max(0.72, fit);
       pts.forEach((p, i) => {
         const b = m.blocks[i];
+        const pY = y;
+        this.withFx(A && A.points && A.points[i], A && A.motion,
+                    rightX, pY + b.h / 2, () => {
         /* مربّع الترقيم */
         ctx.fillStyle = theme.accent;
-        this.roundRect(rightX - numS, y + 4, numS, numS, numS * 0.32);
+        this.roundRect(rightX - numS, pY + 4, numS, numS, numS * 0.32);
         ctx.fill();
         ctx.font = this.font(numS * 0.54, 800, 'Cairo');
         ctx.fillStyle = readableOn(theme.accent);
         ctx.textBaseline = 'middle';
-        this.drawTextRTL(toArabicDigits(i + 1), rightX - numS / 2, y + 4 + numS / 2 + 1, 'center');
+        this.drawTextRTL(toArabicDigits(i + 1), rightX - numS / 2, pY + 4 + numS / 2 + 1, 'center');
 
         /* عنوان النقطة */
-        let ly = y;
+        let ly = pY;
         const tx = rightX - numS - 16;
         ctx.font = this.font(headF, 800, fam);
         ctx.fillStyle = theme.title;
@@ -366,6 +421,7 @@ class ReelCanvas {
             ly += bodyF * 1.5;
           });
         }
+        });
         y += b.h + gap + gapExtra;
       });
       y -= gap + gapExtra;
@@ -374,6 +430,7 @@ class ReelCanvas {
     /* ── الخاتمة الاقتباسية ── */
     if (outroLines.length) {
       const boxY = cardY + cardH - PAD - footH - outroH + 8;
+      this.withFx(A && A.outro, A && A.motion, rightX, boxY + outroH / 2, () => {
       ctx.fillStyle = theme.panel;
       this.roundRect(innerX, boxY, innerW, outroH - 18, 18);
       ctx.fill();
@@ -387,6 +444,7 @@ class ReelCanvas {
       outroLines.forEach((ln, i) => {
         this.drawTextRTL(ln, rightX - 26, boxY + 30 + i * outroF * 1.55 + outroF * 0.5, 'right');
       });
+      });
     }
 
     /* ── التذييل: السؤال + العلامة ── */
@@ -395,6 +453,7 @@ class ReelCanvas {
     ctx.font = this.font(29, 700, fam);
     const brandW = ctx.measureText(brand).width;
 
+    this.withFx(A && A.footer, A && A.motion, W / 2, fy, () => {
     if (data.cta) {
       ctx.font = this.font(ctaF, 800, fam);
       ctx.fillStyle = theme.cta;
@@ -408,6 +467,9 @@ class ReelCanvas {
     ctx.fillStyle = theme.accent;
     ctx.textBaseline = 'middle';
     this.drawTextLTR(brand, innerX, fy, 'left');
+    });
+
+    ctx.restore();
   }
 
   /* ════════════ الشاشة ٣: المتدفّق ════════════ */
@@ -422,7 +484,7 @@ class ReelCanvas {
     return parts.join('\n\n');
   }
 
-  drawFlowScreen(data, theme, st, themeKey) {
+  drawFlowScreen(data, theme, st, themeKey, anim) {
     const ctx = this.ctx, W = this.W, H = this.H;
     const fam = st.font || 'Tajawal';
     const dark = isDarkTheme(themeKey);
@@ -453,39 +515,47 @@ class ReelCanvas {
 
     const lh = size * 1.92;
     const totalH = lines.length * lh;
-    let y = (H - totalH) / 2;
+    const y = (H - totalH) / 2;
+    const A = anim || null;
 
-    ctx.fillStyle = fg;
-    ctx.textBaseline = 'middle';
-    lines.forEach((ln, i) => {
-      if (!ln) return;
-      this.drawTextRTL(ln, W / 2, y + lh * i + lh / 2, 'center');
+    ctx.save();
+    if (A && A.out != null) ctx.globalAlpha = A.out;
+    this.withFx(A && A.text, A && A.motion, W / 2, H / 2, () => {
+      ctx.fillStyle = fg;
+      ctx.textBaseline = 'middle';
+      ctx.font = this.font(size, 700, fam);
+      lines.forEach((ln, i) => {
+        if (!ln) return;
+        this.drawTextRTL(ln, W / 2, y + lh * i + lh / 2, 'center');
+      });
+
+      /* العلامة */
+      ctx.font = this.font(30, 700, fam);
+      ctx.fillStyle = dark ? 'rgba(255,255,255,.45)' : 'rgba(17,24,39,.42)';
+      ctx.textBaseline = 'alphabetic';
+      this.drawTextLTR(data.brand || '@kitabwbs', W / 2, H - 76, 'center');
     });
-
-    /* العلامة */
-    ctx.font = this.font(30, 700, fam);
-    ctx.fillStyle = dark ? 'rgba(255,255,255,.45)' : 'rgba(17,24,39,.42)';
-    ctx.textBaseline = 'alphabetic';
-    this.drawTextLTR(data.brand || '@kitabwbs', W / 2, H - 76, 'center');
+    ctx.restore();
   }
 
   /* ════════════ الواجهة العامة ════════════ */
 
-  render(project, screen) {
+  /* anim اختياري — بدونه يُرسم الإطار ثابتًا كما كان */
+  render(project, screen, anim) {
     const theme = resolveTheme(project.theme, project.colorOverrides);
     const st = project.settings || DEFAULTS.settings;
     const s = project.screens;
     const brand = s.content.brand;
 
     if (screen === 'hook') {
-      this.drawHookScreen(Object.assign({}, s.hook, { brand }), theme, st);
+      this.drawHookScreen(Object.assign({}, s.hook, { brand }), theme, st, anim);
     } else if (screen === 'flow') {
       const text = s.flow.auto === false && s.flow.text
         ? s.flow.text
         : ReelCanvas.buildFlowText(s.content);
-      this.drawFlowScreen({ text, brand }, theme, st, project.theme);
+      this.drawFlowScreen({ text, brand }, theme, st, project.theme, anim);
     } else {
-      this.drawContentScreen(s.content, theme, st);
+      this.drawContentScreen(s.content, theme, st, anim);
     }
   }
 
