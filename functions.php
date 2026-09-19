@@ -44,3 +44,12 @@ if ( matjar_pro_has_woocommerce() ) {
 	require_once MATJAR_PRO_DIR . '/inc/wc-filter.php';
 	require_once MATJAR_PRO_DIR . '/inc/wc-account.php';
 }
+
+/*
+ * المتجر التجريبي: أداة لوحة تحكم لا شيء منها يخصّ الزائر. تحميلها خلف
+ * is_admin() يعني أن صفحة منتج لا تحمل سطراً واحداً من كتالوج تجريبي.
+ */
+if ( is_admin() ) {
+	require_once MATJAR_PRO_DIR . '/inc/demo.php';
+	require_once MATJAR_PRO_DIR . '/inc/demo-admin.php';
+}
