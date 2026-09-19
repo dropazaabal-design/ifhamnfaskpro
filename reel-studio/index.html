@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة التحكم · استوديو الريلات — كتاب وبس</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&family=Almarai:wght@300;400;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23dc2626'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3E%D9%83%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/themes.css">
+<style>
+.proj{display:flex;align-items:center;gap:13px;padding:13px;border-radius:12px;
+  background:var(--color-surface);border:1px solid var(--color-border);transition:var(--transition)}
+.proj:hover{border-color:var(--color-primary)}
+.proj .sw{width:42px;height:42px;border-radius:11px;flex-shrink:0;display:grid;place-items:center;
+  font-size:19px;border:1px solid var(--color-border-lt)}
+.proj .in{flex:1;min-width:0}
+.proj .in b{display:block;font-family:var(--font-head);font-size:14px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.proj .in span{font-size:11.5px;color:var(--color-muted)}
+.proj .ac{display:flex;gap:6px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark">ك</span>
+      <span class="txt"><b>استوديو الريلات</b><span>كتاب وبس · @kitabwbs</span></span>
+    </div>
+    <nav class="nav">
+      <a href="editor.html"><span class="ic">🎬</span><span>محرّر جديد</span></a>
+      <a href="library.html"><span class="ic">📚</span><span>مكتبة المواضيع</span></a>
+      <a href="caption.html"><span class="ic">💬</span><span>مولّد الكابشن</span></a>
+      <a href="preview.html"><span class="ic">👁️</span><span>معاينة ومقارنة</span></a>
+      <div class="sep"></div>
+      <a href="#projects"><span class="ic">💾</span><span>مشاريعي المحفوظة</span></a>
+      <a href="#stats"><span class="ic">📊</span><span>إحصائيات</span></a>
+      <a href="#settings"><span class="ic">⚙️</span><span>الإعدادات</span></a>
+    </nav>
+    <div class="foot"><span class="dot"></span><span id="lastSave">—</span></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <h1>لوحة التحكم<span class="sub">استوديو إنتاج الريلات — كل شيء محلي على جهازك</span></h1>
+      <label class="btn" style="margin:0">📥 استيراد مشروع
+        <input type="file" id="importFile" accept="application/json,.json" hidden></label>
+      <button class="btn btn-primary" id="btnNew">🎬 محرّر جديد</button>
+    </header>
+
+    <div class="content">
+
+      <!-- ═══ الإحصائيات ═══ -->
+      <div id="stats" class="grid grid-4">
+        <div class="stat" style="--c:#dc2626">
+          <div class="ic">🎬</div><b id="sMonth">٠</b><span>ريلًا هذا الشهر</span></div>
+        <div class="stat" style="--c:#2563eb">
+          <div class="ic">💾</div><b id="sTotal">٠</b><span>مشروعًا محفوظًا</span></div>
+        <div class="stat" style="--c:#059669">
+          <div class="ic">🕒</div><b id="sLast" class="small">—</b><span>آخر ريل أُنشئ</span></div>
+        <div class="stat" style="--c:#f59e0b">
+          <div class="ic">🎨</div><b id="sTheme" class="small">—</b><span>الثيم الأكثر استخدامًا</span></div>
+      </div>
+
+      <!-- ═══ بدء سريع ═══ -->
+      <div class="section-title">
+        <h2>⚡ بدء سريع</h2>
+        <a href="library.html" class="n" style="color:var(--color-primary)">المكتبة كاملة ←</a>
+      </div>
+      <div class="grid grid-4" id="quickGrid"></div>
+
+      <!-- ═══ المشاريع ═══ -->
+      <div class="section-title" id="projects">
+        <h2>💾 مشاريعي المحفوظة</h2>
+        <span class="n" id="projCount">—</span>
+      </div>
+      <div class="grid" id="projList" style="gap:9px"></div>
+      <div class="empty" id="projEmpty" hidden>
+        <div class="ic">📭</div><b>ما عندك مشاريع بعد</b>
+        <p>ابدأ من «محرّر جديد» أو اختر موضوعًا جاهزًا من البدء السريع فوق.</p>
+      </div>
+
+      <!-- ═══ الإعدادات ═══ -->
+      <div class="section-title" id="settings"><h2>⚙️ الإعدادات</h2></div>
+      <div class="card">
+        <div class="grid grid-3" style="gap:14px">
+          <div class="field" style="margin:0"><label>الثيم الافتراضي</label>
+            <select id="setTheme"></select></div>
+          <div class="field" style="margin:0"><label>الخط الافتراضي</label>
+            <select id="setFont"></select></div>
+          <div class="field" style="margin:0"><label>العلامة التجارية</label>
+            <input type="text" id="setBrand" dir="ltr" style="text-align:left"></div>
+        </div>
+        <div style="display:flex;gap:9px;margin-top:15px;flex-wrap:wrap">
+          <button class="btn btn-primary" id="btnSaveSet">حفظ الإعدادات</button>
+          <button class="btn" id="btnSync">↻ مزامنة المكتبة</button>
+          <button class="btn" id="btnWipe" style="margin-inline-start:auto;color:#fca5a5">🗑️ مسح كل البيانات</button>
+        </div>
+        <p style="font-size:11.5px;color:var(--color-muted);margin-top:13px;line-height:1.9">
+          كل المشاريع والمواضيع محفوظة في <b>localStorage</b> داخل هذا المتصفّح فقط —
+          لا تُرفع لأي خادم. صدّر مشاريعك JSON إن أردت نسخة احتياطية أو نقلها لجهاز آخر.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script src="js/themes.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/canvas.js"></script>
+<script src="js/library.js"></script>
+<script src="js/caption.js"></script>
+<script src="js/export.js"></script>
+<script>
+/* ═══ لوحة التحكم ═══ */
+const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
+
+function toast(msg, kind) {
+  const el = document.createElement('div');
+  el.className = 'toast' + (kind ? ' ' + kind : '');
+  el.textContent = msg;
+  $('#toasts').appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 260); }, 2600);
+}
+
+function renderStats() {
+  const s = getStats();
+  $('#sMonth').textContent = toArabicDigits(s.thisMonth);
+  $('#sTotal').textContent = toArabicDigits(s.total);
+  $('#sLast').textContent  = s.last ? fmtRelative(s.last.created_at) : '—';
+  $('#sTheme').textContent = s.topThemeName || '—';
+  $('#lastSave').textContent = s.last ? 'آخر حفظ ' + fmtRelative(s.last.updated_at) : 'ما فيه مشاريع';
+}
+
+function renderQuick() {
+  const g = $('#quickGrid');
+  g.innerHTML = '';
+  TOPICS.slice(0, 8).forEach(t => {
+    const el = document.createElement('button');
+    el.className = 'topic';
+    el.type = 'button';
+    el.innerHTML = `
+      <div class="t-hd"><span class="t-emoji">${t.emoji}</span><h4>${t.title}</h4></div>
+      <div class="t-meta">
+        <span class="chip">${toArabicDigits(t.points.length)} نقاط</span>
+        <span class="chip" style="border-color:${AXES[t.axis].color}55;color:${AXES[t.axis].color}">${AXES[t.axis].label}</span>
+        <span class="t-swatch" style="background:${THEMES[t.theme].accent}" title="${THEMES[t.theme].name}"></span>
+      </div>`;
+    el.addEventListener('click', () => {
+      const p = topicToProject(t, newProject(t.title));
+      const r = saveProject(p);
+      if (!r.ok) { toast(r.msg, 'err'); return; }
+      setCurrentId(p.id);
+      location.href = 'editor.html';
+    });
+    g.appendChild(el);
+  });
+}
+
+function renderProjects() {
+  const ps = listProjects();
+  const box = $('#projList');
+  box.innerHTML = '';
+  $('#projCount').textContent = toArabicDigits(ps.length) + ' مشروعًا';
+  $('#projEmpty').hidden = ps.length > 0;
+
+  ps.forEach(p => {
+    const th = THEMES[p.theme] || THEMES.classic;
+    const n = (p.screens.content.points || []).filter(x => x.head || x.body).length;
+    const el = document.createElement('div');
+    el.className = 'proj';
+    el.innerHTML = `
+      <div class="sw" style="background:${th.bg};color:${th.accent}">${p.screens.content.emoji || '📌'}</div>
+      <div class="in">
+        <b>${p.name}</b>
+        <span>${th.name} · ${toArabicDigits(n)} نقاط · عُدِّل ${fmtRelative(p.updated_at)}</span>
+      </div>
+      <div class="ac">
+        <button class="btn btn-sm btn-primary" data-open>فتح</button>
+        <button class="btn btn-sm" data-dup title="تكرار">⧉</button>
+        <button class="btn btn-sm" data-json title="تصدير JSON">📄</button>
+        <button class="btn btn-sm" data-del title="حذف">🗑️</button>
+      </div>`;
+    el.querySelector('[data-open]').addEventListener('click', () => {
+      setCurrentId(p.id); location.href = 'editor.html';
+    });
+    el.querySelector('[data-dup]').addEventListener('click', () => {
+      duplicateProject(p.id); renderProjects(); renderStats(); toast('تم التكرار');
+    });
+    el.querySelector('[data-json]').addEventListener('click', () => {
+      exportJSON(p); toast('صُدِّر ملف المشروع');
+    });
+    el.querySelector('[data-del]').addEventListener('click', () => {
+      if (!confirm('حذف «' + p.name + '»؟ لا يمكن التراجع.')) return;
+      deleteProject(p.id); renderProjects(); renderStats(); toast('تم الحذف');
+    });
+    box.appendChild(el);
+  });
+}
+
+function renderSettings() {
+  const s = getSettings();
+  const t = $('#setTheme'); t.innerHTML = '';
+  THEME_KEYS.forEach(k => t.appendChild(new Option(THEMES[k].name, k)));
+  t.value = s.defaultTheme || 'classic';
+
+  const f = $('#setFont'); f.innerHTML = '';
+  Object.keys(FONTS).forEach(k => f.appendChild(new Option(FONTS[k].label, k)));
+  f.value = s.defaultFont || 'Tajawal';
+
+  $('#setBrand').value = s.brand || DEFAULTS.brand;
+}
+
+/* ── الربط ── */
+$('#btnNew').addEventListener('click', () => {
+  const p = newProject();
+  const r = saveProject(p);
+  if (!r.ok) { toast(r.msg, 'err'); return; }
+  setCurrentId(p.id);
+  location.href = 'editor.html';
+});
+
+$('#btnSaveSet').addEventListener('click', () => {
+  const r = saveSettings({
+    defaultTheme: $('#setTheme').value,
+    defaultFont:  $('#setFont').value,
+    brand:        $('#setBrand').value.trim() || DEFAULTS.brand
+  });
+  toast(r.ok ? 'حُفظت الإعدادات ✓' : r.msg, r.ok ? '' : 'err');
+});
+
+$('#btnSync').addEventListener('click', () => {
+  renderQuick(); renderProjects(); renderStats();
+  toast('تحدّثت المكتبة — ' + toArabicDigits(allTopics().length) + ' موضوعًا');
+});
+
+$('#btnWipe').addEventListener('click', () => {
+  if (!confirm('سيُمسح كل شيء: المشاريع والمواضيع المخصّصة والإعدادات.\nمتأكّد؟')) return;
+  if (!confirm('تأكيد أخير — لا يمكن التراجع عن هذه الخطوة.')) return;
+  localStorage.removeItem(DB_KEY);
+  renderStats(); renderProjects(); renderSettings();
+  toast('مُسحت كل البيانات');
+});
+
+$('#importFile').addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const fr = new FileReader();
+  fr.onload = () => {
+    const r = importProjectJSON(fr.result);
+    if (!r.ok) { toast(r.msg, 'err'); return; }
+    renderProjects(); renderStats();
+    toast('استُورد: ' + r.project.name);
+  };
+  fr.onerror = () => toast('تعذّرت قراءة الملف', 'err');
+  fr.readAsText(f);
+  e.target.value = '';
+});
+
+renderStats();
+renderQuick();
+renderProjects();
+renderSettings();
+</script>
+</body>
+</html>

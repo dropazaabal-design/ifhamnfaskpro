@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>معاينة ومقارنة · استوديو الريلات — كتاب وبس</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&family=Almarai:wght@300;400;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23dc2626'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3E%D9%83%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/themes.css">
+<style>
+/* ═ إطار هاتف وهمي لمحاكاة فيسبوك ═ */
+.phone{width:300px;border-radius:30px;background:#0b0b0d;padding:9px;
+  box-shadow:var(--shadow-lg);border:1px solid #2a2a30;flex-shrink:0}
+.phone .screen{position:relative;border-radius:23px;overflow:hidden;background:#000;line-height:0}
+.phone canvas{width:100%;display:block}
+.phone .bar{position:absolute;top:0;inset-inline:0;height:34px;z-index:3;
+  display:flex;align-items:center;justify-content:space-between;padding:0 14px;
+  font-size:10.5px;color:#fff;background:linear-gradient(180deg,rgba(0,0,0,.45),transparent)}
+.phone .ui{position:absolute;bottom:0;inset-inline:0;padding:12px 14px;z-index:3;
+  background:linear-gradient(0deg,rgba(0,0,0,.6),transparent);
+  display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.phone .ui .acc{display:flex;align-items:center;gap:7px;font-size:11px;color:#fff;line-height:1.4}
+.phone .ui .acc .av{width:24px;height:24px;border-radius:50%;background:var(--color-primary);
+  display:grid;place-items:center;font-size:11px;font-weight:800;flex-shrink:0}
+.phone .ui .icons{display:flex;flex-direction:column;gap:9px;font-size:15px;line-height:1}
+.phone .prog{position:absolute;top:34px;inset-inline:10px;height:2.5px;border-radius:3px;
+  background:rgba(255,255,255,.25);z-index:4;overflow:hidden}
+.phone .prog i{display:block;height:100%;width:0;background:#fff;transition:width .1s linear}
+.phone-wrap{display:flex;flex-direction:column;align-items:center;gap:11px}
+.phone-lbl{font-size:12px;color:var(--color-muted);text-align:center}
+
+.tl{display:flex;flex-direction:column;gap:2px;margin-top:12px}
+.tl .row{display:flex;align-items:center;gap:11px;padding:11px 13px;
+  background:var(--color-bg);border:1px solid var(--color-border);border-radius:10px;
+  font-size:12.5px;transition:var(--transition)}
+.tl .row.on{border-color:var(--color-primary);background:rgba(220,38,38,.08)}
+.tl .row .t{font-family:var(--font-head);font-weight:800;color:var(--color-primary);
+  min-width:68px;font-variant-numeric:tabular-nums;direction:ltr;text-align:center}
+.tl .row .d b{display:block;font-size:12.5px;color:var(--color-text)}
+.tl .row .d span{font-size:11px;color:var(--color-muted)}
+
+.chk{display:flex;flex-direction:column;gap:2px}
+.chk label{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border-radius:10px;
+  cursor:pointer;font-size:13px;transition:var(--transition);border:1px solid transparent}
+.chk label:hover{background:var(--color-bg)}
+.chk label.done{color:var(--color-muted);text-decoration:line-through;
+  border-color:rgba(16,185,129,.25);background:rgba(16,185,129,.06)}
+.chk input{width:17px;height:17px;accent-color:var(--color-ok);cursor:pointer;flex-shrink:0;margin-top:2px}
+.chk-bar{height:6px;border-radius:6px;background:var(--color-border);overflow:hidden;margin-bottom:13px}
+.chk-bar i{display:block;height:100%;background:var(--color-ok);transition:width .25s;width:0}
+
+.cmp-grid{display:flex;gap:22px;flex-wrap:wrap;justify-content:center}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark">ك</span>
+      <span class="txt"><b>استوديو الريلات</b><span>كتاب وبس · @kitabwbs</span></span>
+    </div>
+    <nav class="nav">
+      <a href="index.html"><span class="ic">📊</span><span>لوحة التحكم</span></a>
+      <a href="editor.html"><span class="ic">🎬</span><span>المحرّر</span></a>
+      <a href="library.html"><span class="ic">📚</span><span>مكتبة المواضيع</span></a>
+      <a href="caption.html"><span class="ic">💬</span><span>مولّد الكابشن</span></a>
+      <a href="preview.html" class="on"><span class="ic">👁️</span><span>معاينة ومقارنة</span></a>
+    </nav>
+    <div class="foot"><span class="dot"></span><span id="pName">—</span></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <h1>معاينة ومقارنة<span class="sub">شوف الريل كما يراه المتابع قبل النشر</span></h1>
+      <div class="tabs" style="max-width:280px">
+        <button data-mode="single" class="on">معاينة</button>
+        <button data-mode="compare">مقارنة</button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- ═══ وضع المعاينة المنفردة ═══ -->
+      <div id="modeSingle">
+        <div class="grid" style="grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:start">
+
+          <div class="phone-wrap">
+            <div class="phone">
+              <div class="screen">
+                <div class="bar"><span>21:30</span><span>▪ ▪ ▪</span></div>
+                <div class="prog"><i id="prog"></i></div>
+                <canvas id="cv" width="1080" height="1920"></canvas>
+                <div class="ui">
+                  <div class="acc">
+                    <span class="av">ك</span>
+                    <span><b>kitabwbs</b><br>خلاصات كتب · متابعة</span>
+                  </div>
+                  <div class="icons"><span>❤️</span><span>💬</span><span>↗️</span><span>🔖</span></div>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:7px">
+              <button class="btn btn-sm btn-primary" id="btnPlay">▶️ تشغيل</button>
+              <button class="btn btn-sm" data-sc="hook">١</button>
+              <button class="btn btn-sm" data-sc="content">٢</button>
+              <button class="btn btn-sm" data-sc="flow">٣</button>
+            </div>
+            <p class="phone-lbl" id="scLabel">الشاشة ١ — الهوك</p>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:18px">
+
+            <div class="card">
+              <div class="card-hd"><h3>⏱️ توقيت CapCut المقترح</h3><span class="n">13 ثانية</span></div>
+              <div class="tl" id="timeline"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-hd"><h3>✅ قائمة الفحص قبل النشر</h3>
+                <span class="n"><span id="chkDone">0</span> / 8</span></div>
+              <div class="chk-bar"><i id="chkBar"></i></div>
+              <div class="chk" id="checklist"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-hd"><h3>⬇️ التصدير</h3></div>
+              <div class="field">
+                <label>دقّة PNG</label>
+                <select id="expScale">
+                  <option value="1">1080×1920 — مقاس المنصّات (موصى به)</option>
+                  <option value="2">2160×3840 — ضعف الدقّة</option>
+                  <option value="3">3240×5760 — ثلاثة أضعاف (للطباعة)</option>
+                </select>
+              </div>
+              <div class="grid grid-2" style="gap:9px">
+                <button class="btn btn-primary" id="expOne">🖼️ PNG الشاشة الحالية</button>
+                <button class="btn" id="expAll">🗜️ الشاشات الثلاث (ZIP)</button>
+                <button class="btn" id="expJson">📄 JSON المشروع</button>
+                <button class="btn" id="expPdf">📕 نسخة PDF</button>
+              </div>
+              <p style="font-size:11.5px;color:var(--color-muted);margin-top:11px;line-height:1.9">
+                ملف ZIP يحوي الصور الثلاث وملف JSON للمشروع — كلّها تُبنى داخل متصفّحك
+                بلا رفع أي شيء لأي خادم.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ وضع المقارنة ═══ -->
+      <div id="modeCompare" hidden>
+        <div class="card" style="margin-bottom:18px">
+          <div class="grid grid-2" style="gap:14px">
+            <div class="field" style="margin:0"><label>المشروع الأول</label><select id="cmpA"></select></div>
+            <div class="field" style="margin:0"><label>المشروع الثاني</label><select id="cmpB"></select></div>
+          </div>
+          <div class="tabs" style="margin-top:14px;max-width:360px">
+            <button data-csc="hook" class="on">هوك</button>
+            <button data-csc="content">محتوى</button>
+            <button data-csc="flow">متدفّق</button>
+          </div>
+        </div>
+        <div class="cmp-grid">
+          <div class="phone-wrap">
+            <div class="phone"><div class="screen"><canvas id="cvA" width="1080" height="1920"></canvas></div></div>
+            <p class="phone-lbl" id="lblA">—</p>
+          </div>
+          <div class="phone-wrap">
+            <div class="phone"><div class="screen"><canvas id="cvB" width="1080" height="1920"></canvas></div></div>
+            <p class="phone-lbl" id="lblB">—</p>
+          </div>
+        </div>
+        <div class="empty" id="cmpEmpty" hidden>
+          <div class="ic">🗂️</div><b>تحتاج مشروعين على الأقل</b>
+          <p>أنشئ مشروعًا ثانيًا من المحرّر أو حمّل موضوعًا من المكتبة لتقارن بينهما.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script src="js/themes.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/canvas.js"></script>
+<script src="js/library.js"></script>
+<script src="js/caption.js"></script>
+<script src="js/export.js"></script>
+<script>
+/* ═══ صفحة المعاينة والمقارنة ═══ */
+const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
+let P = null, rc = null, rcA = null, rcB = null;
+let screen = 'hook', playing = false, playTimer = null, cmpScreen = 'hook';
+
+const SC_LABEL = { hook:'الشاشة ١ — الهوك', content:'الشاشة ٢ — المحتوى', flow:'الشاشة ٣ — المتدفّق' };
+
+function toast(msg, kind) {
+  const el = document.createElement('div');
+  el.className = 'toast' + (kind ? ' ' + kind : '');
+  el.textContent = msg;
+  $('#toasts').appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 260); }, 2600);
+}
+
+function setScreen(s) {
+  screen = s;
+  rc.render(P, s);
+  $('#scLabel').textContent = SC_LABEL[s];
+  $$('#timeline .row').forEach(r => r.classList.toggle('on', r.dataset.sc === s));
+}
+
+/* ── محاكاة التسلسل الزمني: 0-3 هوك · 3-11 محتوى · 11-13 خاتمة ── */
+const SEQ = [
+  { sc:'hook',    from:0,  to:3  },
+  { sc:'content', from:3,  to:11 },
+  { sc:'flow',    from:11, to:13 }
+];
+const TOTAL = 13;
+
+function play() {
+  if (playing) { stop(); return; }
+  playing = true;
+  $('#btnPlay').textContent = '⏹️ إيقاف';
+  const t0 = performance.now();
+  const tick = () => {
+    if (!playing) return;
+    const t = (performance.now() - t0) / 1000;
+    if (t >= TOTAL) { stop(); return; }
+    $('#prog').style.width = (t / TOTAL * 100) + '%';
+    const seg = SEQ.find(s => t >= s.from && t < s.to);
+    if (seg && seg.sc !== screen) setScreen(seg.sc);
+    playTimer = requestAnimationFrame(tick);
+  };
+  playTimer = requestAnimationFrame(tick);
+}
+
+function stop() {
+  playing = false;
+  cancelAnimationFrame(playTimer);
+  $('#btnPlay').textContent = '▶️ تشغيل';
+  $('#prog').style.width = '0%';
+}
+
+function renderTimeline() {
+  const box = $('#timeline');
+  box.innerHTML = '';
+  CAPCUT_TIMELINE.forEach((t, i) => {
+    const r = document.createElement('div');
+    r.className = 'row';
+    r.dataset.sc = SEQ[i].sc;
+    r.innerHTML = `<span class="t">${t.time}</span>
+                   <span class="d"><b>${t.screen}</b><span>${t.note}</span></span>`;
+    r.addEventListener('click', () => { stop(); setScreen(SEQ[i].sc); });
+    box.appendChild(r);
+  });
+}
+
+/* ── قائمة الفحص ── */
+function renderChecklist() {
+  const box = $('#checklist');
+  box.innerHTML = '';
+  if (!Array.isArray(P.checklist)) P.checklist = new Array(CHECKLIST_ITEMS.length).fill(false);
+  while (P.checklist.length < CHECKLIST_ITEMS.length) P.checklist.push(false);
+
+  CHECKLIST_ITEMS.forEach((txt, i) => {
+    const l = document.createElement('label');
+    l.className = P.checklist[i] ? 'done' : '';
+    l.innerHTML = `<input type="checkbox" ${P.checklist[i] ? 'checked' : ''}><span>${txt}</span>`;
+    l.querySelector('input').addEventListener('change', e => {
+      P.checklist[i] = e.target.checked;
+      l.className = e.target.checked ? 'done' : '';
+      saveProject(P);
+      updateChkBar();
+    });
+    box.appendChild(l);
+  });
+  updateChkBar();
+}
+
+function updateChkBar() {
+  const done = P.checklist.filter(Boolean).length;
+  $('#chkDone').textContent = done;
+  $('#chkBar').style.width = (done / CHECKLIST_ITEMS.length * 100) + '%';
+}
+
+/* ── المقارنة ── */
+function setupCompare() {
+  const ps = listProjects();
+  const a = $('#cmpA'), b = $('#cmpB');
+  a.innerHTML = b.innerHTML = '';
+  ps.forEach(p => {
+    a.appendChild(new Option(p.name, p.id));
+    b.appendChild(new Option(p.name, p.id));
+  });
+  /* المقارنة تحتاج مشروعين — نعرض إمّا الهاتفين وإمّا رسالة الإرشاد */
+  const enough = ps.length >= 2;
+  $('#cmpEmpty').hidden = enough;
+  document.querySelector('.cmp-grid').hidden = !enough;
+  document.querySelector('#modeCompare .card').hidden = !enough;
+  if (!enough) return;
+  a.value = ps[0].id;
+  b.value = ps[1].id;
+  drawCompare();
+}
+
+function drawCompare() {
+  const pa = getProject($('#cmpA').value), pb = getProject($('#cmpB').value);
+  if (pa) { rcA.render(pa, cmpScreen); $('#lblA').textContent = pa.name + ' · ' + THEMES[pa.theme].name; }
+  if (pb) { rcB.render(pb, cmpScreen); $('#lblB').textContent = pb.name + ' · ' + THEMES[pb.theme].name; }
+}
+
+/* ── الربط ── */
+$$('.topbar .tabs button').forEach(b => b.addEventListener('click', () => {
+  $$('.topbar .tabs button').forEach(x => x.classList.toggle('on', x === b));
+  const single = b.dataset.mode === 'single';
+  $('#modeSingle').hidden = !single;
+  $('#modeCompare').hidden = single;
+  stop();
+  if (!single) setupCompare();
+}));
+
+$$('[data-sc]').forEach(b => b.addEventListener('click', () => { stop(); setScreen(b.dataset.sc); }));
+$$('[data-csc]').forEach(b => b.addEventListener('click', () => {
+  $$('[data-csc]').forEach(x => x.classList.toggle('on', x === b));
+  cmpScreen = b.dataset.csc;
+  drawCompare();
+}));
+$('#cmpA').addEventListener('change', drawCompare);
+$('#cmpB').addEventListener('change', drawCompare);
+$('#btnPlay').addEventListener('click', play);
+
+const scaleOf = () => parseInt($('#expScale').value, 10);
+$('#expOne').addEventListener('click', () => {
+  exportCurrentPNG(rc, P, screen, scaleOf());
+  rc.render(P, screen);
+  toast('صُدِّرت الشاشة الحالية');
+});
+$('#expAll').addEventListener('click', () => {
+  const n = exportAllZip(rc, P, scaleOf());
+  rc.render(P, screen);
+  toast(`صُدِّر ملف ZIP يحوي ${n} ملفات`);
+});
+$('#expJson').addEventListener('click', () => { exportJSON(P); toast('صُدِّر ملف المشروع'); });
+$('#expPdf').addEventListener('click', () => {
+  exportPDF(rc, P);
+  rc.render(P, screen);
+  toast('صُدِّرت نسخة PDF من ثلاث صفحات');
+});
+
+/* ── الإقلاع ── */
+P = loadOrCreateCurrent();
+rc  = new ReelCanvas($('#cv'));
+rcA = new ReelCanvas($('#cvA'));
+rcB = new ReelCanvas($('#cvB'));
+rc.onReady = () => rc.render(P, screen);
+$('#pName').textContent = P.name;
+renderTimeline();
+renderChecklist();
+setScreen('hook');
+waitForFonts().then(() => { rc.render(P, screen); });
+</script>
+</body>
+</html>
