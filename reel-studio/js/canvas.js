@@ -6,6 +6,12 @@
 
 const REEL_W = 1080, REEL_H = 1920;
 
+/* ── مناطق واجهة المنصّة ──
+   إنستغرام تنشر هذه الحدود: واجهتها تغطّي أعلى الشاشة وأسفلها،
+   وعمود أزرار التفاعل على الحافة. ما يقع تحتها قد لا يُرى.
+   التخطيط يحصر البطاقة خارجها حين يكون safeLayout مفعّلًا. */
+const SAFE = { top:0.07, bottom:0.18, side:0.14 };
+
 /* الأرقام العربية-الهندية للترقيم داخل الريل */
 function toArabicDigits(n) {
   return String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
@@ -98,6 +104,55 @@ class ReelCanvas {
     ctx.fillText(text, x, y);
   }
 
+  /* يرسم مشهدًا كاملًا في لوحة جانبية ثم يركّبه فوق الحالي بشفافية.
+     هذا ما يجعل آخر المقطع يذوب في أوّله فتبدو الإعادة بلا قطع. */
+  blend(project, screen, anim, alpha) {
+    if (!(alpha > 0)) return;
+    if (!this._buf) {
+      this._buf = document.createElement('canvas');
+      this._buf.width = this.W; this._buf.height = this.H;
+    }
+    const realCanvas = this.canvas, realCtx = this.ctx;
+    this.canvas = this._buf;
+    this.ctx = this._buf.getContext('2d');
+    this.ctx.clearRect(0, 0, this.W, this.H);
+    this.render(project, screen, anim);
+    this.canvas = realCanvas;
+    this.ctx = realCtx;
+
+    const prev = this.ctx.globalAlpha;
+    this.ctx.globalAlpha = Math.min(1, alpha);
+    this.ctx.drawImage(this._buf, 0, 0);
+    this.ctx.globalAlpha = prev;
+  }
+
+  /* حبيبات خفيفة تكسر تدرّج الألوان.
+     التدرّجات الداكنة تُظهر أشرطة واضحة بعد ضغط الفيديو،
+     والحبيبات تخفيها بلا أن تُرى. */
+  dither(x, y, w, h, amount) {
+    if (!this._noise) {
+      const n = document.createElement('canvas');
+      n.width = n.height = 128;
+      const c = n.getContext('2d');
+      const img = c.createImageData(128, 128);
+      for (let i = 0; i < img.data.length; i += 4) {
+        const v = 110 + Math.random() * 36;
+        img.data[i] = img.data[i+1] = img.data[i+2] = v;
+        img.data[i+3] = 255;
+      }
+      c.putImageData(img, 0, 0);
+      this._noise = n;
+    }
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.globalAlpha = amount == null ? 0.035 : amount;
+    ctx.globalCompositeOperation = 'overlay';
+    const pat = ctx.createPattern(this._noise, 'repeat');
+    ctx.fillStyle = pat;
+    ctx.fillRect(x, y, w, h);
+    ctx.restore();
+  }
+
   /* يغلّف رسم عنصر واحد بتأثير الحركة الموافق لتقدّمه.
      الحساب الهندسي يجري خارجه دائمًا، فالتغليف لا يزحزح التخطيط. */
   withFx(p, motion, cx, cy, fn) {
@@ -166,6 +221,7 @@ class ReelCanvas {
       g.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, W, H);
+      this.dither(0, 0, W, H, 0.042);
     }
 
     const maxW = W - M * 2;
@@ -189,7 +245,12 @@ class ReelCanvas {
     const badgeH = data.badge ? 104 : 0;
     const subH = data.sub ? 74 : 0;
     const blockH = badgeH + textH + subH;
-    let y = (H - blockH) / 2;
+    /* التوسيط داخل المنطقة التي لا تغطّيها واجهة إنستغرام،
+       لا داخل الشاشة كلها — وإلّا نزل النص تحت الواجهة. */
+    const safe = st.safeLayout !== false;
+    const zTop = safe ? H * SAFE.top : 0;
+    const zBot = safe ? H * (1 - SAFE.bottom) : H;
+    let y = zTop + ((zBot - zTop) - blockH) / 2;
 
     /* شارة الصيغة */
     if (data.badge) {
@@ -240,12 +301,13 @@ class ReelCanvas {
       });
     }
 
-    /* العلامة في الأسفل */
-    this.withFx(A && A.sub, A && A.motion, cx, H - 72, () => {
+    /* العلامة — فوق شريط الواجهة السفلي لا تحته */
+    const brandY = safe ? H * (1 - SAFE.bottom) - 34 : H - 72;
+    this.withFx(A && A.sub, A && A.motion, cx, brandY, () => {
       ctx.font = this.font(30, 700, fam);
       ctx.fillStyle = 'rgba(255,255,255,.42)';
       ctx.textBaseline = 'alphabetic';
-      this.drawTextLTR(data.brand || '@kitabwbs', cx, H - 72, 'center');
+      this.drawTextLTR(data.brand || '@kitabwbs', cx, brandY, 'center');
     });
 
     ctx.restore();
@@ -254,7 +316,7 @@ class ReelCanvas {
   /* ════════════ الشاشة ٢: المحتوى ════════════ */
 
   /* قياس كتلة النقاط قبل الرسم — أساس التصغير التلقائي */
-  measurePoints(points, innerW, headF, bodyF, gap, fam) {
+  measurePoints(points, innerW, headF, bodyF, gap, fam, noBody) {
     const ctx = this.ctx;
     const numW = 66;                      // عرض مربّع الترقيم + مسافته
     const textW = innerW - numW;
@@ -265,7 +327,7 @@ class ReelCanvas {
       ctx.font = this.font(headF, 800, fam);
       const headLines = p.head ? this.wrapText(p.head, textW) : [];
       ctx.font = this.font(bodyF, 400, fam);
-      const bodyLines = p.body ? this.wrapText(p.body, textW) : [];
+      const bodyLines = (p.body && !noBody) ? this.wrapText(p.body, textW) : [];
       const h = headLines.length * headF * 1.32
               + (bodyLines.length ? bodyLines.length * bodyF * 1.5 + 6 : 0);
       blocks.push({ headLines, bodyLines, h: Math.max(h, numW * 0.72) });
@@ -285,9 +347,19 @@ class ReelCanvas {
     ctx.fillStyle = theme.bg;
     ctx.fillRect(0, 0, W, H);
 
-    const cardX = M, cardY = M, cardW = W - M * 2, cardH = H - M * 2;
-    const innerX = cardX + PAD, innerW = cardW - PAD * 2;
-    const rightX = cardX + cardW - PAD;          // حافة البدء في RTL
+    /* البطاقة تُحصر داخل ما لا تغطّيه واجهة إنستغرام.
+       بدونه يسقط السؤال والمعرّف تحت اسم الحساب وأزرار التفاعل. */
+    const safe = st.safeLayout !== false;
+    const cardX = M;
+    const cardY = safe ? Math.max(M, H * SAFE.top + 8) : M;
+    const cardW = W - M * 2;
+    const cardH = (safe ? Math.min(H - M, H * (1 - SAFE.bottom) - 8) : H - M) - cardY;
+    /* أزرار التفاعل عمودٌ على الحافة، فنزيد الحشوة من جهة البدء
+       نصفَ عرض العمود — حلٌّ وسط بين حماية النص وإهدار العرض. */
+    const PAD_R = safe ? Math.max(PAD, W * SAFE.side * 0.5) : PAD;
+    const BAR_H = 11;                       /* ارتفاع شريط التقدّم */
+    const innerX = cardX + PAD, innerW = cardW - PAD - PAD_R;
+    const rightX = cardX + cardW - PAD_R;        // حافة البدء في RTL
 
     /* البطاقة كلها تدخل ككتلة واحدة، ثم تتتابع عناصرها داخلها */
     const A = anim || null;
@@ -320,17 +392,44 @@ class ReelCanvas {
       ctx.fillStyle = g;
       ctx.fillRect(cardX, cardY, cardW, gH);
       /* علامة مائية خفيفة بدل الصورة الفارغة */
+      this.dither(cardX, cardY, cardW, gH, 0.05);
       ctx.font = this.font(150, 900, 'Cairo');
       ctx.fillStyle = 'rgba(255,255,255,.14)';
       ctx.textBaseline = 'middle';
       this.drawTextRTL(data.emoji || '📌', cardX + cardW / 2, cardY + gH / 2, 'center');
     }
     ctx.restore();
-    /* الحدّ المميّز تحت الجرافيك */
+    /* الحدّ المميّز صار شريط تقدّم: يمتلئ مع ظهور النقاط،
+       فيعرف المشاهد كم بقي — وهذا يرفع نسبة إكمال المقطع.
+       يُملأ من جهة البدء في RTL، أي من اليمين. */
+    const barY = cardY + gH;
     ctx.fillStyle = theme.accent;
-    ctx.fillRect(cardX, cardY + gH, cardW, 11);
+    const gaPrev = ctx.globalAlpha;
+    ctx.globalAlpha = gaPrev * 0.26;
+    ctx.fillRect(cardX, barY, cardW, BAR_H);
+    ctx.globalAlpha = gaPrev;
+    const fill = A && A.bar != null ? Math.max(0, Math.min(1, A.bar)) : 1;
+    ctx.fillRect(cardX + cardW * (1 - fill), barY, cardW * fill, BAR_H);
     });
-    y += gH + 11 + 34;
+    y += gH + BAR_H + 34;
+
+    /* عدّاد النقاط — «٣ / ٦» يخبر المشاهد بالمتبقّي */
+    if (A && A.total > 1 && A.shown > 0) {
+      const cw = 106, ch = 44;
+      const cxp = innerX, cyp = cardY + gH - ch - 14;
+      this.withFx(A.graphic, A.motion, cxp + cw / 2, cyp + ch / 2, () => {
+        ctx.fillStyle = 'rgba(0,0,0,.42)';
+        this.roundRect(cxp, cyp, cw, ch, ch / 2);
+        ctx.fill();
+        ctx.font = this.font(24, 800, 'Cairo');
+        ctx.fillStyle = '#ffffff';
+        ctx.textBaseline = 'middle';
+        ctx.direction = 'ltr';
+        ctx.textAlign = 'center';
+        ctx.fillText(toArabicDigits(A.shown) + ' / ' + toArabicDigits(A.total),
+                     cxp + cw / 2, cyp + ch / 2 + 1);
+      });
+    }
 
     /* ── سطر العنوان: إيموجي + عنوان ── */
     const titleF = (st.titleFontSize || 56) * 1.38;
@@ -370,17 +469,57 @@ class ReelCanvas {
     let fit = 1;
     if (pts.length) {
       const gap0 = st.pointGap || 12;
-      let m = this.measurePoints(pts, innerW, (st.ptFontSize || 34) * 1.22,
-                                 (st.ptFontSize || 34) * 1.0, gap0, fam);
-      if (m.total > availH && m.total > 0) {
-        fit = Math.max(0.52, availH / m.total);
-      }
-      this.lastFit = fit;
+      const base = st.ptFontSize || 34;
 
-      const headF = (st.ptFontSize || 34) * 1.22 * fit;
-      const bodyF = (st.ptFontSize || 34) * 1.0 * fit;
+      /* الشاشة تُشاهد على جوال عرضه ~390pt، فكل بكسل هنا يساوي
+         0.361pt هناك. دون ~9pt يصير المتن غير مقروء عمليًا،
+         وهذا يقابل معامل تصغير 0.72. */
+      const LEGIBLE_FIT = 0.72;
+
+      const measureAt = (noBody, f) => this.measurePoints(
+        pts, innerW, base * (noBody ? 1.42 : 1.22) * f, base * f, gap0 * f, fam, noBody);
+
+      /* تصغير الخطّ يغيّر التفاف السطور، فنسبةُ المساحة وحدها تقدير
+         لا يصمد. نكرّر القياس حتى يلائم فعلًا أو نبلغ الحدّ الأدنى. */
+      const solveFit = noBody => {
+        let f = 1;
+        for (let i = 0; i < 8; i++) {
+          const mm = measureAt(noBody, f);
+          if (mm.total <= availH) return { f, m:mm, over:false };
+          const next = Math.max(0.52, f * Math.max(0.84, availH / mm.total));
+          if (next >= f - 0.002) {
+            const last = measureAt(noBody, next);
+            return { f:next, m:last, over: last.total > availH + 2 };
+          }
+          f = next;
+        }
+        const mm = measureAt(noBody, f);
+        return { f, m:mm, over: mm.total > availH + 2 };
+      };
+
+      let res = solveFit(false);
+      let noBody = false;
+
+      /* لو أدّى الإبقاء على الشروح إلى خطٍّ غير مقروء، نُسقط الشروح
+         ونكبّر العناوين — وهذا ما يفعله المصمّم: قائمة من عشر نقاط
+         تُعرض عناوين واضحة، لا عشرة شروح مجهرية. */
+      if (res.f < LEGIBLE_FIT) {
+        const alt = solveFit(true);
+        if (alt.f > res.f) { noBody = true; res = alt; }
+      }
+
+      fit = res.f;
+      const headF = base * (noBody ? 1.42 : 1.22) * fit;
+      const bodyF = base * fit;
       const gap   = gap0 * fit;
-      m = this.measurePoints(pts, innerW, headF, bodyF, gap, fam);
+
+      this.lastFit = fit;
+      this.lastNoBody = noBody;
+      /* الحجم الظاهر على جوال عرضه 390pt — يستعمله فحص التوافق */
+      this.lastTextPt = +((noBody ? headF : bodyF) * 0.361).toFixed(1);
+      this.lastOverflow = res.over;
+
+      let m = res.m;
 
       /* الفراغ الفائض يُوزَّع بين النقاط بدل أن يتجمّع فجوةً ميّتة قبل الخاتمة */
       const slack = Math.max(0, availH - m.total);
@@ -411,8 +550,8 @@ class ReelCanvas {
           this.drawTextRTL(ln, tx, ly + headF * 0.78, 'right');
           ly += headF * 1.32;
         });
-        /* شرح النقطة */
-        if (b.bodyLines.length) {
+        /* شرح النقطة — يُسقَط حين تضيق المساحة حمايةً للمقروئية */
+        if (b.bodyLines.length && !noBody) {
           ly += 6;
           ctx.font = this.font(bodyF, 400, fam);
           ctx.fillStyle = theme.txt;
@@ -500,6 +639,7 @@ class ReelCanvas {
     ctx.fillRect(0, 0, W, 13);
     ctx.fillRect(0, H - 13, W, 13);
 
+    this.dither(0, 0, W, H, 0.03);
     const M = (st.margins || 42) + 62;
     const maxW = W - M * 2;
     const text = (data.text || '').trim() || 'النص المتدفّق يُبنى تلقائيًا من عناوين النقاط والخاتمة.';
@@ -507,7 +647,7 @@ class ReelCanvas {
     let size = 62;
     ctx.font = this.font(size, 700, fam);
     let lines = this.wrapText(text, maxW);
-    while (lines.length * size * 1.92 > H - 360 && size > 30) {
+    while (lines.length * size * 1.92 > (H * (1 - SAFE.top - SAFE.bottom)) - 120 && size > 30) {
       size -= 3;
       ctx.font = this.font(size, 700, fam);
       lines = this.wrapText(text, maxW);
@@ -515,7 +655,10 @@ class ReelCanvas {
 
     const lh = size * 1.92;
     const totalH = lines.length * lh;
-    const y = (H - totalH) / 2;
+    const safeF = st.safeLayout !== false;
+    const fTop = safeF ? H * SAFE.top : 0;
+    const fBot = safeF ? H * (1 - SAFE.bottom) : H;
+    const y = fTop + ((fBot - fTop) - totalH) / 2;
     const A = anim || null;
 
     ctx.save();
@@ -529,11 +672,12 @@ class ReelCanvas {
         this.drawTextRTL(ln, W / 2, y + lh * i + lh / 2, 'center');
       });
 
-      /* العلامة */
+      /* العلامة — فوق شريط الواجهة السفلي */
+      const bY = safeF ? H * (1 - SAFE.bottom) - 34 : H - 76;
       ctx.font = this.font(30, 700, fam);
       ctx.fillStyle = dark ? 'rgba(255,255,255,.45)' : 'rgba(17,24,39,.42)';
       ctx.textBaseline = 'alphabetic';
-      this.drawTextLTR(data.brand || '@kitabwbs', W / 2, H - 76, 'center');
+      this.drawTextLTR(data.brand || '@kitabwbs', W / 2, bY, 'center');
     });
     ctx.restore();
   }

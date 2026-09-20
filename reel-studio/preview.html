@@ -11,6 +11,19 @@
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/themes.css">
 <style>
+/* ═ فحص التوافق ═ */
+.audit{display:flex;flex-direction:column;gap:2px}
+.audit .it{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:9px}
+.audit .it.bad{background:rgba(245,158,11,.09)}
+.audit .it i{font-style:normal;flex-shrink:0;font-size:13px;line-height:1.7}
+.audit .it.ok i{color:var(--color-ok)}
+.audit .it.bad i{color:var(--color-warn)}
+.audit .it .tx{flex:1;min-width:0}
+.audit .it b{display:block;font-size:12.5px;font-weight:700;color:var(--color-text);line-height:1.6}
+.audit .it span{font-size:11px;color:var(--color-muted);line-height:1.75}
+.audit .it em{font-style:normal;font-size:9.5px;padding:2px 7px;border-radius:99px;
+  background:var(--color-surface-2);color:var(--color-muted-lt);flex-shrink:0;margin-top:2px}
+
 /* ═ إطار هاتف وهمي لمحاكاة فيسبوك ═ */
 .phone{width:300px;border-radius:30px;background:#0b0b0d;padding:9px;
   box-shadow:var(--shadow-lg);border:1px solid #2a2a30;flex-shrink:0}
@@ -115,8 +128,19 @@
           <div style="display:flex;flex-direction:column;gap:18px">
 
             <div class="card">
-              <div class="card-hd"><h3>⏱️ توقيت CapCut المقترح</h3><span class="n">13 ثانية</span></div>
+              <div class="card-hd"><h3>⏱️ التسلسل الزمني</h3>
+                <span class="n" id="tlTotal">—</span></div>
               <div class="tl" id="timeline"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-hd"><h3>🎯 فحص التوافق</h3>
+                <span class="n" id="auditScore">—</span></div>
+              <div id="audit" class="audit"></div>
+              <p style="font-size:11px;color:var(--color-muted);margin-top:11px;line-height:1.85">
+                بنود «منصّة» شروط تنشرها إنستغرام. وبنود «ممارسة» ليست معلنة —
+                هي ما استقرّ عليه صنّاع المحتوى، فخذها اجتهادًا لا قاعدة.
+              </p>
             </div>
 
             <div class="card">
@@ -130,14 +154,26 @@
               <div class="card-hd"><h3>🎞️ الحركة والفيديو</h3>
                 <span class="n">13 ثانية</span></div>
               <div class="grid grid-2" style="gap:12px">
+                <div class="field" style="margin:0"><label>مدّة الريل</label>
+                  <select id="dur"></select></div>
                 <div class="field" style="margin:0"><label>نمط الحركة</label>
                   <select id="motion"></select></div>
                 <div class="field" style="margin:0"><label>جودة الفيديو</label>
                   <select id="vq"></select></div>
+                <div class="field" style="margin:0"><label>الحجم المتوقّع</label>
+                  <input type="text" id="vSize" readonly style="background:var(--color-surface-2)"></div>
               </div>
               <label class="check" style="margin-top:6px">
+                <input type="checkbox" id="loopToggle">
+                <span><b>حلقة سلسة</b> — آخر المقطع يذوب في أوّله فتبدو الإعادة بلا قطع</span>
+              </label>
+              <label class="check">
+                <input type="checkbox" id="safeLayout">
+                <span><b>تخطيط آمن</b> — يحصر المحتوى خارج ما تغطّيه واجهة إنستغرام</span>
+              </label>
+              <label class="check">
                 <input type="checkbox" id="safeToggle">
-                <span>أظهر مناطق الأمان — ما تغطّيه واجهة إنستغرام</span>
+                <span>أظهر دليل مناطق الأمان على المعاينة</span>
               </label>
               <button class="btn btn-primary btn-block" id="expVideo" style="margin-top:10px">
                 🎬 صدّر الريل فيديو</button>
@@ -246,11 +282,14 @@ function setScreen(s) {
 }
 
 /* ── التشغيل الحقيقي: نفس المحرّك الذي يُسجَّل به الفيديو ── */
-const SEQ = [
-  { sc:'hook',    from:T_HOOK[0],    to:T_HOOK[1]    },
-  { sc:'content', from:T_CONTENT[0], to:T_CONTENT[1] },
-  { sc:'flow',    from:T_FLOW[0],    to:T_FLOW[1]    }
-];
+function SEQ_OF(p) {
+  const tl = timeline(p);
+  return [
+    { sc:'hook',    from:tl.hook[0],    to:tl.hook[1]    },
+    { sc:'content', from:tl.content[0], to:tl.content[1] },
+    { sc:'flow',    from:tl.flow[0],    to:tl.flow[1]    }
+  ];
+}
 
 function play() {
   if (playing) { stop(); return; }
@@ -260,8 +299,9 @@ function play() {
   const tick = () => {
     if (!playing) return;
     const t = (performance.now() - t0) / 1000;
-    if (t >= T_TOTAL) { stop(); return; }
-    $('#prog').style.width = (t / T_TOTAL * 100) + '%';
+    const TOT = timeline(P).total;
+    if (t >= TOT) { stop(); return; }
+    $('#prog').style.width = (t / TOT * 100) + '%';
     const sc = renderAt(rc, P, t);
     if (sc !== screen) {
       screen = sc;
@@ -283,14 +323,19 @@ function stop() {
 
 function renderTimeline() {
   const box = $('#timeline');
+  const tl = timeline(P);
+  const spans = [tl.hook, tl.content, tl.flow];
   box.innerHTML = '';
   CAPCUT_TIMELINE.forEach((t, i) => {
+    t = Object.assign({}, t, {
+      time: `${spans[i][0].toFixed(1)} – ${spans[i][1].toFixed(1)} ث`
+    });
     const r = document.createElement('div');
     r.className = 'row';
-    r.dataset.sc = SEQ[i].sc;
+    r.dataset.sc = SEQ_OF(P)[i].sc;
     r.innerHTML = `<span class="t">${t.time}</span>
                    <span class="d"><b>${t.screen}</b><span>${t.note}</span></span>`;
-    r.addEventListener('click', () => { stop(); setScreen(SEQ[i].sc); });
+    r.addEventListener('click', () => { stop(); setScreen(SEQ_OF(P)[i].sc); });
     box.appendChild(r);
   });
 }
@@ -388,15 +433,59 @@ $('#expPdf').addEventListener('click', () => {
 });
 
 /* ── الحركة والفيديو ── */
+DURATION_KEYS.forEach(k => $('#dur').appendChild(new Option(DURATIONS[k].label, k)));
 MOTION_KEYS.forEach(k => $('#motion').appendChild(new Option(MOTION[k].label, k)));
 VIDEO_QUALITY.forEach(q => $('#vq').appendChild(new Option(q.label, q.key)));
 
+function refreshSize() {
+  const q = VIDEO_QUALITY.find(x => x.key === $('#vq').value) || VIDEO_QUALITY[1];
+  const secs = timeline(P).total;
+  $('#vSize').value = 'حتى ' + estimateSize(q.bitrate, secs) + ' ميجابايت';
+  $('#tlTotal').textContent = secs + ' ثانية';
+}
+
+/* فحص التوافق */
+function renderAudit() {
+  rc.render(P, 'content');            /* رسمة قياس قبل الفحص */
+  const items = auditReel(P, rc);
+  const pass = items.filter(i => i.ok).length;
+  $('#auditScore').textContent = pass + ' / ' + items.length;
+  $('#audit').innerHTML = items.map(i =>
+    `<div class="it ${i.ok ? 'ok' : 'bad'}">
+       <i>${i.ok ? '✔' : '!'}</i>
+       <span class="tx"><b>${i.title}</b><span>${i.why}</span></span>
+       <em>${i.level}</em>
+     </div>`).join('');
+}
+
+function afterSettingChange(msg) {
+  saveProject(P);
+  renderTimeline(); renderAudit(); refreshSize();
+  setScreen(screen);
+  if (msg) toast(msg);
+}
+
+$('#dur').addEventListener('change', e => {
+  P.settings.duration = e.target.value;
+  afterSettingChange('المدّة: ' + DURATIONS[e.target.value].total + ' ثانية');
+});
 $('#motion').addEventListener('change', e => {
   P.settings.motion = e.target.value;
-  saveProject(P);
-  toast('نمط الحركة: ' + MOTION[e.target.value].label);
+  afterSettingChange('نمط الحركة: ' + MOTION[e.target.value].label);
 });
-
+$('#vq').addEventListener('change', () => {
+  const q = VIDEO_QUALITY.find(x => x.key === $('#vq').value) || VIDEO_QUALITY[1];
+  P.settings.fps = q.fps; P.settings.bitrate = q.bitrate;
+  afterSettingChange();
+});
+$('#loopToggle').addEventListener('change', e => {
+  P.settings.loop = e.target.checked;
+  afterSettingChange(e.target.checked ? 'الحلقة السلسة مفعّلة' : 'الحلقة مطفأة');
+});
+$('#safeLayout').addEventListener('change', e => {
+  P.settings.safeLayout = e.target.checked;
+  afterSettingChange(e.target.checked ? 'التخطيط الآمن مفعّل' : 'التخطيط الآمن مطفأ');
+});
 $('#safeToggle').addEventListener('change', e => {
   showSafe = e.target.checked;
   setScreen(screen);
@@ -409,7 +498,7 @@ $('#expVideo').addEventListener('click', () => {
     toast('متصفّحك لا يدعم تسجيل الفيديو — جرّب كروم أو إيدج حديثًا', 'err');
     return;
   }
-  const q = VIDEO_QUALITY.find(x => x.key === $('#vq').value) || VIDEO_QUALITY[0];
+  const q = VIDEO_QUALITY.find(x => x.key === $('#vq').value) || VIDEO_QUALITY[1];
   recording = true;
   stop();
   const wasSafe = showSafe;
@@ -420,13 +509,16 @@ $('#expVideo').addEventListener('click', () => {
 
   exportVideo(rc, P, {
     fps: q.fps, bitrate: q.bitrate,
-    onProgress: (p, t) => {
+    onProgress: (p, t, n) => {
       $('#vidBar').style.width = (p * 100) + '%';
-      $('#vidMsg').textContent = `يسجّل بالزمن الحقيقي… ${t.toFixed(1)} من ${T_TOTAL} ثانية`;
+      $('#vidMsg').textContent =
+        `يسجّل… ${t.toFixed(1)} من ${timeline(P).total} ثانية · ${n} إطارًا`;
     }
-  }).then(type => {
-    toast('نزل الريل فيديو بصيغة ' + type.label + ' ✓');
-    $('#vidMsg').textContent = 'تمّ — ' + type.label;
+  }).then(res => {
+    toast('نزل الريل فيديو ' + res.type.label + ' ✓');
+    $('#vidMsg').textContent =
+      `تمّ — ${res.type.label} · ${res.frames} إطارًا` +
+      (res.manual ? ' · التقاط يدوي' : '');
   }).catch(err => {
     toast(err.message, 'err');
     $('#vidMsg').textContent = err.message;
@@ -449,12 +541,21 @@ rc.onReady = () => rc.render(P, screen);
 $('#pName').textContent = P.name;
 renderTimeline();
 renderChecklist();
-$('#motion').value = (P.settings && P.settings.motion) || 'slide';
+const _st = P.settings || {};
+$('#dur').value = _st.duration || 's13';
+$('#motion').value = _st.motion || 'slide';
+$('#loopToggle').checked = _st.loop !== false;
+$('#safeLayout').checked = _st.safeLayout !== false;
+$('#vq').value = (VIDEO_QUALITY.find(q => q.fps === _st.fps && q.bitrate === _st.bitrate) || VIDEO_QUALITY[1]).key;
 $('#vidNote').innerHTML = videoSupported()
-  ? 'التسجيل يجري بالزمن الحقيقي (13 ثانية) لأن المتصفّح يلتقط اللوحة إطارًا بإطار. '
+  ? 'التسجيل بالزمن الحقيقي لأن المتصفّح يختم كل إطار بساعة الحائط، '
+    + 'وكل إطار يُلتقط يدويًا بعد اكتمال رسمه فلا إطارات مكرّرة أو ممزّقة. '
+    + 'معدّل الإطارات الفعلي محكوم بتحديث شاشتك وقدرة جهازك، فقد ينزل قليلًا عن المطلوب. '
     + 'الفيديو <b>بلا صوت</b> — أضف المقطع الصوتي عند الرفع. '
     + 'الصيغة المتاحة عندك: <b>' + pickVideoType().label + '</b>.'
   : '⚠️ متصفّحك لا يدعم تسجيل الفيديو من اللوحة. صدّر الصور الثلاث وركّبها في CapCut.';
+renderAudit();
+refreshSize();
 setScreen('hook');
 waitForFonts().then(() => { rc.render(P, screen); });
 </script>

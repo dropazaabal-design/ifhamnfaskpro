@@ -227,10 +227,18 @@
           <div class="prop-group">
             <h4><span class="ic">🎞️</span> الحركة والفيديو</h4>
             <div class="field" style="margin-bottom:10px">
+              <label>مدّة الريل</label>
+              <select id="fDuration"></select>
+            </div>
+            <div class="field" style="margin-bottom:10px">
               <label>نمط الحركة</label>
               <select id="fMotion"></select>
               <p class="hint" id="motionHint" style="margin-top:5px"></p>
             </div>
+            <label class="check" style="padding:4px 0">
+              <input type="checkbox" id="fLoop"><span>حلقة سلسة</span></label>
+            <label class="check" style="padding:4px 0;margin-bottom:8px">
+              <input type="checkbox" id="fSafe"><span>تخطيط آمن</span></label>
             <button class="btn btn-sm btn-block btn-primary" id="btnVideo">🎬 صدّر فيديو (13ث)</button>
             <div id="vidWrap" hidden style="margin-top:10px">
               <div style="height:5px;border-radius:5px;background:var(--color-border);overflow:hidden">

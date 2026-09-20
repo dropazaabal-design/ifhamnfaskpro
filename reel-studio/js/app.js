@@ -137,6 +137,9 @@ function syncAll() {
 
   setVal('#fFont', st.font);
   setVal('#fMotion', st.motion || 'slide');
+  setVal('#fDuration', st.duration || 's13');
+  if ($('#fLoop')) $('#fLoop').checked = st.loop !== false;
+  if ($('#fSafe')) $('#fSafe').checked = st.safeLayout !== false;
   if ($('#motionHint')) $('#motionHint').textContent = (MOTION[st.motion || 'slide'] || MOTION.slide).hint;
   [['#sPt','#vPt','ptFontSize'], ['#sTitle','#vTitle','titleFontSize'],
    ['#sLh','#vLh','lineHeight'], ['#sGh','#vGh','graphicHeight'],
@@ -536,6 +539,22 @@ function bind() {
   $('#btnSafe').addEventListener('click', () => { showSafe = !showSafe; draw(); });
   $('#btnVideo').addEventListener('click', doExportVideo);
 
+  /* المدّة والحلقة والتخطيط الآمن */
+  const dsel = $('#fDuration');
+  DURATION_KEYS.forEach(k => dsel.appendChild(new Option(DURATIONS[k].label, k)));
+  dsel.addEventListener('change', e => {
+    P.settings.duration = e.target.value;
+    snapshot(); markDirty(); togglePlay();
+  });
+  $('#fLoop').addEventListener('change', e => {
+    P.settings.loop = e.target.checked; snapshot(); onEdit(true);
+    toast(e.target.checked ? 'الحلقة السلسة مفعّلة' : 'الحلقة مطفأة');
+  });
+  $('#fSafe').addEventListener('change', e => {
+    P.settings.safeLayout = e.target.checked; snapshot(); onEdit(true);
+    toast(e.target.checked ? 'التخطيط الآمن مفعّل' : 'التخطيط الآمن مطفأ');
+  });
+
   /* نمط الحركة */
   const msel = $('#fMotion');
   MOTION_KEYS.forEach(k => msel.appendChild(new Option(MOTION[k].label, k)));
@@ -608,7 +627,7 @@ function togglePlay() {
   const tick = () => {
     if (!playing) return;
     const t = (performance.now() - t0) / 1000;
-    if (t >= T_TOTAL) { stopPlay(); return; }
+    if (t >= timeline(P).total) { stopPlay(); return; }
     const sc = renderAt(rc, P, t);
     if (sc !== screen) {
       screen = sc;
@@ -646,11 +665,13 @@ function doExportVideo() {
   exportVideo(rc, P, {
     onProgress: (p, t) => {
       $('#vidBar').style.width = (p * 100) + '%';
-      $('#vidMsg').textContent = `يسجّل… ${t.toFixed(1)} / ${T_TOTAL} ثانية`;
-    }
-  }).then(type => {
-    toast('نزل الريل فيديو ' + type.label + ' ✓');
-    $('#vidMsg').textContent = 'تمّ — ' + type.label;
+      $('#vidMsg').textContent = `يسجّل… ${t.toFixed(1)} / ${timeline(P).total} ث`;
+    },
+    fps: P.settings.fps || 30,
+    bitrate: P.settings.bitrate || 14e6
+  }).then(res => {
+    toast('نزل الريل فيديو ' + res.type.label + ' ✓');
+    $('#vidMsg').textContent = `تمّ — ${res.frames} إطارًا`;
   }).catch(err => {
     toast(err.message, 'err');
     $('#vidMsg').textContent = err.message;
