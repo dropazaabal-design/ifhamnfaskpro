@@ -195,7 +195,7 @@ class ReelCanvas {
 
   /* ════════════ الشاشة ١: الهوك ════════════ */
 
-  drawHookScreen(data, theme, st, anim) {
+  drawHookScreen(data, theme, st, anim, plate) {
     const ctx = this.ctx, W = this.W, H = this.H;
     const fam = st.font || 'Tajawal';
     const M = (st.margins || 42) + 46;
@@ -253,7 +253,18 @@ class ReelCanvas {
     let y = zTop + ((zBot - zTop) - blockH) / 2;
 
     /* شارة الصيغة */
-    if (data.badge) {
+    /* نسجّل الإحداثيات الحقيقية أثناء الرسم، فما يخرج لدليل Canva
+       مأخوذ من التخطيط نفسه لا من حساب موازٍ قد يتباعد عنه. */
+    this.layout = this.layout || {};
+    this.layout.hook = {
+      badge: data.badge ? { cx, y, h:68, size:38 } : null,
+      text:  { cx, y: y + badgeH, size, lineHeight: +(lh).toFixed(1),
+               lines: lines.length, maxW },
+      sub:   data.sub ? { cx, y: y + badgeH + textH + 40, size:36 } : null,
+      brand: { cx, size:30 }
+    };
+
+    if (data.badge && !plate) {
       const by = y;
       this.withFx(A && A.badge, A && A.motion, cx, by + 34, () => {
         ctx.font = this.font(38, 800, fam);
@@ -268,12 +279,12 @@ class ReelCanvas {
         this.drawTextRTL(data.badge, cx, by + ph / 2 + 2, 'center');
       });
       y += badgeH;
-    }
+    } else if (data.badge) { y += badgeH; }
 
     /* نص الهوك */
     const ty = y;
     /* الأسطر تظهر متتابعة قليلًا فيبدو النص وكأنه يُكتب */
-    lines.forEach((ln, i) => {
+    if (!plate) lines.forEach((ln, i) => {
       const lp = A ? Math.max(0, Math.min(1, A.text * lines.length - i)) : null;
       this.withFx(lp, A && A.motion, cx, ty + lh * i + lh / 2, () => {
         ctx.font = this.font(size, 900, fam === 'Tajawal' ? 'Cairo' : fam);
@@ -291,7 +302,7 @@ class ReelCanvas {
     y += textH;
 
     /* سطر فرعي خافت */
-    if (data.sub) {
+    if (data.sub && !plate) {
       const sy = y;
       this.withFx(A && A.sub, A && A.motion, cx, sy + 40, () => {
         ctx.font = this.font(36, 500, fam);
@@ -303,7 +314,8 @@ class ReelCanvas {
 
     /* العلامة — فوق شريط الواجهة السفلي لا تحته */
     const brandY = safe ? H * (1 - SAFE.bottom) - 34 : H - 72;
-    this.withFx(A && A.sub, A && A.motion, cx, brandY, () => {
+    this.layout.hook.brand.y = brandY;
+    if (!plate) this.withFx(A && A.sub, A && A.motion, cx, brandY, () => {
       ctx.font = this.font(30, 700, fam);
       ctx.fillStyle = 'rgba(255,255,255,.42)';
       ctx.textBaseline = 'alphabetic';
@@ -336,7 +348,7 @@ class ReelCanvas {
     return { blocks, total: Math.max(0, total - gap), numW, textW };
   }
 
-  drawContentScreen(data, theme, st, anim) {
+  drawContentScreen(data, theme, st, anim, plate) {
     const ctx = this.ctx, W = this.W, H = this.H;
     const fam = st.font || 'Tajawal';
     const M = st.margins || 42;
@@ -413,8 +425,16 @@ class ReelCanvas {
     });
     y += gH + BAR_H + 34;
 
+    this.layout = this.layout || {};
+    this.layout.content = {
+      card:    { x:cardX, y:cardY, w:cardW, h:cardH, r:RAD },
+      graphic: { x:cardX, y:cardY, w:cardW, h:gH },
+      bar:     { x:cardX, y:cardY + gH, w:cardW, h:BAR_H },
+      innerX, innerW, rightX, padTop:PAD
+    };
+
     /* عدّاد النقاط — «٣ / ٦» يخبر المشاهد بالمتبقّي */
-    if (A && A.total > 1 && A.shown > 0) {
+    if (A && A.total > 1 && A.shown > 0 && !plate) {
       const cw = 106, ch = 44;
       const cxp = innerX, cyp = cardY + gH - ch - 14;
       this.withFx(A.graphic, A.motion, cxp + cw / 2, cyp + ch / 2, () => {
@@ -440,7 +460,10 @@ class ReelCanvas {
     ctx.font = this.font(titleF, 900, 'Cairo');
     const titleLines = this.wrapText(data.title || 'عنوان الريل', innerW - emoW).slice(0, 2);
     const tY = y;
-    this.withFx(A && A.title, A && A.motion, rightX, tY + titleF * 0.6, () => {
+    this.layout.content.title = { rightX, y:tY, size:+titleF.toFixed(1),
+                                  lineHeight:+(titleF*1.26).toFixed(1),
+                                  lines:titleLines.length, maxW: innerW - emoW };
+    if (!plate) this.withFx(A && A.title, A && A.motion, rightX, tY + titleF * 0.6, () => {
       if (emo) {
         ctx.font = this.font(titleF * 0.94, 900, 'Cairo');
         ctx.textBaseline = 'middle';
@@ -527,7 +550,13 @@ class ReelCanvas {
       y += (slack - gapExtra * (pts.length - 1)) * 0.34;
 
       const numS = 52 * Math.max(0.72, fit);
-      pts.forEach((p, i) => {
+      this.layout.content.points = {
+        startY: y, numSize:+numS.toFixed(1),
+        headSize:+headF.toFixed(1), bodySize:+bodyF.toFixed(1),
+        gap:+(gap + gapExtra).toFixed(1), noBody, count: pts.length,
+        heights: m.blocks.map(b => +b.h.toFixed(1))
+      };
+      if (!plate) pts.forEach((p, i) => {
         const b = m.blocks[i];
         const pY = y;
         this.withFx(A && A.points && A.points[i], A && A.motion,
@@ -569,7 +598,9 @@ class ReelCanvas {
     /* ── الخاتمة الاقتباسية ── */
     if (outroLines.length) {
       const boxY = cardY + cardH - PAD - footH - outroH + 8;
-      this.withFx(A && A.outro, A && A.motion, rightX, boxY + outroH / 2, () => {
+      this.layout.content.outro = { x:innerX, y:boxY, w:innerW, h:outroH - 18,
+                                    size:outroF, lines:outroLines.length };
+      if (!plate) this.withFx(A && A.outro, A && A.motion, rightX, boxY + outroH / 2, () => {
       ctx.fillStyle = theme.panel;
       this.roundRect(innerX, boxY, innerW, outroH - 18, 18);
       ctx.fill();
@@ -592,7 +623,9 @@ class ReelCanvas {
     ctx.font = this.font(29, 700, fam);
     const brandW = ctx.measureText(brand).width;
 
-    this.withFx(A && A.footer, A && A.motion, W / 2, fy, () => {
+    this.layout.content.footer = { y:fy, ctaSize:ctaF, brandSize:29,
+                                   ctaRight:rightX, brandLeft:innerX };
+    if (!plate) this.withFx(A && A.footer, A && A.motion, W / 2, fy, () => {
     if (data.cta) {
       ctx.font = this.font(ctaF, 800, fam);
       ctx.fillStyle = theme.cta;
@@ -623,7 +656,7 @@ class ReelCanvas {
     return parts.join('\n\n');
   }
 
-  drawFlowScreen(data, theme, st, themeKey, anim) {
+  drawFlowScreen(data, theme, st, themeKey, anim, plate) {
     const ctx = this.ctx, W = this.W, H = this.H;
     const fam = st.font || 'Tajawal';
     const dark = isDarkTheme(themeKey);
@@ -661,9 +694,13 @@ class ReelCanvas {
     const y = fTop + ((fBot - fTop) - totalH) / 2;
     const A = anim || null;
 
+    this.layout = this.layout || {};
+    this.layout.flow = { cx:W/2, y, size, lineHeight:+lh.toFixed(1),
+                         lines:lines.length, maxW, bg, fg };
+
     ctx.save();
     if (A && A.out != null) ctx.globalAlpha = A.out;
-    this.withFx(A && A.text, A && A.motion, W / 2, H / 2, () => {
+    if (!plate) this.withFx(A && A.text, A && A.motion, W / 2, H / 2, () => {
       ctx.fillStyle = fg;
       ctx.textBaseline = 'middle';
       ctx.font = this.font(size, 700, fam);
@@ -684,22 +721,24 @@ class ReelCanvas {
 
   /* ════════════ الواجهة العامة ════════════ */
 
-  /* anim اختياري — بدونه يُرسم الإطار ثابتًا كما كان */
-  render(project, screen, anim) {
+  /* anim اختياري — بدونه يُرسم الإطار ثابتًا كما كان.
+     plate=true يرسم الطبقات غير النصّية فقط: خلفيةً جاهزة
+     تُرفع إلى Canva ويُكتب النصّ فوقها هناك. */
+  render(project, screen, anim, plate) {
     const theme = resolveTheme(project.theme, project.colorOverrides);
     const st = project.settings || DEFAULTS.settings;
     const s = project.screens;
     const brand = s.content.brand;
 
     if (screen === 'hook') {
-      this.drawHookScreen(Object.assign({}, s.hook, { brand }), theme, st, anim);
+      this.drawHookScreen(Object.assign({}, s.hook, { brand }), theme, st, anim, plate);
     } else if (screen === 'flow') {
       const text = s.flow.auto === false && s.flow.text
         ? s.flow.text
         : ReelCanvas.buildFlowText(s.content);
-      this.drawFlowScreen({ text, brand }, theme, st, project.theme, anim);
+      this.drawFlowScreen({ text, brand }, theme, st, project.theme, anim, plate);
     } else {
-      this.drawContentScreen(s.content, theme, st, anim);
+      this.drawContentScreen(s.content, theme, st, anim, plate);
     }
   }
 
