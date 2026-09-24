@@ -1,0 +1,20 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { articles } from '../../data/articles.ts';
+import { breadcrumbs, graph } from '../../lib/seo.ts';
+
+const trail = [ { name: 'الرئيسية', path: '/' }, { name: 'مقالات', path: '/articles/' } ];
+---
+<Layout title="مقالات عن الاختبارات النفسية وحدودها" description="كيف تعرف الاختبار الجادّ من غيره، ولماذا لا توجد نتيجة دقيقة 100%، وفروق يخلطها الجميع — بلغة بسيطة ومصادر." path="/articles/" jsonld={ graph( breadcrumbs( trail ) ) }>
+	<Breadcrumbs trail={ trail } />
+	<header class="page-h"><h1>مقالات</h1><p class="lead">لمن يريد أن يفهم ما وراء النتيجة.</p></header>
+	<div style="display:grid;gap:12px;margin-top:20px">
+		{ articles.map( ( a ) => (
+			<a class="card" href={ `/articles/${ a.slug }/` } style="display:block">
+				<h2 style="font-size:16.5px;font-weight:800;line-height:1.6">{ a.title }</h2>
+				<p style="font-size:13.5px;color:var(--color-text-muted);line-height:1.85;margin-top:6px">{ a.description }</p>
+			</a>
+		) ) }
+	</div>
+</Layout>

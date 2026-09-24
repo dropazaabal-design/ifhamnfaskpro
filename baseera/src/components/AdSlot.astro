@@ -1,0 +1,37 @@
+---
+/**
+ * وحدة إعلان AdSense بمساحة محجوزة.
+ *
+ * لا تُرسم إطلاقاً ما لم يُعبَّأ معرّف الناشر ومعرّف الوحدة: صندوق
+ * «مساحة إعلانية» فارغ في موقع منشور يبدو مهمَلاً، ويُحتسب محتوى رقيقاً.
+ *
+ * الارتفاع الأدنى محجوز قبل تحميل الإعلان، فلا يدفع المحتوى إلى الأسفل
+ * حين يصل — وهي إزاحة التخطيط (CLS) التي تعاقبها Google في الترتيب.
+ */
+import { ADSENSE } from '../config.ts';
+
+interface Props {
+	slot: keyof typeof ADSENSE.slots;
+}
+
+const id = ADSENSE.slots[ Astro.props.slot ];
+const show = Boolean( ADSENSE.client && id );
+---
+{
+	show && (
+		<aside class="ad" aria-label="إعلان">
+			<span class="lbl">إعلان</span>
+			<ins
+				class="adsbygoogle"
+				style="display:block"
+				data-ad-client={ ADSENSE.client }
+				data-ad-slot={ id }
+				data-ad-format="auto"
+				data-full-width-responsive="true"
+			/>
+			<script is:inline>
+				( window.adsbygoogle = window.adsbygoogle || [] ).push( {} );
+			</script>
+		</aside>
+	)
+}

@@ -1,0 +1,62 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import TestCard from '../../components/TestCard.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import { categories, categoryById } from '../../data/categories.ts';
+import { catalog } from '../../data/catalog.ts';
+import { breadcrumbs, graph, abs } from '../../lib/seo.ts';
+import { num } from '../../lib/format.ts';
+
+export function getStaticPaths() {
+	return categories.map( ( c ) => ( { params: { cat: c.id } } ) );
+}
+
+const cat = categoryById.get( Astro.params.cat as never )!;
+const path = `/category/${ cat.id }/`;
+const live = catalog.filter( ( e ) => e.category === cat.id && e.status !== 'soon' );
+const soon = catalog.filter( ( e ) => e.category === cat.id && e.status === 'soon' );
+const trail = [ { name: 'الرئيسية', path: '/' }, { name: cat.name, path } ];
+const collection = {
+	'@type': 'CollectionPage',
+	name: cat.name,
+	description: cat.intro,
+	url: abs( path ),
+	inLanguage: 'ar',
+	hasPart: live.map( ( e ) => ( { '@type': 'Quiz', name: e.title, url: abs( e.status === 'tool' ? `/tools/${ e.slug }/` : `/tests/${ e.slug }/` ) } ) ),
+};
+---
+<Layout
+	title={ `اختبارات ${ cat.name } — مقاييس علمية مجانية` }
+	description={ `${ cat.intro } ${ num( live.length ) } متاح الآن.`.slice( 0, 165 ) }
+	path={ path }
+	jsonld={ graph( breadcrumbs( trail ), collection ) }
+>
+	<Breadcrumbs trail={ trail } />
+	<header class="page-h" style={ `--cc:${ cat.color }` }>
+		<span class="kicker"><span aria-hidden="true">{ cat.icon }</span> فئة</span>
+		<h1>{ cat.name }</h1>
+		<p class="lead">{ cat.intro }</p>
+	</header>
+
+	<section style={ `--cc:${ cat.color }` } aria-labelledby="live-h">
+		<div class="sec-h"><h2 id="live-h">متاح الآن</h2><span class="cnt num">{ num( live.length ) }</span></div>
+		<div class="grid">{ live.map( ( e ) => <TestCard entry={ e } /> ) }</div>
+	</section>
+
+	<AdSlot slot="inArticle" />
+
+	{ soon.length > 0 && (
+		<section style={ `--cc:${ cat.color }` } aria-labelledby="soon-h">
+			<div class="sec-h"><h2 id="soon-h">في الخطّة — ولماذا لم تُنشر بعد</h2></div>
+			<ul class="card" style="list-style:none;display:grid;gap:14px">
+				{ soon.map( ( e ) => (
+					<li style="display:grid;grid-template-columns:32px 1fr;gap:10px">
+						<span aria-hidden="true" style="font-size:20px">{ e.icon }</span>
+						<span><b style="font-size:14.5px">{ e.title }</b><br /><span style="font-size:13px;color:var(--color-text-muted);line-height:1.85">{ e.holdReason }</span></span>
+					</li>
+				) ) }
+			</ul>
+		</section>
+	) }
+</Layout>

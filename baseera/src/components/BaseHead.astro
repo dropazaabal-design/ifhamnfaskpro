@@ -1,0 +1,79 @@
+---
+/**
+ * رأس كل صفحة: العنوان والوصف والرابط المرجعي والمعاينة والبيانات المنظَّمة.
+ */
+import { SITE, ADSENSE } from '../config.ts';
+import { abs } from '../lib/seo.ts';
+
+interface Props {
+	title: string;
+	description: string;
+	path: string;
+	/** مسار صورة المعاينة، يُبنى افتراضياً من المسار. */
+	og?: string;
+	jsonld?: object;
+	noindex?: boolean;
+	/** الصفحات الحسّاسة لا تحمّل سكربت الإعلانات إطلاقاً. */
+	ads?: boolean;
+	type?: 'website' | 'article';
+}
+
+const { title, description, path, og, jsonld, noindex = false, ads = true, type = 'website' } = Astro.props;
+const canonical = abs( path );
+const image = abs( og ?? `/og${ path.replace( /\/$/, '' ) || '/home' }.png` );
+const fullTitle = path === '/' ? title : `${ title } · ${ SITE.name }`;
+const loadAds = ads && Boolean( ADSENSE.client );
+---
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>{ fullTitle }</title>
+<meta name="description" content={ description } />
+<link rel="canonical" href={ canonical } />
+{ noindex && <meta name="robots" content="noindex, follow" /> }
+
+<meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#080d1a" media="(prefers-color-scheme: dark)" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="alternate" hreflang="ar" href={ canonical } />
+<link rel="alternate" hreflang="x-default" href={ canonical } />
+
+<meta property="og:type" content={ type } />
+<meta property="og:site_name" content={ SITE.name } />
+<meta property="og:locale" content="ar_AR" />
+<meta property="og:title" content={ title } />
+<meta property="og:description" content={ description } />
+<meta property="og:url" content={ canonical } />
+<meta property="og:image" content={ image } />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={ title } />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content={ SITE.twitter } />
+<meta name="twitter:title" content={ title } />
+<meta name="twitter:description" content={ description } />
+<meta name="twitter:image" content={ image } />
+
+{ jsonld && <script type="application/ld+json" set:html={ JSON.stringify( jsonld ) } /> }
+
+{
+	loadAds && (
+		<script
+			async
+			src={ `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ ADSENSE.client }` }
+			crossorigin="anonymous"
+		/>
+	)
+}
+
+<!-- يطبّق الوضع قبل أوّل رسم فلا يومض الموقع أبيض في الوضع الليلي. -->
+<script is:inline>
+	( function () {
+		try {
+			var saved = localStorage.getItem( 'baseera-theme' );
+			var sys = matchMedia( '(prefers-color-scheme: dark)' ).matches ? 'dark' : 'light';
+			document.documentElement.setAttribute( 'data-theme', saved || sys );
+		} catch ( e ) {
+			document.documentElement.setAttribute( 'data-theme', 'light' );
+		}
+	} )();
+</script>

@@ -1,0 +1,126 @@
+---
+/**
+ * صفحة الاختبار — القالب الذي تُبنى منه كل الاختبارات.
+ *
+ * الترتيب مقصود: الاختبار فوق الطيّة على الجوال (الزائر جاء ليختبر)،
+ * ثم «ما لا يستطيع قوله» مباشرةً، ثم دليل القراءة، ثم المحتوى العميق
+ * الذي يجيب عن أسئلة البحث ويجعل الصفحة أكثر من أداة.
+ */
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import TestRunner from '../../components/TestRunner.astro';
+import Limits from '../../components/Limits.astro';
+import InterpretGuide from '../../components/InterpretGuide.astro';
+import SourceBox from '../../components/SourceBox.astro';
+import Faq from '../../components/Faq.astro';
+import CrisisBox from '../../components/CrisisBox.astro';
+import ProductPick from '../../components/ProductPick.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import TestCard from '../../components/TestCard.astro';
+import { tests, testBySlug } from '../../data/tests/index.ts';
+import { categoryById } from '../../data/categories.ts';
+import { catalog } from '../../data/catalog.ts';
+import { breadcrumbs, faqPage, graph, quiz } from '../../lib/seo.ts';
+import { countNoun, MINUTES, formatDate } from '../../lib/format.ts';
+import { splitLead, splitHeadline, readingMinutes } from '../../lib/text.ts';
+
+export function getStaticPaths() {
+	return tests.map( ( t ) => ( { params: { slug: t.slug } } ) );
+}
+
+const test = testBySlug.get( Astro.params.slug! )!;
+const cat = categoryById.get( test.category )!;
+const path = `/tests/${ test.slug }/`;
+const trail = [
+	{ name: 'الرئيسية', path: '/' },
+	{ name: cat.name, path: `/category/${ cat.id }/` },
+	{ name: test.title, path },
+];
+const related = test.related.map( ( s ) => catalog.find( ( c ) => c.slug === s ) ).filter( Boolean );
+const ads = ! test.sensitive;
+const updated = formatDate( test.updated );
+
+// العرض المختصر: الجملة الأولى ظاهرة، والباقي بنقرة. لا شيء يُحذف.
+const [ introLead, introRest ] = splitLead( test.intro );
+const reading = readingMinutes( ...test.article.map( ( s ) => s.body ) );
+const tldr = [
+	{ icon: '🎯', label: 'يقيس', text: splitHeadline( test.measures[ 0 ] )[ 0 ] },
+	{ icon: '📚', label: 'مبني على', text: test.instrument.name.split( ' — ' )[ 0 ] },
+	{ icon: '🚫', label: 'لا يقول', text: splitHeadline( test.cannot[ 0 ] )[ 0 ] },
+];
+---
+<Layout
+	title={ test.seoTitle }
+	description={ test.description }
+	path={ path }
+	ads={ ads }
+	jsonld={ graph( breadcrumbs( trail ), quiz( test ), faqPage( test.faq ) ) }
+>
+	<Breadcrumbs trail={ trail } />
+
+	<header class="page-h" style={ `--cc:${ cat.color }` }>
+		<span class="kicker"><span aria-hidden="true">{ test.icon }</span> { cat.name }</span>
+		<h1>{ test.title }</h1>
+		<div class="lead">
+			<p>{ introLead }</p>
+			{ introRest && <details class="more-inline"><summary>المزيد</summary><p>{ introRest }</p></details> }
+		</div>
+		<div class="meta-row">
+			<span>📚 { test.instrument.name.split( ' — ' )[ 0 ] }</span>
+			<span>⏱ نحو { countNoun( test.minutes, MINUTES, 'gen' ) }</span>
+			<span>🔒 بلا تسجيل</span>
+			<span>حُدّث <time datetime={ test.updated }>{ updated }</time></span>
+		</div>
+	</header>
+
+	{ test.caution && (
+		<p class="caution" role="note">
+			<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4 2.5 20h19L12 4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" /><path d="M12 10v4.5M12 17.2v.3" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+			<span>{ test.caution }</span>
+		</p>
+	) }
+
+	<TestRunner test={ test } />
+
+	<Limits items={ test.cannot } />
+
+	{ test.sensitive && <CrisisBox /> }
+
+	{ ads && <AdSlot slot="inArticle" /> }
+
+	<InterpretGuide scales={ test.subscales } />
+
+	<section class="tldr" aria-labelledby="tldr-h">
+		<h2 id="tldr-h">باختصار</h2>
+		<ul>
+			{ tldr.map( ( t ) => <li><span class="ic" aria-hidden="true">{ t.icon }</span><span><b>{ t.label }</b> { t.text }</span></li> ) }
+		</ul>
+	</section>
+
+	<article class="prose prose--fold">
+		<p class="read-chip">📖 القراءة كاملة في نحو { countNoun( reading, MINUTES, 'gen' ) } — افتح ما يهمّك</p>
+		{ test.article.map( ( s, i ) => (
+			<details class="fold" open={ i === 0 }>
+				<summary><h2>{ s.heading }</h2></summary>
+				{ s.body.split( '\n\n' ).map( ( p ) => <p>{ p }</p> ) }
+			</details>
+		) ) }
+	</article>
+
+	<SourceBox instrument={ test.instrument } />
+
+	{ test.product && ! test.sensitive && <ProductPick topic={ test.product.topic } why={ test.product.why } campaign={ test.slug } /> }
+
+	<Faq items={ test.faq } />
+
+	{ ads && <AdSlot slot="afterResult" /> }
+
+	{ related.length > 0 && (
+		<section class="related" aria-labelledby="rel-h">
+			<div class="sec-h"><h2 id="rel-h">اختبارات قريبة</h2></div>
+			<div class="grid">
+				{ related.map( ( r ) => <TestCard entry={ r! } /> ) }
+			</div>
+		</section>
+	) }
+</Layout>

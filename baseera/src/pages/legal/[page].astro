@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { legalPages } from '../../data/legal.ts';
+import { breadcrumbs, graph, abs } from '../../lib/seo.ts';
+
+export function getStaticPaths() {
+	return legalPages.map( ( p ) => ( { params: { page: p.slug }, props: { page: p } } ) );
+}
+
+const { page } = Astro.props;
+const path = `/legal/${ page.slug }/`;
+const trail = [ { name: 'الرئيسية', path: '/' }, { name: page.title, path } ];
+const linkify = ( t: string ) => t.replace( /(https?:\/\/[^\s،]+|findahelpline\.com)/g, ( u ) => `<a href="${ u.startsWith( 'http' ) ? u : `https://${ u }` }" rel="noopener">${ u }</a>` );
+const pageType = page.slug === 'about' ? 'AboutPage' : page.slug === 'contact' ? 'ContactPage' : 'WebPage';
+---
+<Layout title={ page.title } description={ page.description } path={ path } jsonld={ graph( breadcrumbs( trail ), { '@type': pageType, name: page.title, url: abs( path ), inLanguage: 'ar' } ) }>
+	<Breadcrumbs trail={ trail } />
+	<header class="page-h"><h1>{ page.title }</h1></header>
+	<article class="prose">
+		{ page.sections.map( ( s ) => (
+			<section>
+				{ s.h && <h2>{ s.h }</h2> }
+				{ s.p.map( ( p ) => <p set:html={ linkify( p.replace( /&/g, '&amp;' ).replace( /</g, '&lt;' ) ) } /> ) }
+			</section>
+		) ) }
+	</article>
+</Layout>

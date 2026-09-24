@@ -1,0 +1,26 @@
+{
+  "name": "baseera",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "بصيرة — منصّة اختبارات نفسية ومعرفية مبنية على مقاييس منشورة، بصدق عن حدودها.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check:science": "node --experimental-strip-types --no-warnings tools/check-science.mjs",
+    "check:seo": "node tools/check-seo.mjs",
+    "verify": "npm run check:science && npm run build && npm run check:seo"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource/reem-kufi": "^5.3.0",
+    "@fontsource/space-grotesk": "^5.3.0",
+    "@fontsource/tajawal": "^5.3.0",
+    "@resvg/resvg-js": "^2.6.2",
+    "astro": "^7.3.5"
+  }
+}

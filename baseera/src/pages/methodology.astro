@@ -1,0 +1,148 @@
+---
+/**
+ * المنهجية — أهمّ صفحة في المنصّة لمن يريد أن يثق بها.
+ *
+ * كل رقم يستخدمه التصحيح مطبوع هنا مع مصدره وحالة التحقّق منه. من يشكّ
+ * في نتيجته يستطيع أن يراجع الحساب كلّه.
+ */
+import Layout from '../layouts/Layout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { tests } from '../data/tests/index.ts';
+import { catalog } from '../data/catalog.ts';
+import { standardError } from '../lib/scoring.ts';
+import { breadcrumbs, graph, article } from '../lib/seo.ts';
+import { num, countNoun, TESTS } from '../lib/format.ts';
+
+const path = '/methodology/';
+const trail = [ { name: 'الرئيسية', path: '/' }, { name: 'منهجيتنا', path } ];
+const held = catalog.filter( ( c ) => c.status === 'soon' );
+const rows = tests.flatMap( ( t ) =>
+	t.subscales.map( ( s ) => ( {
+		test: t.title.split( ' — ' )[ 0 ].split( ':' )[ 0 ],
+		slug: t.slug,
+		scale: s.name,
+		alpha: s.uncalibrated ? '—' : s.alpha.toFixed( 2 ).replace( /^0/, '' ),
+		sd: s.uncalibrated ? '—' : String( s.sd ),
+		ci: s.uncalibrated ? '—' : `±${ ( 1.645 * standardError( s.sd, s.alpha ) ).toFixed( s.scoring === 'mean' ? 2 : 1 ) }`,
+		verified: s.verified,
+		uncalibrated: Boolean( s.uncalibrated ),
+		license: { 'public-domain': 'ملك عام', 'free-with-citation': 'مجّاني مع الإسناد', original: 'أصلي' }[ t.instrument.license ],
+		source: s.paramsSource,
+	} ) )
+);
+// اختبارات IPIP تتشارك المرجع نفسه: يُذكر مرّة واحدة.
+const references = [ ...new Set( tests.map( ( t ) => t.instrument.citation ) ) ];
+const description = 'كيف نختار المقاييس، وكيف نحسب هامش الخطأ لكل نتيجة، وكيف نكشف الإجابات المتسرّعة، ولماذا لم ننشر بعض الاختبارات. كل رقم مع مصدره.';
+---
+<Layout title="منهجيتنا وميزان الثقة" description={ description } path={ path } type="article" wide
+	jsonld={ graph( breadcrumbs( trail ), article( { title: 'منهجية بصيرة وميزان الثقة', description, path, updated: '2026-09-24' } ) ) }>
+	<Breadcrumbs trail={ trail } />
+	<header class="page-h">
+		<span class="kicker">⚖️ الشفافية</span>
+		<h1>منهجيتنا، وميزان الثقة</h1>
+		<p class="lead">أيّ اختبار نفسي يقيس بهامش خطأ. الفرق بين موقع وآخر ليس في وجود الخطأ، بل في إخفائه أو عرضه. هذه الصفحة تشرح كل ما نفعله بالأرقام، وتضع كل رقم أمامك مع مصدره.</p>
+	</header>
+
+	<section class="tldr" aria-labelledby="tldr-h">
+		<h2 id="tldr-h">باختصار</h2>
+		<ul>
+			<li><span class="ic num" aria-hidden="true">1</span><span>اختبارات السمات من مقاييس منشورة بثبات معروف وترخيص يسمح. والبنود التي كتبناها نسمّيها أصلية.</span></li>
+			<li><span class="ic num" aria-hidden="true">2</span><span>مع كل نتيجة: نطاق ثقة حين نعرف الثبات، وفحص للإجابات المتسرّعة، ومقارنة صادقة بمرّتك السابقة.</span></li>
+			<li><span class="ic num" aria-hidden="true">3</span><span>لا نِسب مقارنة بلا بيانات عربية، ولا رقم ذكاء، ولا إجابة تغادر جهازك.</span></li>
+		</ul>
+	</section>
+
+	<article class="prose">
+		<h2>أربعة شروط قبل أن ننشر اختباراً</h2>
+		<ul>
+			<li><b>مقياس منشور:</b> بنوده ظهرت في بحث مُحكَّم، أو في مستودع أكاديمي مفتوح كـ IPIP.</li>
+			<li><b>ثبات معروف:</b> للمقياس معامل ثبات منشور (ألفا كرونباخ)، لأننا نحتاجه لحساب هامش الخطأ.</li>
+			<li><b>ترخيص يسمح:</b> ملك عام أو مجّاني مع الإسناد. المقاييس المملوكة (كمقياس ماسلاك للاحتراق) لا ننشرها بلا ترخيص، وإن نشرتها مواقع كثيرة.</li>
+			<li><b>حدود مكتوبة:</b> لكل اختبار قائمة بما لا يستطيع قوله، تُطبع قبل النتيجة لا في هامش صغير بعدها. البناء نفسه يفشل إن غابت.</li>
+		</ul>
+		<p>هذه شروط اختبارات السمات (الشخصية والمشاعر والعادات). أمّا أسئلة القدرات — الاستدلال، والانحيازات، والمهامّ التفاعلية كمدى الأرقام — فلها أجوبة صحيحة لا ثبات منشور: نكتبها بأنفسنا أو نأخذ نماذجها من أبحاث معروفة، ونقول ذلك تحت كل اختبار. ولأننا لم نقس ثباتها بعد، لا نعرض لها نطاق ثقة ولا نقارن أحداً بأحد.</p>
+
+		<h2>ميزان الثقة: ثلاثة أشياء مع كل نتيجة</h2>
+
+		<h3>1 — نطاق الثقة: أين تقع درجتك الحقيقية على الأرجح</h3>
+		<p>لو أجبت عن الاختبار نفسه غداً، لن تحصل على الرقم نفسه بالضبط: مزاجك وتفسيرك لبعض العبارات يتغيّران قليلاً. «الخطأ المعياري للقياس» يقدّر حجم هذا التذبذب من ثبات المقياس:</p>
+		<p class="num" style="direction:ltr;text-align:center;font-size:17px">SEM = SD × √(1 − α)</p>
+		<p>حيث α ثبات المقياس المنشور، وSD انحراف الدرجات في المجتمع. نعرض حول درجتك نطاقاً عرضه 1.645 خطأً معيارياً في كل اتّجاه — أي النطاق الذي تقع فيه درجتك الحقيقية في نحو 9 من 10 مرّات. مقياس ثباته عالٍ يعطي نطاقاً ضيّقاً، ومقياس ثباته متوسّط يعطي نطاقاً عريضاً، ونعرض لك العريض كما هو.</p>
+
+		<h3>2 — جودة الإجابات: هل تصلح النتيجة للقراءة أصلاً؟</h3>
+		<p>النتيجة لا تكون أصدق من الإجابات التي بُنيت عليها. نرصد على جهازك ثلاث علامات معروفة في أدبيات «الاستجابة المتهاونة»، ونقولها لك بلطف إن ظهرت:</p>
+		<ul>
+			<li><b>السرعة:</b> أقلّ من ثانيتين للعبارة في المتوسّط — العتبة الأشهر لقراءة لا تكفي لفهم العبارة (Huang et al., 2012).</li>
+			<li><b>السلسلة الطويلة:</b> الإجابة نفسها لعبارات متتالية كثيرة، مع أن بعضها مصوغ بالعكس عمداً (Johnson, 2005).</li>
+			<li><b>الموافقة على النقيضين:</b> موافقة قويّة على عبارة وعلى عكسها معاً، وهو «انحياز القبول».</li>
+		</ul>
+		<p>هذه العلامات لا تُلغي نتيجتك ولا تتّهمك بشيء. تقول: خذ هذه النتيجة بحذر أكبر.</p>
+
+		<h3>3 — التغيّر الموثوق: هل تغيّرت فعلاً؟</h3>
+		<p>حين تعيد اختباراً وتحفظه في «ملفّي»، نقارن النتيجتين بـ«مؤشّر التغيّر الموثوق» (Jacobson & Truax, 1991):</p>
+		<p class="num" style="direction:ltr;text-align:center;font-size:17px">RCI = (x₂ − x₁) ÷ (√2 × SEM)</p>
+		<p>إن تجاوز المؤشّر 1.96 فالتغيّر أكبر من خطأ القياس بثقة 95%، ونقول لك إنه تغيّر حقيقي. وإن لم يتجاوزه نقول «ضمن هامش الخطأ» — حتى لو بدا الفرق كبيراً. هذا ما يفصل «تحسّنت فعلاً» عن «تذبذب طبيعي».</p>
+
+		<h2>ما لا نفعله</h2>
+		<ul>
+			<li><b>لا نعطي نِسباً مئوية مقارنة بالناس</b> حين لا نملك بيانات معيارية عربية. نعرض موضعك على مدى المقياس، ونسمّيه كذلك.</li>
+			<li><b>لا نعطي رقم ذكاء.</b> لا يستطيع اختبار قصير على الإنترنت ذلك بصدق.</li>
+			<li><b>لا نعلن على الصفحات الحسّاسة.</b> مقياس القلق بلا إعلانات ولا سكربت إعلاني.</li>
+			<li><b>لا نربط منتجاً بنتيجة «سيّئة».</b> التوصيات مرتبطة بموضوع الاختبار ومُفصَح عنها، ولا تقول لأحد «نتيجتك منخفضة، اشترِ هذا».</li>
+			<li><b>لا نرسل إجاباتك إلى أحد.</b> التصحيح على جهازك، والحفظ على جهازك.</li>
+		</ul>
+
+		<h2>كل رقم نستخدمه</h2>
+		<p>«مُتحقَّق» تعني أن القيمتين نُقلتا من المصدر الأصلي مباشرةً. «تقدير» تعني قيمة من الأدبيات لم نراجعها في مصدرها بعد — ونعرضها لتراجعها بنفسك.</p>
+	</article>
+
+	<div style="overflow-x:auto;margin-top:8px" class="card">
+		<table style="width:100%;border-collapse:collapse;font-size:13px;min-width:620px">
+			<thead>
+				<tr style="text-align:start;border-bottom:1.5px solid var(--color-border-strong)">
+					<th style="padding:8px;text-align:start">الاختبار</th>
+					<th style="padding:8px;text-align:start">المقياس</th>
+					<th style="padding:8px">α</th>
+					<th style="padding:8px">SD</th>
+					<th style="padding:8px">النطاق 90%</th>
+					<th style="padding:8px">الحالة</th>
+					<th style="padding:8px">الترخيص</th>
+				</tr>
+			</thead>
+			<tbody>
+				{ rows.map( ( r ) => (
+					<tr style="border-bottom:1px solid var(--color-border)" title={ r.source }>
+						<td style="padding:8px"><a href={ `/tests/${ r.slug }/` } style="color:var(--color-primary)">{ r.test }</a></td>
+						<td style="padding:8px">{ r.scale }</td>
+						<td style="padding:8px;text-align:center" class="num">{ r.alpha }</td>
+						<td style="padding:8px;text-align:center" class="num">{ r.sd }</td>
+						<td style="padding:8px;text-align:center" class="num">{ r.ci }</td>
+						<td style="padding:8px;text-align:center"><span class:list={ [ 'pill', r.verified ? 'pill--ok' : 'pill--warn' ] }>{ r.uncalibrated ? 'غير معايَر' : r.verified ? 'مُتحقَّق' : 'تقدير' }</span></td>
+						<td style="padding:8px;text-align:center">{ r.license }</td>
+					</tr>
+				) ) }
+			</tbody>
+		</table>
+	</div>
+
+	<article class="prose">
+		<h2>اختبارات لم ننشرها، ولماذا</h2>
+		<p>في خطّتنا { countNoun( catalog.length, TESTS ) }، ونشرنا منها { num( catalog.length - held.length ) }. هذا ليس بطئاً: بعضها ينتظر ترخيصاً، وبعضها لا يوجد له مقياس علمي أصلاً كما يُطرح شعبياً، ونفضّل ألّا ننشره على أن نخترع أسئلة ونسمّيها علماً.</p>
+		<ul>
+			{ held.filter( ( h ) => ! h.holdReason?.startsWith( 'نُعدّ' ) ).map( ( h ) => <li><b>{ h.title }:</b> { h.holdReason }</li> ) }
+		</ul>
+
+		<h2>إن وجدت خطأً</h2>
+		<p>في مصدر، أو رقم، أو ترجمة: <a href="/legal/contact/">راسلنا</a>. نصحّحه، ونذكر التصحيح وتاريخه في هذه الصفحة.</p>
+
+		<details class="fold">
+		<summary><h2>المراجع ({ num( references.length + 3 ) })</h2></summary>
+		<ul class="num" style="direction:ltr;text-align:left;font-size:13px">
+			<li>Huang, J. L., Curran, P. G., Keeney, J., Poposki, E. M., & DeShon, R. P. (2012). Detecting and deterring insufficient effort responding to surveys. Journal of Business and Psychology, 27(1), 99–114.</li>
+			<li>Jacobson, N. S., & Truax, P. (1991). Clinical significance: A statistical approach to defining meaningful change in psychotherapy research. Journal of Consulting and Clinical Psychology, 59(1), 12–19.</li>
+			<li>Johnson, J. A. (2005). Ascertaining the validity of individual protocols from Web-based personality inventories. Journal of Research in Personality, 39(1), 103–129.</li>
+			{ references.map( ( c ) => <li>{ c }</li> ) }
+		</ul>
+		</details>
+	</article>
+</Layout>

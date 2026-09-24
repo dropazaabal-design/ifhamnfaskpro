@@ -1,0 +1,1800 @@
+# Copyright (C) 2026 Matjar Pro
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Matjar Pro 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-19 11:58+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: matjar-pro tools/make-pot.php\n"
+"X-Domain: matjar-pro\n"
+
+#: inc/customizer.php:281
+msgid "%1$s — %2$s"
+msgstr ""
+
+#. translators: 1: أول منتج معروض. 2: آخر منتج معروض. 3: إجمالي المنتجات.
+#: woocommerce/loop/result-count.php:43
+msgid "%1$s–%2$s من %3$s منتجاً"
+msgstr ""
+
+#. translators: %s: عدد التقييمات.
+#: inc/wc-product.php:74
+msgid "(%s تقييم)"
+msgid_plural "(%s تقييماً)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/wc-checkout.php:140
+msgid "(اختياري)"
+msgstr ""
+
+#: inc/helpers.php:507
+msgid "Apple Pay"
+msgstr ""
+
+#: inc/helpers.php:502
+msgid "BENEFIT"
+msgstr ""
+
+#: inc/tokens.php:265
+msgid "Cairo متغيّر — الافتراضي، الأخف (‎63KB / ملفان)"
+msgstr ""
+
+#: inc/tokens.php:226
+msgid "IBM Plex Sans Arabic — أعلى مقروئية، أثقل (‎187KB / 6 ملفات)"
+msgstr ""
+
+#: inc/helpers.php:497
+msgid "KNET"
+msgstr ""
+
+#: inc/demo-data.php:59
+msgid "L"
+msgstr ""
+
+#: inc/demo-data.php:58
+msgid "M"
+msgstr ""
+
+#: inc/helpers.php:492
+msgid "Mastercard"
+msgstr ""
+
+#: inc/demo-admin.php:208
+msgid "Matjar Pro:"
+msgstr ""
+
+#: inc/helpers.php:517
+msgid "PayPal"
+msgstr ""
+
+#: inc/demo-data.php:57
+msgid "S"
+msgstr ""
+
+#: inc/helpers.php:512
+msgid "STC Pay"
+msgstr ""
+
+#: inc/helpers.php:487
+msgid "Visa"
+msgstr ""
+
+#: inc/demo-data.php:60
+msgid "XL"
+msgstr ""
+
+#. translators: 1: السنة، 2: اسم المتجر.
+#: footer.php:143
+msgid "© %1$s %2$s. جميع الحقوق محفوظة."
+msgstr ""
+
+#: inc/front-page.php:150
+msgid "«النص فوق الصورة» يفرض طبقة تعتيم بشفافية 65% لأنها أدنى قيمة تضمن تبايناً 5.25:1 للنص الأبيض فوق أي صورة. لذلك يُنصح بالتخطيط الأول: صورتك تظهر بكامل ألوانها."
+msgstr ""
+
+#. translators: %s: الكمية المتبقية.
+#: inc/wc-product.php:172
+msgid "آخر %s قطعة"
+msgid_plural "آخر %s قطع"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/tokens.php:140
+msgid "أحادي — إلكترونيات"
+msgstr ""
+
+#: inc/tokens.php:202
+msgid "أخضر زمردي"
+msgstr ""
+
+#: woocommerce/cart/cart.php:137
+msgid "أدخل الكود"
+msgstr ""
+
+#: template-parts/shop/filter-body.php:82
+msgid "أدنى سعر"
+msgstr ""
+
+#: inc/customizer.php:84
+msgid "أربع لوحات مُتحقَّق من تباينها بالكامل حسب معيار WCAG AA."
+msgstr ""
+
+#: inc/customizer.php:130
+msgid "أرضية الموقع. الخلفيات متوسطة السطوع لا تحمل نصّاً مقروءاً، فيُدفع اللون إلى أقرب درجة تحمله."
+msgstr ""
+
+#: inc/tokens.php:106
+msgid "أزرق ملكي — عام وتقني"
+msgstr ""
+
+#: inc/demo-data.php:66
+msgid "أسود"
+msgstr ""
+
+#: inc/tokens.php:207
+msgid "أسود كربوني"
+msgstr ""
+
+#: inc/front-page.php:382
+msgid "أشرطة المنتجات"
+msgstr ""
+
+#. translators: %s: المبلغ المتبقي منسّقاً بعملة المتجر.
+#: woocommerce/cart/cart.php:29 woocommerce/cart/mini-cart.php:26
+msgid "أضف %s ليصبح الشحن مجانياً"
+msgstr ""
+
+#: inc/wc-loop.php:128 template-parts/product/sticky-buy.php:47
+msgid "أضف إلى السلة"
+msgstr ""
+
+#: template-parts/shop/filter-body.php:91
+msgid "أعلى سعر"
+msgstr ""
+
+#: inc/customizer.php:776
+msgid "أقل عدد أيام للتوصيل"
+msgstr ""
+
+#: inc/customizer.php:781
+msgid "أكثر عدد أيام للتوصيل"
+msgstr ""
+
+#: inc/demo-data.php:121
+msgid "أكمام واسعة وقصّة مريحة، يصلح للمناسبات وللبيت معاً."
+msgstr ""
+
+#: inc/wc-checkout.php:257
+msgid "أكمل الطلب • %s"
+msgstr ""
+
+#: inc/woocommerce.php:157
+msgid "أو %1$s دفعات بدون فوائد بقيمة %2$s"
+msgstr ""
+
+#: woocommerce/myaccount/orders.php:119
+msgid "أول طلب لك سيظهر هنا مع حالته ومواعيد توصيله."
+msgstr ""
+
+#: inc/customizer.php:468
+msgid "أيقونة التطبيق"
+msgstr ""
+
+#: inc/wc-account.php:56
+msgid "أُعيد مبلغ هذا الطلب إليك."
+msgstr ""
+
+#: inc/wc-account.php:48
+msgid "أُلغي هذا الطلب."
+msgstr ""
+
+#: inc/customizer.php:329
+msgid "إبراز الدفع عند الاستلام ببطاقة مستقلّة"
+msgstr ""
+
+#: woocommerce/cart/mini-cart.php:112
+msgid "إتمام الشراء"
+msgstr ""
+
+#: template-parts/cro/proof.php:42
+msgid "إخفاء الإشعارات"
+msgstr ""
+
+#: footer.php:33
+msgid "إرجاع مجاني"
+msgstr ""
+
+#. translators: %s: عدد الفلاتر المُفعَّلة.
+#: template-parts/shop/filter-body.php:27
+msgid "إزالة الفلاتر (%s)"
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:88 woocommerce/myaccount/my-address.php:40
+msgid "إضافة"
+msgstr ""
+
+#: inc/front-page.php:133
+msgid "إظهار الهيرو في الصفحة الأولى"
+msgstr ""
+
+#: inc/customizer.php:757
+msgid "إظهار سطر التقسيط في صفحة المنتج"
+msgstr ""
+
+#: inc/customizer.php:213
+msgid "إظهار شريط الإعلان"
+msgstr ""
+
+#: inc/front-page.php:265
+msgid "إظهار شريط الثقة"
+msgstr ""
+
+#: inc/customizer.php:357
+msgid "إظهار طرق الدفع في السلة"
+msgstr ""
+
+#: inc/customizer.php:356
+msgid "إظهار طرق الدفع في صفحة المنتج"
+msgstr ""
+
+#: template-parts/pwa/offline.php:38 woocommerce/checkout/thankyou.php:33
+msgid "إعادة المحاولة"
+msgstr ""
+
+#: inc/customizer.php:24
+msgid "إعدادات Matjar Pro"
+msgstr ""
+
+#: inc/customizer.php:720
+msgid "إعدادات التحويل"
+msgstr ""
+
+#: template-parts/cro/exit-intent.php:22
+msgid "إغلاق"
+msgstr ""
+
+#: header.php:50
+msgid "إغلاق الإعلان"
+msgstr ""
+
+#: template-parts/header/search-drawer.php:18
+msgid "إغلاق البحث"
+msgstr ""
+
+#: template-parts/cart/drawer.php:23
+msgid "إغلاق السلة"
+msgstr ""
+
+#: template-parts/shop/filter-drawer.php:25
+msgid "إغلاق الفلترة"
+msgstr ""
+
+#: template-parts/header/nav-drawer.php:16
+msgid "إغلاق القائمة"
+msgstr ""
+
+#: inc/helpers.php:380
+msgid "إكس"
+msgstr ""
+
+#: inc/demo-data.php:39
+msgid "إكسسوارات"
+msgstr ""
+
+#: woocommerce/single-product/add-to-cart/variable.php:99
+msgid "إلغاء الاختيار"
+msgstr ""
+
+#: inc/demo-data.php:34
+msgid "إلكترونيات"
+msgstr ""
+
+#: inc/helpers.php:368
+msgid "إنستغرام"
+msgstr ""
+
+#: woocommerce/myaccount/form-login.php:81 woocommerce/myaccount/form-login.php:82
+msgid "إنشاء الحساب"
+msgstr ""
+
+#: woocommerce/global/quantity-input.php:30
+msgid "إنقاص الكمية"
+msgstr ""
+
+#: searchform.php:34
+msgid "ابحث عن منتج…"
+msgstr ""
+
+#: searchform.php:20
+msgid "ابحث في المتجر"
+msgstr ""
+
+#: woocommerce/cart/cart-empty.php:23 woocommerce/cart/mini-cart.php:128 woocommerce/myaccount/orders.php:121
+msgid "ابدأ التصفّح"
+msgstr ""
+
+#: inc/demo-admin.php:161
+msgid "ابدأ بمتجر كامل لا بصفحة فارغة"
+msgstr ""
+
+#: inc/front-page.php:226
+msgid "اتركه فارغاً ليتجه إلى صفحة المتجر."
+msgstr ""
+
+#: inc/customizer.php:231
+msgid "اتركه فارغاً ليُبنى تلقائياً من حدّ الشحن المجاني بعملة متجرك."
+msgstr ""
+
+#: inc/demo-data.php:279
+msgid "اتصل بنا"
+msgstr ""
+
+#: template-parts/product/sticky-buy.php:53
+msgid "اختر الخيارات"
+msgstr ""
+
+#: inc/helpers.php:478
+msgid "ادفع نقداً للمندوب عند وصول الطلب"
+msgstr ""
+
+#: inc/customizer.php:430
+msgid "اسم التطبيق"
+msgstr ""
+
+#: woocommerce/myaccount/form-login.php:60
+msgid "اسم المستخدم"
+msgstr ""
+
+#: woocommerce/single-product/add-to-cart/simple.php:61 woocommerce/single-product/add-to-cart/variation-add-to-cart-button.php:37
+msgid "اشترِ الآن — تجاوز السلة"
+msgstr ""
+
+#: inc/wc-loop.php:127
+msgid "اعرض الخيارات"
+msgstr ""
+
+#: inc/front-page.php:294
+msgid "اكتب الوعد الفعلي لمتجرك، مثل مدة الشحن أو مهلة الإرجاع."
+msgstr ""
+
+#: inc/wc-account.php:44
+msgid "اكتمل الطلب وسُلّم."
+msgstr ""
+
+#: inc/demo-data.php:275
+msgid "الأسئلة الشائعة"
+msgstr ""
+
+#: template-parts/header/bottom-nav.php:28 template-parts/header/nav-drawer.php:52
+msgid "الأقسام"
+msgstr ""
+
+#: inc/customizer.php:62
+msgid "الألوان والخط"
+msgstr ""
+
+#: woocommerce/cart/mini-cart.php:107 woocommerce/checkout/review-order.php:84 woocommerce/checkout/thankyou.php:101
+msgid "الإجمالي"
+msgstr ""
+
+#: inc/wc-checkout.php:59
+msgid "الاسم الكامل"
+msgstr ""
+
+#: inc/customizer.php:434
+msgid "الاسم المختصر"
+msgstr ""
+
+#: header.php:81 template-parts/header/bottom-nav.php:33
+msgid "البحث"
+msgstr ""
+
+#: template-parts/header/search-drawer.php:10
+msgid "البحث في المتجر"
+msgstr ""
+
+#: inc/customizer.php:108
+msgid "البرتقالي المحروق هو الافتراضي. الكهرماني بديل أعلى بروزاً على الخلفيات الفاتحة."
+msgstr ""
+
+#: inc/wc-checkout.php:105 woocommerce/myaccount/form-login.php:66
+msgid "البريد الإلكتروني"
+msgstr ""
+
+#: woocommerce/myaccount/form-login.php:21
+msgid "البريد الإلكتروني أو اسم المستخدم"
+msgstr ""
+
+#: inc/customizer.php:819
+msgid "البريد الإلكتروني اختياري في الدفع"
+msgstr ""
+
+#: inc/helpers.php:448
+msgid "البطاقات البنكية"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:97
+msgid "التاريخ"
+msgstr ""
+
+#: index.php:92 woocommerce/myaccount/orders.php:106
+msgid "التالي"
+msgstr ""
+
+#: inc/front-page.php:149
+msgid "التخطيط"
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:28
+msgid "التفاصيل"
+msgstr ""
+
+#: template-parts/header/bottom-nav.php:20
+msgid "التنقل السريع"
+msgstr ""
+
+#: inc/customizer.php:820
+msgid "الجوال هو الهوية الفعلية في السوق المستهدف، وإجبار البريد يرفع ترك السلة. تنبيه: بعض بوّابات الدفع تطلب بريداً، ورسالة تأكيد الطلب لا تُرسل بدونه — أطفئه إن كانت بوّابتك تحتاجه."
+msgstr ""
+
+#: inc/demo-admin.php:150
+msgid "الحذف يزيل ما أنشأته هذه الأداة وحده."
+msgstr ""
+
+#: inc/wc-checkout.php:83
+msgid "الحي / المنطقة"
+msgstr ""
+
+#: inc/front-page.php:272
+msgid "الخانة الأولى — أيقونة شحن"
+msgstr ""
+
+#: inc/front-page.php:274
+msgid "الخانة الثالثة — أيقونة إرجاع"
+msgstr ""
+
+#: inc/front-page.php:273
+msgid "الخانة الثانية — أيقونة دفع نقدي"
+msgstr ""
+
+#: inc/front-page.php:275
+msgid "الخانة الرابعة — أيقونة واتساب"
+msgstr ""
+
+#: inc/customizer.php:185
+msgid "الخط"
+msgstr ""
+
+#: inc/helpers.php:476
+msgid "الدفع عند الاستلام"
+msgstr ""
+
+#: inc/demo.php:471 template-parts/header/bottom-nav.php:23
+msgid "الرئيسية"
+msgstr ""
+
+#: footer.php:47 footer.php:119 inc/customizer.php:693
+msgid "الرقم الضريبي"
+msgstr ""
+
+#: inc/customizer.php:126
+msgid "الزر الوحيد الذي يحمل مساحة لون مشبعة في الصفحة. لون نصّه يُحسَب تلقائياً بأعلى تباين."
+msgstr ""
+
+#: index.php:91 woocommerce/myaccount/orders.php:103
+msgid "السابق"
+msgstr ""
+
+#: footer.php:40 footer.php:112
+msgid "السجل التجاري"
+msgstr ""
+
+#: template-parts/shop/filter-body.php:72
+msgid "السعر"
+msgstr ""
+
+#. translators: 1: أدنى سعر، 2: أعلى سعر، منسّقان بعملة المتجر.
+#: inc/wc-filter.php:275
+msgid "السعر %1$s – %2$s"
+msgstr ""
+
+#. translators: 1: السعر الأصلي، 2: السعر بعد الخصم.
+#: inc/wc-loop.php:74
+msgid "السعر الأصلي %1$s، والسعر الآن %2$s."
+msgstr ""
+
+#: inc/wc-product.php:119
+msgid "السعر شامل ضريبة القيمة المضافة"
+msgstr ""
+
+#: header.php:90 template-parts/header/bottom-nav.php:44 template-parts/header/minimal.php:22
+msgid "السلة"
+msgstr ""
+
+#: inc/customizer.php:138
+msgid "الشارات والعناصر الثانوية. لا يُستخدم للزر حتى لا يُزاحمه."
+msgstr ""
+
+#: inc/wc-checkout.php:92
+msgid "الشارع ووصف إضافي"
+msgstr ""
+
+#: inc/setup.php:110
+msgid "الشريط الجانبي للمتجر"
+msgstr ""
+
+#: inc/customizer.php:36
+msgid "الشعار واسم المتجر. يظهر الشعار في الهيدر وفي قُمع الدفع."
+msgstr ""
+
+#: inc/customizer.php:514
+msgid "الصق كود التتبّع كما أعطتك إياه المنصّة (Crisp أو Tawk أو غيرها). يُطبع في تذييل الصفحة كما هو. لا يحفظه إلا مدير يملك صلاحية unfiltered_html."
+msgstr ""
+
+#: inc/demo-admin.php:163
+msgid "الصور رسوم مسطّحة نملكها بالكامل، لا صور فوتوغرافية: شحن صور منتجات حقيقية مع قالب تجاري يورّث كل مشترٍ نزاع حقوق لم يطلبه. استبدلها بصور بضاعتك."
+msgstr ""
+
+#. translators: %s: رقم الصورة.
+#: woocommerce/single-product/product-image.php:87
+msgid "الصورة %s"
+msgstr ""
+
+#: inc/front-page.php:24
+msgid "الصورة ثم النص — موصى به"
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:23
+msgid "الطلب الجاري"
+msgstr ""
+
+#: inc/customizer.php:186
+msgid "العائلتان مرفقتان في القالب ومستضافتان ذاتياً، ولا يُحمَّل على الزائر إلا المختارة. لا اتصال بأي خدمة خطوط خارجية."
+msgstr ""
+
+#: inc/customizer.php:122
+msgid "العناوين والتذييل والنصوص. يُشتَقّ منه لون النص والنص الباهت والحدود، ويُعتَّم تلقائياً حتى يعبر ٧:١ على خلفيتك."
+msgstr ""
+
+#: inc/front-page.php:183 inc/front-page.php:279 inc/front-page.php:420
+msgid "العنوان"
+msgstr ""
+
+#: inc/demo-data.php:114
+msgid "الغرزة يدوية، فلا تتوقّع تطابقاً تامّاً بين قطعتين — هذا أثر الصنعة لا عيب فيها. يُنظَّف جافّاً."
+msgstr ""
+
+#: inc/customizer.php:635
+msgid "الفاصل بين الإشعارات (ثانية)"
+msgstr ""
+
+#: header.php:61 template-parts/header/nav-drawer.php:15
+msgid "القائمة"
+msgstr ""
+
+#: header.php:101 inc/setup.php:41 template-parts/header/nav-drawer.php:23
+msgid "القائمة الرئيسية"
+msgstr ""
+
+#: inc/demo-data.php:105
+msgid "الكتّان يتجعّد بطبيعته، وهذا الخليط يقلّل ذلك دون أن يفقد تهويته. يُغسل على ٣٠ درجة ويُنشر في الظلّ."
+msgstr ""
+
+#: woocommerce/global/quantity-input.php:20
+msgid "الكمية"
+msgstr ""
+
+#: inc/customizer.php:83
+msgid "اللوحة اللونية"
+msgstr ""
+
+#: inc/demo-data.php:64
+msgid "اللون"
+msgstr ""
+
+#: inc/demo-admin.php:29 inc/demo-admin.php:30
+msgid "المتجر التجريبي"
+msgstr ""
+
+#: inc/demo-admin.php:111
+msgid "المتجر التجريبي — Matjar Pro"
+msgstr ""
+
+#: woocommerce/checkout/review-order.php:41
+msgid "المجموع الفرعي"
+msgstr ""
+
+#: inc/helpers.php:452
+msgid "المحافظ الرقمية"
+msgstr ""
+
+#: inc/demo-admin.php:148
+msgid "المحتوى التجريبي مُركَّب"
+msgstr ""
+
+#: inc/wc-checkout.php:76
+msgid "المدينة"
+msgstr ""
+
+#: inc/demo-data.php:55
+msgid "المقاس"
+msgstr ""
+
+#: inc/wc-product.php:212
+msgid "المواصفات والقياسات"
+msgstr ""
+
+#: inc/front-page.php:25
+msgid "النص فوق الصورة"
+msgstr ""
+
+#: inc/front-page.php:117
+msgid "الهيرو"
+msgstr ""
+
+#: inc/demo-data.php:179
+msgid "الوسائد جلد صناعي يتنفّس فلا تسخن الأذن في جلسة طويلة. تُطوى في علبتها وتدعم الاتّصال بجهازين معاً."
+msgstr ""
+
+#: inc/wc-product.php:216
+msgid "الوصف"
+msgstr ""
+
+#: template-parts/cro/exit-intent.php:38
+msgid "انسخ"
+msgstr ""
+
+#: inc/wc-account.php:32
+msgid "بانتظار إتمام الدفع — لا يبدأ التجهيز قبله."
+msgstr ""
+
+#: inc/demo-data.php:264
+msgid "بدأ المتجر من طلب واحد، ثم صار عادةً عند من جرّبه.\n\nنختار ما نبيعه بأنفسنا، ونصوّره كما هو بلا معالجة تُجمّل العيب. وإن وصلك ما لا يطابق وصفه، فالإرجاع مجاني ولا نسأل عن السبب.\n\nاستبدل هذا النصّ بقصّة متجرك الحقيقية قبل الإطلاق."
+msgstr ""
+
+#: inc/demo-data.php:212
+msgid "بطارية متنقّلة ٢٠٠٠٠ مللي أمبير"
+msgstr ""
+
+#: inc/customizer.php:737
+msgid "بعملة متجرك الحالية (%s). صفر يعني تعطيل شريط تقدّم الشحن."
+msgstr ""
+
+#: inc/front-page.php:307
+msgid "بلاطتا الترويج"
+msgstr ""
+
+#: inc/tokens.php:120
+msgid "بنفسجي — عناية وعطور"
+msgstr ""
+
+#: inc/customizer.php:685
+msgid "بيانات المتجر"
+msgstr ""
+
+#: inc/wc-account.php:179
+msgid "بياناتي"
+msgstr ""
+
+#: template-parts/footer/social.php:19
+msgid "تابعنا على"
+msgstr ""
+
+#: inc/helpers.php:522
+msgid "تابي"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:86
+msgid "تتبّع طلبك على واتساب"
+msgstr ""
+
+#: inc/customizer.php:636
+msgid "تتوقّف الإشعارات تلقائياً بعد ثلاث دورات كاملة."
+msgstr ""
+
+#: inc/customizer.php:435
+msgid "تحت الأيقونة في الشاشة الرئيسية — أبقه تحت ١٢ حرفاً."
+msgstr ""
+
+#: woocommerce/cart/cart.php:151 woocommerce/cart/cart.php:152
+msgid "تحديث السلة"
+msgstr ""
+
+#: template-parts/pwa/offline.php:34
+msgid "تحقّق من اتصالك ثم أعد المحاولة. الصفحات التي زرتها قبل قليل ما زالت متاحة."
+msgstr ""
+
+#: inc/wc-checkout.php:202
+msgid "تحقّق من البريد الإلكتروني"
+msgstr ""
+
+#: inc/wc-checkout.php:201
+msgid "تحقّق من رقم الجوال"
+msgstr ""
+
+#: header.php:28
+msgid "تخطَّ إلى المحتوى"
+msgstr ""
+
+#: woocommerce/myaccount/form-login.php:34
+msgid "تذكّرني"
+msgstr ""
+
+#: inc/demo-data.php:145
+msgid "تركيز زيتي عالٍ، فرشّة واحدة على الرسغ تكفي. يُحفظ بعيداً عن الشمس المباشرة ليحافظ على تركيبته."
+msgstr ""
+
+#: woocommerce/myaccount/form-login.php:15
+msgid "تسجيل الدخول"
+msgstr ""
+
+#: inc/demo-data.php:217
+msgid "تشحن الجوال أربع مرّات، ومنفذان يعملان معاً."
+msgstr ""
+
+#: woocommerce/cart/cart-empty.php:19
+msgid "تصفّح الأقسام واختر ما يناسبك — الشحن سريع والإرجاع مجاني."
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:109
+msgid "تصفّح المتجر"
+msgstr ""
+
+#: inc/wc-filter.php:351 template-parts/shop/filter-body.php:108 woocommerce/cart/cart.php:138 woocommerce/cart/cart.php:139
+msgid "تطبيق"
+msgstr ""
+
+#: inc/customizer.php:405
+msgid "تطبيق الجوال (PWA)"
+msgstr ""
+
+#: inc/demo-data.php:113
+msgid "تطريز يدوي على الصدر والأكمام، وكل قطعة تختلف قليلاً عن الأخرى."
+msgstr ""
+
+#: inc/customizer.php:650
+msgid "تظهر أيقونةً في التذييل. اترك الحقل فارغاً ولا تُطبع أيقونته إطلاقاً."
+msgstr ""
+
+#: inc/front-page.php:383
+msgid "تظهر في الصفحة الأولى تحت بلاطات الترويج، وتُسحب أفقياً على الجوال."
+msgstr ""
+
+#: inc/customizer.php:686
+msgid "تظهر في الفوتر. عرض السجل التجاري والرقم الضريبي مطلب امتثال في عدة دول، وإشارة ثقة في كل الأحوال."
+msgstr ""
+
+#: inc/front-page.php:308
+msgid "تظهران تحت الهيرو. اتركهما فارغتين لإخفائهما."
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:88 woocommerce/myaccount/my-address.php:40
+msgid "تعديل"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:28
+msgid "تعذّر إتمام الدفع. جرّب مرة أخرى أو اختر طريقة دفع أخرى."
+msgstr ""
+
+#: inc/assets.php:116
+msgid "تعذّر إكمال الطلب، حاول مرة أخرى"
+msgstr ""
+
+#: inc/customizer.php:497
+msgid "تعزيز التحويل"
+msgstr ""
+
+#: woocommerce/myaccount/orders.php:82
+msgid "تفاصيل الطلب"
+msgstr ""
+
+#: searchform.php:41
+msgid "تفريغ البحث"
+msgstr ""
+
+#: inc/customizer.php:581
+msgid "تفعيل إشعارات النشاط"
+msgstr ""
+
+#: inc/customizer.php:421
+msgid "تفعيل تطبيق الجوال"
+msgstr ""
+
+#: inc/customizer.php:531
+msgid "تفعيل نافذة نيّة الخروج"
+msgstr ""
+
+#: inc/demo-admin.php:209
+msgid "تقدر تبدأ بمتجر كامل بمنتجات وأقسام وصفحات بدل صفحة فارغة."
+msgstr ""
+
+#: inc/wc-account.php:94
+msgid "تم استلام الطلب"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:50
+msgid "تم استلام طلبك"
+msgstr ""
+
+#: inc/wc-account.php:96
+msgid "تم التسليم"
+msgstr ""
+
+#. translators: 1: اسم المنتج. 2: مدّة مثل «١٢ دقيقة».
+#: inc/cro.php:132
+msgid "تم شراء %1$s قبل %2$s"
+msgstr ""
+
+#: inc/helpers.php:527
+msgid "تمارا"
+msgstr ""
+
+#: template-parts/product/sticky-buy.php:48
+msgid "تمت الإضافة"
+msgstr ""
+
+#: inc/assets.php:115
+msgid "تمت الإضافة إلى السلة"
+msgstr ""
+
+#. translators: 1: عدد المنتجات. 2: عدد الصفحات.
+#: inc/demo-admin.php:118
+msgid "تمّ: %1$s منتجاً و%2$s صفحة. افتح المتجر لتراه."
+msgstr ""
+
+#: index.php:93
+msgid "تنقّل بين الصفحات"
+msgstr ""
+
+#: footer.php:157
+msgid "تواصل معنا عبر واتساب"
+msgstr ""
+
+#: inc/customizer.php:867
+msgid "توصيل مجاني للطلبات فوق %s"
+msgstr ""
+
+#: inc/helpers.php:372
+msgid "تيك توك"
+msgstr ""
+
+#: inc/demo-data.php:247
+msgid "ثلاث درجات حرارة لون، وذراع يثبت في أي زاوية."
+msgstr ""
+
+#: inc/assets.php:117
+msgid "جارٍ التحديث…"
+msgstr ""
+
+#: inc/wc-filter.php:352
+msgid "جارٍ الفلترة…"
+msgstr ""
+
+#: woocommerce/loop/no-products-found.php:16
+msgid "جرّب تخفيف الفلترة أو تصفّح قسماً آخر."
+msgstr ""
+
+#: index.php:102
+msgid "جرّب كلمة أخرى، أو تصفّح الأقسام من القائمة."
+msgstr ""
+
+#: inc/demo-data.php:225
+msgid "جلد طبيعي يلين مع الاستعمال، وتتّسع لحاسب ١٣ بوصة."
+msgstr ""
+
+#: inc/demo-data.php:198
+msgid "حامل جوال مغناطيسي للسيارة"
+msgstr ""
+
+#: inc/customizer.php:735
+msgid "حدّ الشحن المجاني"
+msgstr ""
+
+#: inc/customizer.php:771
+msgid "حدّ تحذير قلّة المخزون"
+msgstr ""
+
+#. translators: %s: اسم المنتج.
+#: woocommerce/cart/cart.php:104 woocommerce/cart/mini-cart.php:77
+msgid "حذف %s من السلة"
+msgstr ""
+
+#: inc/demo-admin.php:156
+msgid "حذف المحتوى التجريبي"
+msgstr ""
+
+#: inc/demo-data.php:128
+msgid "حرير طبيعي ١٠٠٪، يثبت على الرأس بلا دبّوس."
+msgstr ""
+
+#: woocommerce/myaccount/form-login.php:53
+msgid "حساب جديد"
+msgstr ""
+
+#: header.php:86 template-parts/header/bottom-nav.php:49 woocommerce/checkout/thankyou.php:37
+msgid "حسابي"
+msgstr ""
+
+#: template-parts/header/nav-drawer.php:71
+msgid "حسابي وطلباتي"
+msgstr ""
+
+#: inc/tokens.php:192
+msgid "حسب اللوحة المختارة"
+msgstr ""
+
+#: woocommerce/cart/mini-cart.php:38
+msgid "حصلت على الشحن المجاني"
+msgstr ""
+
+#: inc/demo-data.php:40
+msgid "حقائب ومحافظ ونظارات تُكمل الإطلالة."
+msgstr ""
+
+#: inc/customizer.php:617
+msgid "حقائق عن متجرك"
+msgstr ""
+
+#: inc/demo-data.php:220
+msgid "حقيبة يد جلدية بحزام قابل للفصل"
+msgstr ""
+
+#. translators: %s: عدد العناصر.
+#: inc/demo-admin.php:130
+msgid "حُذف %s عنصراً من المحتوى التجريبي. لم يُمسّ أي محتوى آخر."
+msgstr ""
+
+#: inc/wc-account.php:180
+msgid "خروج"
+msgstr ""
+
+#. translators: %s: نسبة الخصم.
+#: woocommerce/content-product.php:41 woocommerce/single-product/product-image.php:67
+msgid "خصم %s"
+msgstr ""
+
+#: inc/demo-data.php:136
+msgid "خفيفة وغير شفّافة، بأطراف مخيطة لا تنسلّ."
+msgstr ""
+
+#: woocommerce/myaccount/form-login.php:39 woocommerce/myaccount/form-login.php:40
+msgid "دخول"
+msgstr ""
+
+#: template-parts/header/minimal.php:37
+msgid "دفع آمن"
+msgstr ""
+
+#: inc/front-page.php:362
+msgid "رابط البلاطة %d"
+msgstr ""
+
+#: inc/front-page.php:225
+msgid "رابط زر الهيرو"
+msgstr ""
+
+#: inc/wc-checkout.php:49
+msgid "رقم الجوال"
+msgstr ""
+
+#: inc/customizer.php:692
+msgid "رقم السجل التجاري"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:93
+msgid "رقم الطلب"
+msgstr ""
+
+#. translators: %s: رقم الطلب.
+#: woocommerce/checkout/thankyou.php:57
+msgid "رقم طلبك %s. سنتواصل معك لتأكيد التوصيل."
+msgstr ""
+
+#: inc/customizer.php:694
+msgid "رقم واتساب بالصيغة الدولية"
+msgstr ""
+
+#: inc/demo-admin.php:179 inc/demo-admin.php:210
+msgid "ركّب المتجر التجريبي"
+msgstr ""
+
+#: inc/demo-data.php:68
+msgid "رمادي"
+msgstr ""
+
+#: inc/customizer.php:649
+msgid "روابط التواصل"
+msgstr ""
+
+#: inc/setup.php:43
+msgid "روابط السياسات"
+msgstr ""
+
+#: inc/tokens.php:92
+msgid "زمردي — أزياء وطبيعي"
+msgstr ""
+
+#: woocommerce/global/quantity-input.php:50
+msgid "زيادة الكمية"
+msgstr ""
+
+#: inc/demo-data.php:69
+msgid "زيتي"
+msgstr ""
+
+#: inc/demo-data.php:189
+msgid "ساعة ذكية رياضية"
+msgstr ""
+
+#: inc/demo-data.php:232
+msgid "ستّ بطاقات وحجرة للأوراق، بحجب RFID."
+msgstr ""
+
+#: inc/customizer.php:134
+msgid "سطح بطاقات المنتجات والحقول. اتركه فارغاً ليُشتَقّ من خلفية الصفحات."
+msgstr ""
+
+#: inc/front-page.php:279
+msgid "سطر التفصيل"
+msgstr ""
+
+#: inc/front-page.php:187
+msgid "سطر الوصف"
+msgstr ""
+
+#: inc/customizer.php:347
+msgid "سطر شرح الدفع عند الاستلام"
+msgstr ""
+
+#: inc/front-page.php:179
+msgid "سطر فوق العنوان"
+msgstr ""
+
+#: inc/customizer.php:618
+msgid "سطر لكل جملة. اكتب ما هو صحيح في متجرك فعلاً: «الشحن مجاني فوق ٢٠٠ ريال» أو «الدفع عند الاستلام متاح لكل مدن المملكة» أو «الإرجاع خلال ١٤ يوماً». هذه الأسطر تظهر بأيقونة معلومة لا بأيقونة شراء، فلا تُقرأ إشعارَ بيع مهما كُتب فيها — ولا تكتب هنا شراءً لم يقع: إشعار البيع مصدره طلبات متجرك وحدها."
+msgstr ""
+
+#: template-parts/cart/drawer.php:17
+msgid "سلة المشتريات"
+msgstr ""
+
+#: template-parts/cart/drawer.php:22
+msgid "سلتك"
+msgstr ""
+
+#: inc/wc-checkout.php:199 woocommerce/cart/cart-empty.php:17 woocommerce/cart/mini-cart.php:126
+msgid "سلتك فارغة"
+msgstr ""
+
+#: inc/demo-data.php:182
+msgid "سمّاعات أذن لاسلكية"
+msgstr ""
+
+#: inc/demo-data.php:171
+msgid "سمّاعة رأس لاسلكية بعزل ضجيج"
+msgstr ""
+
+#: inc/helpers.php:376
+msgid "سناب شات"
+msgstr ""
+
+#. translators: %s: رقم الجوال.
+#: woocommerce/checkout/thankyou.php:117
+msgid "سنتواصل معك على %s"
+msgstr ""
+
+#: inc/demo-data.php:271
+msgid "سياسة الإرجاع"
+msgstr ""
+
+#: inc/demo-data.php:267
+msgid "سياسة الشحن"
+msgstr ""
+
+#: inc/customizer.php:252
+msgid "شارات الثقة وطرق الدفع"
+msgstr ""
+
+#: inc/front-page.php:389
+msgid "شريط الأكثر مبيعاً"
+msgstr ""
+
+#: inc/customizer.php:198
+msgid "شريط الإعلان العلوي"
+msgstr ""
+
+#: inc/customizer.php:828
+msgid "شريط التنقل السفلي على الجوال"
+msgstr ""
+
+#: inc/front-page.php:249
+msgid "شريط الثقة"
+msgstr ""
+
+#: inc/customizer.php:827
+msgid "شريط الشراء الثابت في صفحة المنتج"
+msgstr ""
+
+#: inc/customizer.php:582
+msgid "شريط صغير أسفل الشاشة. لا يظهر في السلة ولا في صفحات الدفع، ويتوقّف تلقائياً بعد ثلاث دورات."
+msgstr ""
+
+#: inc/front-page.php:390
+msgid "شريط وصل حديثاً"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:20
+msgid "شكراً لك. تم استلام طلبك."
+msgstr ""
+
+#: inc/demo-data.php:168
+msgid "شمع صويا يحترق ٤٠ ساعة بلا سناج."
+msgstr ""
+
+#: inc/demo-data.php:164
+msgid "شمعة عنبر معطّرة"
+msgstr ""
+
+#: inc/demo-data.php:124
+msgid "شيلة حرير طبيعي"
+msgstr ""
+
+#: inc/demo-data.php:131
+msgid "شيلة شيفون سادة"
+msgstr ""
+
+#: inc/demo-data.php:35
+msgid "صوت وشحن وساعات، بضمان سنة."
+msgstr ""
+
+#: woocommerce/single-product/product-image.php:79
+msgid "صور المنتج"
+msgstr ""
+
+#: inc/front-page.php:327
+msgid "صورة البلاطة %d"
+msgstr ""
+
+#: inc/front-page.php:169
+msgid "صورة الهيرو"
+msgstr ""
+
+#: inc/customizer.php:310
+msgid "صورة شارات الدفع"
+msgstr ""
+
+#: inc/customizer.php:311
+msgid "صورة واحدة تجمع شعارات وسائل الدفع، تحصل عليها من مزوّد الدفع. ترفعها هنا فتظهر بدل الشارات النصّية. القالب لا يشحن شعارات العلامات التجارية."
+msgstr ""
+
+#: inc/front-page.php:118
+msgid "صورة واحدة ثابتة بلا كاروسيل: الشرائح بعد الأولى تحصل على تفاعل مهمل وتكلّف قياس LCP مباشرة."
+msgstr ""
+
+#: inc/woocommerce.php:182
+msgctxt "صيغة تاريخ موعد التوصيل"
+msgid "j F"
+msgstr ""
+
+#: inc/demo-admin.php:162
+msgid "ضغطة واحدة تبني متجراً يعمل: ٢٠ منتجاً في أربعة أقسام، بينها منتجات بمقاسات وألوان، ومخفَّضة، ونافدة، وبالطلب المسبق — حتى ترى كل حالة يرسمها القالب فعلاً. ومعها صفحات الشحن والإرجاع والأسئلة الشائعة، وقائمة تنقّل، وصفحة رئيسية مضبوطة."
+msgstr ""
+
+#: inc/customizer.php:379
+msgid "ضمان أمان الدفع"
+msgstr ""
+
+#: inc/customizer.php:378
+msgid "ضمان الإرجاع"
+msgstr ""
+
+#: template-parts/trust-strip.php:23
+msgid "ضمانات المتجر"
+msgstr ""
+
+#: inc/wc-account.php:182
+msgid "طرق الدفع"
+msgstr ""
+
+#: template-parts/payment/methods.php:56 template-parts/payment/methods.php:63
+msgid "طرق الدفع المتاحة"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:106
+msgid "طريقة الدفع"
+msgstr ""
+
+#: inc/wc-account.php:177
+msgid "طلباتي"
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:25
+msgid "طلبك الجاري"
+msgstr ""
+
+#: inc/demo-data.php:24
+msgid "عبايات وفساتين"
+msgstr ""
+
+#: inc/demo-data.php:98
+msgid "عباية كتّان صيفية"
+msgstr ""
+
+#: inc/demo-data.php:88
+msgid "عباية كلاسيك بقَصّة مستقيمة"
+msgstr ""
+
+#: inc/customizer.php:766
+msgid "عدد دفعات التقسيط"
+msgstr ""
+
+#: inc/demo-data.php:240
+msgid "عدسات مستقطبة بحماية UV400، وإطار خفيف لا يترك أثراً على الأنف."
+msgstr ""
+
+#: woocommerce/cart/mini-cart.php:116
+msgid "عرض السلة"
+msgstr ""
+
+#: template-parts/product/rail.php:60
+msgid "عرض الكل"
+msgstr ""
+
+#: inc/demo-admin.php:123
+msgid "عرض المتجر"
+msgstr ""
+
+#: template-parts/shop/filter-drawer.php:36
+msgid "عرض النتائج"
+msgstr ""
+
+#. translators: %s: عدد القطع.
+#: woocommerce/checkout/form-checkout.php:46
+msgid "عرض طلبك (%s)"
+msgstr ""
+
+#: inc/assets.php:120
+msgid "عرض كل النتائج"
+msgstr ""
+
+#: inc/customizer.php:599
+msgid "عرض مشتريات حقيقية من متجرك"
+msgstr ""
+
+#: template-parts/promo-tiles.php:16
+msgid "عروض مختارة"
+msgstr ""
+
+#: inc/demo-data.php:178
+msgid "عزل نشِط للضجيج، و٣٠ ساعة تشغيل، وشحن سريع يعطي ٥ ساعات في ١٠ دقائق."
+msgstr ""
+
+#: inc/demo-data.php:139
+msgid "عطر عود ملكي ٥٠ مل"
+msgstr ""
+
+#: inc/demo-data.php:148
+msgid "عطر مسك أبيض ١٠٠ مل"
+msgstr ""
+
+#: inc/demo-data.php:29
+msgid "عطور وبخور"
+msgstr ""
+
+#: inc/setup.php:97
+msgid "عمود الفوتر %d"
+msgstr ""
+
+#: inc/wc-account.php:178
+msgid "عناويني"
+msgstr ""
+
+#: inc/front-page.php:345
+msgid "عنوان البلاطة %d"
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:84 woocommerce/myaccount/dashboard.php:86 woocommerce/myaccount/my-address.php:17
+msgid "عنوان التوصيل"
+msgstr ""
+
+#: woocommerce/myaccount/my-address.php:16
+msgid "عنوان الفاتورة"
+msgstr ""
+
+#: inc/customizer.php:541
+msgid "عنوان النافذة"
+msgstr ""
+
+#: woocommerce/myaccount/my-address.php:30
+msgid "عنوان محفوظ وصحيح يعني طلباً أسرع ومندوباً يجدك من أول مرة."
+msgstr ""
+
+#: woocommerce/myaccount/my-address.php:24
+msgid "عنواني"
+msgstr ""
+
+#: inc/demo-data.php:156
+msgid "عود كمبودي معتّق"
+msgstr ""
+
+#: inc/demo-data.php:30
+msgid "عود ومسك وشموع، بتركيز عالٍ وثبات طويل."
+msgstr ""
+
+#: inc/demo-data.php:144
+msgid "عود وورد وعنبر، ثبات يتجاوز ثماني ساعات على الملابس."
+msgstr ""
+
+#: inc/assets.php:118
+msgid "غير متوفر حالياً"
+msgstr ""
+
+#: inc/customizer.php:253
+msgid "فعّل ما يخصّ سوقك فقط. الشارات المُطفأة لا تُطبع في الصفحة إطلاقاً."
+msgstr ""
+
+#: template-parts/shop/filter-drawer.php:24 woocommerce/archive-product.php:43
+msgid "فلترة"
+msgstr ""
+
+#: template-parts/shop/filter-drawer.php:17 woocommerce/archive-product.php:32
+msgid "فلترة المنتجات"
+msgstr ""
+
+#: woocommerce/myaccount/navigation.php:12
+msgid "قائمة الحساب"
+msgstr ""
+
+#: footer.php:76 inc/setup.php:42
+msgid "قائمة الفوتر"
+msgstr ""
+
+#: inc/demo.php:489 template-parts/header/nav-drawer.php:10
+msgid "قائمة المتجر"
+msgstr ""
+
+#: inc/helpers.php:456
+msgid "قسّمها على دفعات"
+msgstr ""
+
+#: inc/demo-data.php:25
+msgid "قصّات يومية وسهرة بأقمشة تتنفّس."
+msgstr ""
+
+#: inc/demo-data.php:161
+msgid "قطع مختارة يدوياً، تُباع بالوزن ودُفعتها محدودة."
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:73 woocommerce/myaccount/orders.php:72
+msgid "قطعة واحدة"
+msgid_plural "%s قطع"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/demo-data.php:117
+msgid "قفطان لؤلؤي بأكمام واسعة"
+msgstr ""
+
+#: inc/demo-data.php:108
+msgid "قفطان مطرّز بغرزة يدوية"
+msgstr ""
+
+#: inc/demo-data.php:95
+msgid "قماش كريب ثقيل قليلاً فينسدل بدل أن يلتصق. الأكمام واسعة من الأعلى وضيّقة عند المعصم فلا تعوق الحركة، والطول يصل إلى مشط القدم على متوسّط الطول."
+msgstr ""
+
+#: inc/demo-data.php:195
+msgid "قياس نبض ونوم وأكسجين، وبطارية تصمد سبعة أيام."
+msgstr ""
+
+#: inc/wc-account.php:95
+msgid "قيد التجهيز"
+msgstr ""
+
+#: inc/demo-data.php:94
+msgid "قَصّة مستقيمة لا تكشف الجسم، بقماش لا يشفّ ولا يتجعّد في الحقيبة."
+msgstr ""
+
+#: inc/demo-data.php:104
+msgid "كتّان مخلوط يتنفّس في حرّ الصيف، ولونه لا يبهت مع الغسيل."
+msgstr ""
+
+#: inc/demo-data.php:67
+msgid "كحلي"
+msgstr ""
+
+#: inc/tokens.php:197
+msgid "كحلي عميق"
+msgstr ""
+
+#: inc/tokens.php:78
+msgid "كحلي عميق — الافتراضي"
+msgstr ""
+
+#: inc/tokens.php:154
+msgid "كربوني — متجر داكن"
+msgstr ""
+
+#: inc/customizer.php:25
+msgid "كل إعدادات القالب. العملة نفسها تُضبط من ووكومرس، والقالب يتبعها."
+msgstr ""
+
+#: woocommerce/myaccount/view-order.php:17
+msgid "كل الطلبات"
+msgstr ""
+
+#: woocommerce/loop/no-products-found.php:19
+msgid "كل المنتجات"
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:104
+msgid "كل طلباتي"
+msgstr ""
+
+#: inc/demo-admin.php:150
+msgid "كل عنصر موسوم عند إنشائه، فمنتجاتك وصفحاتك وصورك لا تُمسّ."
+msgstr ""
+
+#: woocommerce/myaccount/form-login.php:26 woocommerce/myaccount/form-login.php:72
+msgid "كلمة المرور"
+msgstr ""
+
+#: woocommerce/global/quantity-input.php:19
+msgid "كمية %s"
+msgstr ""
+
+#: inc/customizer.php:549 woocommerce/cart/cart.php:136
+msgid "كود الخصم"
+msgstr ""
+
+#: inc/customizer.php:513
+msgid "كود منصّة المحادثة"
+msgstr ""
+
+#: template-parts/pwa/offline.php:20 template-parts/pwa/offline.php:31
+msgid "لا اتصال بالإنترنت"
+msgstr ""
+
+#: inc/demo-admin.php:46
+msgid "لا تملك صلاحية هذا الإجراء."
+msgstr ""
+
+#: inc/assets.php:119
+msgid "لا توجد منتجات مطابقة"
+msgstr ""
+
+#: index.php:101
+msgid "لا توجد نتائج"
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:27
+msgid "لا حاجة لإنشاء حساب — أكمل طلبك كضيف، وننشئ لك حساباً بنقرة بعد الشراء."
+msgstr ""
+
+#: inc/customizer.php:498
+msgid "لا شيء هنا يُحمَّل ما لم تُفعّله. ولا شيء منه يظهر في السلة أو الدفع: مقاطعة زائرٍ يكتب عنوانه تُفقد طلباً لا تكسبه."
+msgstr ""
+
+#: inc/wc-loop.php:98 woocommerce/single-product/product-image.php:36
+msgid "لا صورة"
+msgstr ""
+
+#: woocommerce/myaccount/orders.php:118
+msgid "لا طلبات بعد"
+msgstr ""
+
+#: woocommerce/loop/no-products-found.php:14
+msgid "لا منتجات مطابقة"
+msgstr ""
+
+#: woocommerce/cart/cart.php:132
+msgid "لديك كود خصم؟"
+msgstr ""
+
+#: inc/demo-data.php:272
+msgid "لك أن ترجع أي قطعة خلال ١٤ يوماً من استلامها.\n\nالشرط الوحيد أن تكون بحالتها كما وصلت: غير مستعملة، وبملصقاتها، وفي عبوتها. العطور المفتوحة والملابس الداخلية مستثناة لأسباب صحّية.\n\nيُعاد المبلغ إلى وسيلة الدفع نفسها خلال خمسة أيام عمل من وصول القطعة إلينا.\n\nعدّل المدّة والاستثناءات بما يوافق نظام بلدك."
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:96
+msgid "لم تُضف عنواناً بعد. إضافته الآن تجعل طلبك القادم أسرع."
+msgstr ""
+
+#: inc/wc-account.php:52
+msgid "لم يكتمل الدفع، ولم يُخصم منك شيء."
+msgstr ""
+
+#: woocommerce/myaccount/my-address.php:47
+msgid "لم يُضف بعد."
+msgstr ""
+
+#: inc/customizer.php:133
+msgid "لون أسطح البطاقات"
+msgstr ""
+
+#: inc/customizer.php:137
+msgid "لون الإبراز"
+msgstr ""
+
+#: inc/customizer.php:121
+msgid "لون العلامة الأساسي"
+msgstr ""
+
+#: inc/customizer.php:129
+msgid "لون خلفية الصفحات"
+msgstr ""
+
+#: inc/customizer.php:125
+msgid "لون زر الشراء"
+msgstr ""
+
+#: inc/demo-admin.php:138
+msgid "متجرك يحتوي منتجات ليست من المحتوى التجريبي. علّم مربّع التأكيد إن كنت تريد الاستيراد رغم ذلك."
+msgstr ""
+
+#: inc/demo-admin.php:149
+msgid "متجرك يعرض الآن منتجات وأقسام وصفحات سياسات جاهزة. استبدلها بمنتجاتك الحقيقية تدريجياً، أو احذفها كلّها بضغطة حين تنتهي."
+msgstr ""
+
+#: inc/demo-admin.php:174
+msgid "متجري يحتوي منتجات بالفعل، وأفهم أن الاستيراد سيضيف منتجات تجريبية فوقها."
+msgstr ""
+
+#: inc/wc-checkout.php:155
+msgid "مثال: اتصل قبل الوصول"
+msgstr ""
+
+#: inc/demo-data.php:228
+msgid "محفظة بطاقات نحيفة"
+msgstr ""
+
+#: inc/helpers.php:482
+msgid "مدى"
+msgstr ""
+
+#: inc/customizer.php:469
+msgid "مربّعة ٥١٢×٥١٢ بصيغة PNG. اتركها فارغة لتُستخدم أيقونة الموقع."
+msgstr ""
+
+#. translators: %s: رقم الطلب.
+#: woocommerce/checkout/thankyou.php:78
+msgid "مرحباً، أريد متابعة الطلب رقم %s"
+msgstr ""
+
+#: inc/customizer.php:532
+msgid "مرّة واحدة لكل جلسة. على الحاسب تظهر حين يخرج المؤشّر من أعلى النافذة، وعلى الجوال حين يعود الزائر بتمرير صاعد حاسم بعد أن يكون تصفّح ومكث."
+msgstr ""
+
+#: inc/woocommerce.php:97
+msgid "مسار التنقل"
+msgstr ""
+
+#: inc/demo-data.php:153
+msgid "مسك هادئ يصلح للدوام والاجتماعات، بلا حدّة."
+msgstr ""
+
+#: inc/demo-data.php:243
+msgid "مصباح مكتب بإضاءة قابلة للتعديل"
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:91
+msgid "معلومات التوصيل"
+msgstr ""
+
+#: footer.php:29
+msgid "معلوماتك محميّة"
+msgstr ""
+
+#: inc/demo-data.php:202
+msgid "مغناطيس قوي يثبت الجوال على المطبّات، وتركيب بلا أدوات."
+msgstr ""
+
+#: inc/demo-data.php:209
+msgid "مقاومة IPX7 فيتحمّل السقوط في المسبح، و١٢ ساعة تشغيل."
+msgstr ""
+
+#: inc/demo-data.php:186
+msgid "مقاومة للعرق، و٦ ساعات تشغيل و٢٤ مع العلبة."
+msgstr ""
+
+#: inc/demo-data.php:205
+msgid "مكبّر صوت محمول مقاوم للماء"
+msgstr ""
+
+#: inc/wc-checkout.php:154
+msgid "ملاحظة للمندوب"
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:103
+msgid "ملخّص الطلب"
+msgstr ""
+
+#: inc/wc-account.php:181
+msgid "ملفاتي"
+msgstr ""
+
+#: inc/demo-data.php:263
+msgid "من نحن"
+msgstr ""
+
+#. translators: %s: عدد المنتجات.
+#: woocommerce/loop/result-count.php:15 woocommerce/loop/result-count.php:26
+msgid "منتج واحد"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:130
+msgid "مواصلة التصفّح"
+msgstr ""
+
+#: inc/wc-account.php:36
+msgid "موقوف مؤقتاً حتى يتأكّد الدفع."
+msgstr ""
+
+#: inc/customizer.php:330
+msgid "مُفعَّلاً: بطاقة بلون النقد وسطر شرح في صفحة المنتج والسلة والقُمع. مُطفأً: شارة نصّية كبقيّة الوسائل."
+msgstr ""
+
+#. translators: %s: عبارة البحث.
+#: index.php:28
+msgid "نتائج البحث عن: %s"
+msgstr ""
+
+#: inc/wc-account.php:40
+msgid "نجهّز طلبك الآن، وسيُشحن قريباً."
+msgstr ""
+
+#: inc/demo-data.php:280
+msgid "نردّ خلال ساعتين في أيام العمل.\n\nضع هنا رقم واتساب متجرك وبريده وساعات العمل، أو ركّب نموذج تواصل من الإضافة التي تفضّلها."
+msgstr ""
+
+#: inc/front-page.php:170
+msgid "نسبة 4:5 على الجوال. يُفضَّل 1600 بكسل عرضاً على الأقل."
+msgstr ""
+
+#: woocommerce/myaccount/form-login.php:44
+msgid "نسيت كلمة المرور؟"
+msgstr ""
+
+#: inc/demo-data.php:268
+msgid "نشحن خلال يوم عمل واحد من تأكيد الطلب.\n\nالتوصيل داخل المدن الرئيسية من يومين إلى ثلاثة أيام عمل، وباقي المناطق من ثلاثة إلى خمسة. يصلك رقم الشحنة برسالة نصّية فور خروجها من المستودع.\n\nالشحن مجاني للطلبات فوق الحدّ المعلن في سلّة الشراء، ويُحتسب تلقائياً.\n\nعدّل هذه الأرقام لتطابق شركة الشحن التي تتعامل معها."
+msgstr ""
+
+#: inc/customizer.php:230
+msgid "نص الشريط"
+msgstr ""
+
+#: inc/front-page.php:191
+msgid "نص زر الهيرو"
+msgstr ""
+
+#: inc/customizer.php:545
+msgid "نصّ النافذة"
+msgstr ""
+
+#: inc/customizer.php:486
+msgid "نصّ صفحة الانقطاع"
+msgstr ""
+
+#: inc/demo-data.php:235
+msgid "نظارة شمسية بإطار معدني"
+msgstr ""
+
+#: inc/wc-account.php:176
+msgid "نظرة عامة"
+msgstr ""
+
+#: woocommerce/content-product.php:35
+msgid "نفدت الكمية"
+msgstr ""
+
+#: inc/helpers.php:444
+msgid "نقداً عند الاستلام"
+msgstr ""
+
+#: inc/customizer.php:107
+msgid "نمط زر الشراء"
+msgstr ""
+
+#: template-parts/cro/exit-intent.php:37
+msgid "نُسخ"
+msgstr ""
+
+#: inc/wc-checkout.php:200
+msgid "هذا الحقل مطلوب"
+msgstr ""
+
+#: woocommerce/single-product/add-to-cart/variable.php:36
+msgid "هذا المنتج غير متوفر حالياً."
+msgstr ""
+
+#: inc/demo-admin.php:142
+msgid "هذه الأداة تحتاج ووكومرس مفعّلاً."
+msgstr ""
+
+#: inc/demo-data.php:276
+msgid "هل الدفع عند الاستلام متاح؟\nنعم، ولكل المدن التي نغطّيها. تدفع للمندوب نقداً أو بالبطاقة.\n\nهل أستطيع تعديل طلبي بعد تأكيده؟\nنعم ما دام لم يخرج من المستودع. راسلنا برقم الطلب.\n\nكم يستغرق ردّ خدمة العملاء؟\nخلال ساعتين في أيام العمل.\n\nاستبدل هذه الأسئلة بما يسألك عنه عملاؤك فعلاً."
+msgstr ""
+
+#: inc/customizer.php:35
+msgid "هوية المتجر"
+msgstr ""
+
+#: inc/wc-checkout.php:50
+msgid "هويتك في المتجر ورقم تتبّع الطلب."
+msgstr ""
+
+#. translators: %s: المبلغ الموفّر منسّقاً بعملة المتجر.
+#: inc/wc-product.php:110
+msgid "وفّرت %s"
+msgstr ""
+
+#: inc/demo-admin.php:136 inc/demo.php:231
+msgid "ووكومرس غير مفعّل. فعّله أوّلاً ثم أعد المحاولة."
+msgstr ""
+
+#: inc/front-page.php:250
+msgid "يأتي مباشرة بعد الهيرو لأن الزائر القادم من إعلان يقرّر البقاء أو الخروج في أول ثوانٍ، وقراره يعتمد على «هل هذا متجر حقيقي؟» لا على المنتجات. فرّغ عنوان أي خانة لإخفائها."
+msgstr ""
+
+#: inc/customizer.php:406
+msgid "يتيح للزائر إضافة المتجر إلى شاشته الرئيسية وتصفّح ما زاره وهو بلا اتصال. السلة والدفع والحساب لا تُخزَّن إطلاقاً."
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:19
+msgid "يجب تسجيل الدخول لإتمام الطلب."
+msgstr ""
+
+#: inc/customizer.php:422
+msgid "يحتاج HTTPS. بعد التفعيل احفظ الروابط الدائمة مرّة واحدة من إعدادات ← روابط دائمة."
+msgstr ""
+
+#: inc/customizer.php:348
+msgid "يظهر تحت عنوان الوسيلة في صفحة المنتج والسلة وقائمة بوابات الدفع. اتركه فارغاً لإخفائه."
+msgstr ""
+
+#: inc/customizer.php:392
+msgid "يظهر شارةً أسفل طرق الدفع في صفحة المنتج. اتركه فارغاً لإخفائه."
+msgstr ""
+
+#: inc/setup.php:99
+msgid "يظهر في تذييل الصفحة. اتركه فارغاً ليُستخدم «قائمة الفوتر» بدلاً منه."
+msgstr ""
+
+#: inc/customizer.php:431
+msgid "يظهر في شاشة التثبيت. اتركه فارغاً ليُستخدم اسم المتجر."
+msgstr ""
+
+#: inc/setup.php:112
+msgid "يظهر في صفحة الأقسام على الشاشات الكبيرة، وكلوح فلترة سفلي على الجوال."
+msgstr ""
+
+#: inc/customizer.php:600
+msgid "يقرأ القالب آخر الطلبات المدفوعة خلال أسبوع ويعرض اسم المنتج ووقتاً تقريبياً — بلا اسم مشترٍ ولا عنوان. إن لم يكن هناك بيع، لا يظهر شيء: الصمت أصدق من اختلاق حركة."
+msgstr ""
+
+#: inc/helpers.php:384
+msgid "يوتيوب"
+msgstr ""
+
+#: inc/woocommerce.php:192
+msgid "يوصلك بين %1$s و%2$s"
+msgstr ""
+
+#: inc/woocommerce.php:188
+msgid "يوصلك في %s"
+msgstr ""
+
+#: inc/customizer.php:758
+msgid "يُحسب القسط بقسمة السعر ويُنسَّق بعملة متجرك عبر ووكومرس."
+msgstr ""
+
+#: woocommerce/cart/cart.php:68
+msgid "يُشحن عند التوفّر"
+msgstr ""

@@ -1,0 +1,43 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import { articles } from '../../data/articles.ts';
+import { formatDate, countNoun, MINUTES } from '../../lib/format.ts';
+import { readingMinutes } from '../../lib/text.ts';
+import { breadcrumbs, graph, article as articleLd } from '../../lib/seo.ts';
+
+export function getStaticPaths() {
+	return articles.map( ( a ) => ( { params: { slug: a.slug }, props: { a } } ) );
+}
+
+const { a } = Astro.props;
+const path = `/articles/${ a.slug }/`;
+const trail = [ { name: 'الرئيسية', path: '/' }, { name: 'مقالات', path: '/articles/' }, { name: a.title, path } ];
+const updated = formatDate( a.updated );
+const reading = readingMinutes( a.lead, ...a.sections.flatMap( ( s ) => s.p ) );
+---
+<Layout title={ a.title } description={ a.description } path={ path } type="article" jsonld={ graph( breadcrumbs( trail ), articleLd( { title: a.title, description: a.description, path, updated: a.updated } ) ) }>
+	<Breadcrumbs trail={ trail } />
+	<header class="page-h">
+		<span class="kicker">📖 مقال</span>
+		<h1>{ a.title }</h1>
+		<p class="lead">{ a.lead }</p>
+		<div class="meta-row"><span>📖 نحو { countNoun( reading, MINUTES, 'gen' ) }</span><span>حُدّث <time datetime={ a.updated }>{ updated }</time></span></div>
+	</header>
+	<section class="tldr" aria-labelledby="tldr-h">
+		<h2 id="tldr-h">باختصار</h2>
+		<ul>{ a.tldr.map( ( t, i ) => <li><span class="ic num" aria-hidden="true">{ i + 1 }</span><span>{ t }</span></li> ) }</ul>
+	</section>
+	<article class="prose prose--fold">
+		<p class="read-chip">افتح ما يهمّك — المقال كلّه هنا</p>
+		{ a.sections.map( ( s, i ) => (
+			<>
+				<details class="fold" open={ i === 0 }><summary><h2>{ s.h }</h2></summary>{ s.p.map( ( p ) => <p>{ p }</p> ) }</details>
+				{ i === 2 && <AdSlot slot="inArticle" /> }
+			</>
+		) ) }
+		<h2>اقرأ أيضاً</h2>
+		<ul>{ a.links.map( ( l ) => <li><a href={ l.href }>{ l.text }</a></li> ) }</ul>
+	</article>
+</Layout>

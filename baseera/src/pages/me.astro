@@ -1,0 +1,32 @@
+---
+/**
+ * ملفّي — يُرسم كلّه في المتصفّح من التخزين المحلّي.
+ *
+ * لا يُفهرس: صفحة شخصية بلا محتوى عامّ، وفهرستها تُنتج في البحث صفحةً
+ * فارغة لكل من يصلها من Google.
+ */
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="ملفّي" description="نتائجك المحفوظة على هذا الجهاز وحده، ومقارنة كل اختبار بمرّتك السابقة." path="/me/" noindex ads={ false }>
+	<header class="page-h">
+		<span class="kicker">🔒 على هذا الجهاز فقط</span>
+		<h1>ملفّي</h1>
+		<p class="lead">نتائجك المحفوظة. لا حساب ولا خادم: كلّها في متصفّحك، وتختفي إن مسحت بيانات الموقع أو ضغطت «احذف كل شيء».</p>
+	</header>
+
+	<div data-profile style="margin-top:20px"></div>
+
+	<div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:22px">
+		<button type="button" class="btn btn--ghost" data-export>نزّل نسخة (JSON)</button>
+		<button type="button" class="btn btn--ghost" data-clear style="color:var(--tone-alert)">احذف كل شيء</button>
+	</div>
+
+	<section class="prose">
+		<h2>كيف نقارن نتائجك؟</h2>
+		<p>حين تعيد اختباراً، نقارن النتيجتين بمؤشّر التغيّر الموثوق: هل الفرق أكبر من هامش خطأ المقياس؟ إن لم يكن، نقول «ضمن هامش الخطأ» حتى لو بدا الفرق كبيراً. <a href="/methodology/">تفاصيل الحساب</a>.</p>
+	</section>
+
+	<script>
+		import '../scripts/me.ts';
+	</script>
+</Layout>

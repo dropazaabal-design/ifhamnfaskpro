@@ -1,0 +1,42 @@
+---
+import type { CatalogEntry } from '../lib/types.ts';
+import { categoryById } from '../data/categories.ts';
+
+interface Props {
+	entry: CatalogEntry;
+	variant?: 'grid' | 'featured';
+	source?: string;
+}
+
+const { entry, variant = 'grid', source } = Astro.props;
+const cat = categoryById.get( entry.category )!;
+const href = entry.status === 'tool' ? `/tools/${ entry.slug }/` : `/tests/${ entry.slug }/`;
+const label = entry.status === 'soon' ? 'قريباً' : entry.status === 'tool' ? 'أداة' : 'متاح';
+---
+{
+	variant === 'featured' ? (
+		<a class="fcard" href={ href } style={ `--cc:${ cat.color }` }>
+			<span class="badge">{ label }</span>
+			<div class="ic" aria-hidden="true">{ entry.icon }</div>
+			<h3>{ entry.title }</h3>
+			<p>{ entry.blurb }</p>
+			{ source && <div class="src">📚 { source }</div> }
+			<div class="go">
+				{ entry.status === 'tool' ? 'افتح الأداة' : 'ابدأ الاختبار' }
+				<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+			</div>
+		</a>
+	) : entry.status === 'soon' ? (
+		<div class="tcard soon" data-title={ entry.title } data-cat={ entry.category } style={ `--cc:${ cat.color }` }>
+			<div class="top"><div class="ic" aria-hidden="true">{ entry.icon }</div><span class="st soon">{ label }</span></div>
+			<h3>{ entry.title }</h3>
+			<div class="foot"><span class="tag"><span class="dot" /><span>{ cat.name }</span></span><span class="num">{ entry.minutes }</span></div>
+		</div>
+	) : (
+		<a class="tcard" href={ href } data-title={ entry.title } data-cat={ entry.category } style={ `--cc:${ cat.color }` }>
+			<div class="top"><div class="ic" aria-hidden="true">{ entry.icon }</div><span class:list={ [ 'st', entry.status ] }>{ label }</span></div>
+			<h3>{ entry.title }</h3>
+			<div class="foot"><span class="tag"><span class="dot" /><span>{ cat.name }</span></span><span>{ entry.minutes }</span></div>
+		</a>
+	)
+}
