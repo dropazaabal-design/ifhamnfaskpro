@@ -52,9 +52,15 @@ export interface Subscale {
 	name: string;
 	/**
 	 * sum: مجموع البنود · mean: متوسّطها · count: عدد الصحيح.
-	 * البدائل تحمل قيمها النهائية، فمقياس كوبنهاغن (٠–١٠٠) يُحسب بـ mean.
+	 * البدائل تحمل قيمها النهائية، فمقياس كوبنهاغن (0–100) يُحسب بـ mean.
 	 */
-	scoring: 'sum' | 'mean' | 'count';
+	scoring: 'sum' | 'mean' | 'count' | 'lookup';
+	/**
+	 * لـ lookup: الدرجة النهائية لكل مجموع خام (الفهرس = المجموع). مقياس
+	 * الرفاه المالي مثلاً لا يُجمع جمعاً بسيطاً، بل يُحوَّل بجدول نشره
+	 * مطوّروه من نموذج استجابة البنود.
+	 */
+	table?: number[];
 	min: number;
 	max: number;
 	/** الثبات المنشور (ألفا كرونباخ). */
@@ -102,7 +108,26 @@ export interface Test {
 	category: CategoryId;
 	icon: string;
 	minutes: number;
-	kind: 'likert' | 'choice';
+	kind: 'likert' | 'choice' | 'task';
+	/** المهامّ التفاعلية: تقيس بالأداء لا بالسؤال. */
+	task?: 'digit-span' | 'sart';
+	/** «scale»: بدائل رقمية (0–10) تُعرض صفّاً واحداً بطرفين موسومين. */
+	optionsLayout?: 'list' | 'scale';
+	/**
+	 * سؤال تمهيدي يخصّص البنود: اسم العادة مثلاً، فيُستبدل {token} في
+	 * نصّها. يُحفظ على الجهاز مع النتيجة، ولا يُرسل.
+	 */
+	setup?: { label: string; placeholder: string; token: string };
+	/**
+	 * تصنيف رباعي من بُعدين (التعلّق مثلاً). يُعرض «الأقرب إليك» مع تنبيه
+	 * صريح بأن الأبعاد أدقّ من الأنماط.
+	 */
+	typology?: {
+		x: string;
+		y: string;
+		cut: number;
+		cells: Record<'lowlow' | 'highlow' | 'lowhigh' | 'highhigh', { label: string; text: string }>;
+	};
 	instrument: Instrument;
 	intro: string;
 	instructions: string;

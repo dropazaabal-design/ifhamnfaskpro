@@ -25,7 +25,7 @@ export const AGREE5: Option[] = [
 	{ value: 5, label: 'أوافق بشدّة' },
 ];
 
-/** GAD-7: التكرار خلال أسبوعين، من ٠ إلى ٣. */
+/** GAD-7: التكرار خلال أسبوعين، من 0 إلى 3. */
 export const GAD4: Option[] = [
 	{ value: 0, label: 'أبداً' },
 	{ value: 1, label: 'عدّة أيام' },
@@ -33,7 +33,7 @@ export const GAD4: Option[] = [
 	{ value: 3, label: 'تقريباً كل يوم' },
 ];
 
-/** كوبنهاغن: التكرار، والقيم ٠–١٠٠ كما في المقياس الأصلي. */
+/** كوبنهاغن: التكرار، والقيم 0–100 كما في المقياس الأصلي. */
 export const CBI_FREQ: Option[] = [
 	{ value: 100, label: 'دائماً' },
 	{ value: 75, label: 'غالباً' },

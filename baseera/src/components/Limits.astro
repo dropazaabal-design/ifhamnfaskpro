@@ -1,12 +1,28 @@
 ---
-/** «ما لا يستطيع هذا الاختبار قوله» — يُطبع قبل الاختبار لا بعده. */
+/**
+ * «ما لا يستطيع هذا الاختبار قوله» — يُطبع قبل الاختبار لا بعده.
+ *
+ * كل بند عنوان قصير يُقرأ بلمحة، وشرحه تحته بنقرة: القارئ المستعجل يرى
+ * الحدود كلّها، ومن يريد السبب يجده كاملاً.
+ */
+import { splitHeadline } from '../lib/text.ts';
+
 interface Props { items: string[]; title?: string }
 const { items, title = 'ما لا يستطيع هذا الاختبار قوله' } = Astro.props;
+const rows = items.map( splitHeadline );
 ---
 <section class="limits" aria-labelledby="limits-h">
 	<h2 id="limits-h">
 		<svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" /><path d="M12 8v5M12 16.2v.3" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
 		{ title }
 	</h2>
-	<ul>{ items.map( ( t ) => <li>{ t }</li> ) }</ul>
+	<ul>
+		{ rows.map( ( [ head, rest ] ) => (
+			<li>
+				{ rest
+					? <details><summary>{ head }</summary><p>{ rest }</p></details>
+					: <span>{ head }</span> }
+			</li>
+		) ) }
+	</ul>
 </section>

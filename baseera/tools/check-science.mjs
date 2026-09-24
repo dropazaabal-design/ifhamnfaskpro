@@ -19,14 +19,14 @@ const pending = [];
 const fail = ( slug, msg ) => errors.push( `${ slug }: ${ msg }` );
 
 for ( const t of tests ) {
-	// ١ — حقول الصدق الإلزامية.
+	// 1 — حقول الصدق الإلزامية.
 	for ( const f of [ 'name', 'authors', 'citation', 'licenseNote', 'translationNote' ] ) {
 		if ( ! t.instrument?.[ f ] ) fail( t.slug, `المصدر ينقصه ${ f }` );
 	}
 	if ( ! t.cannot || t.cannot.length < 2 ) fail( t.slug, 'يحتاج بندين على الأقل في «ما لا يستطيع قوله»' );
 	if ( ! t.article || t.article.length < 2 ) fail( t.slug, 'يحتاج قسمين على الأقل من المحتوى (AdSense يرفض الصفحات الرقيقة)' );
 	if ( ! t.faq || t.faq.length < 3 ) fail( t.slug, 'يحتاج ثلاثة أسئلة شائعة على الأقل' );
-	if ( t.description.length < 70 || t.description.length > 170 ) fail( t.slug, `وصف البحث ${ t.description.length } حرفاً (المدى المفيد ٧٠–١٧٠)` );
+	if ( t.description.length < 70 || t.description.length > 170 ) fail( t.slug, `وصف البحث ${ t.description.length } حرفاً (المدى المفيد 70–170)` );
 
 	// ما تطبعه الصفحة فعلاً: المقدّمة، والمقال، والأسئلة، والحدود، ودليل
 	// قراءة النتائج بكل مستوياته (يُعرض قبل الاختبار لا بعده فقط).
@@ -39,9 +39,9 @@ for ( const t of tests ) {
 	]
 		.join( ' ' )
 		.split( /\s+/ ).length;
-	if ( words < 350 ) fail( t.slug, `المحتوى المكتوب ${ words } كلمة فقط (الحدّ الأدنى ٣٥٠)` );
+	if ( words < 350 ) fail( t.slug, `المحتوى المكتوب ${ words } كلمة فقط (الحدّ الأدنى 350)` );
 
-	// ٢ — سلامة البنود.
+	// 2 — سلامة البنود.
 	const ids = new Set();
 	for ( const item of t.items ) {
 		if ( ids.has( item.id ) ) fail( t.slug, `معرّف مكرّر ${ item.id }` );
@@ -56,20 +56,20 @@ for ( const t of tests ) {
 		}
 	}
 
-	// ٣ — المقاييس: فئات تغطّي المدى، وثبات منطقي.
+	// 3 — المقاييس: فئات تغطّي المدى، وثبات منطقي.
 	for ( const s of t.subscales ) {
 		const top = s.bands[ s.bands.length - 1 ]?.upTo;
 		if ( top !== s.max ) fail( t.slug, `فئات ${ s.id } تنتهي عند ${ top } لا عند ${ s.max }` );
 		for ( let k = 1; k < s.bands.length; k++ ) {
 			if ( s.bands[ k ].upTo <= s.bands[ k - 1 ].upTo ) fail( t.slug, `فئات ${ s.id } غير متصاعدة` );
 		}
-		if ( ! s.uncalibrated && ( s.alpha <= 0 || s.alpha >= 1 ) ) fail( t.slug, `ثبات ${ s.id } خارج (٠، ١)` );
+		if ( ! s.uncalibrated && ( s.alpha <= 0 || s.alpha >= 1 ) ) fail( t.slug, `ثبات ${ s.id } خارج (0، 1)` );
 		if ( ! s.uncalibrated && s.sd <= 0 ) fail( t.slug, `انحراف ${ s.id } غير موجب` );
 		if ( ! s.paramsSource ) fail( t.slug, `${ s.id } بلا مصدر للثبات` );
 		if ( ! s.verified ) pending.push( `${ t.slug } · ${ s.name }: ${ s.paramsSource }` );
 	}
 
-	// ٤ — التصحيح نفسه: أدنى الإجابات وأعلاها يجب أن يعطيا حدود المقياس.
+	// 4 — التصحيح نفسه: أدنى الإجابات وأعلاها يجب أن يعطيا حدود المقياس.
 	const answerAll = ( pick ) => {
 		const a = {};
 		for ( const item of t.items ) {
@@ -97,7 +97,7 @@ for ( const t of tests ) {
 		if ( w.score !== s.min ) fail( t.slug, `أدنى إجابات ${ s.id } تعطي ${ w.score } لا ${ s.min }` );
 	}
 
-	// ٥ — ميزان الثقة يلتقط «الموافقة على كل شيء» حيث توجد بنود معكوسة.
+	// 5 — ميزان الثقة يلتقط «الموافقة على كل شيء» حيث توجد بنود معكوسة.
 	if ( t.kind === 'likert' && t.items.some( ( i ) => i.key === -1 ) && t.options ) {
 		const top = Math.max( ...t.options.map( ( o ) => o.value ) );
 		const all = Object.fromEntries( t.items.map( ( i ) => [ i.id, { value: top, ms: 400 } ] ) );

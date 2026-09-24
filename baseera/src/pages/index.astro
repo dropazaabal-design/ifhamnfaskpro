@@ -16,7 +16,7 @@ import { categories } from '../data/categories.ts';
 import { testBySlug } from '../data/tests/index.ts';
 import { SITE } from '../config.ts';
 import { graph } from '../lib/seo.ts';
-import { toArabicDigits } from '../lib/format.ts';
+import { num } from '../lib/format.ts';
 
 const featured = [ 'big-five', 'genius-test', 'resilience-test', 'burnout-assessment', 'iq-test', 'salary-planner' ]
 	.map( ( s ) => catalog.find( ( c ) => c.slug === s )! );
@@ -35,15 +35,22 @@ const sourceOf = ( slug: string ) => testBySlug.get( slug )?.instrument.authors.
 		<p class="tagline">اعرف نفسك بعُمق — وبصدق عن حدود ما تعرفه</p>
 		<p class="subline">اختبارات في علم النفس والشخصية والتفكير، مبنيّة على مقاييس منشورة في الأبحاث، مع هامش الخطأ لكل نتيجة.</p>
 		<div class="stats">
-			<div><b class="num">{ toArabicDigits( liveCatalog.length ) }</b><span>متاح الآن</span></div>
-			<div><b class="num">{ toArabicDigits( catalog.length ) }</b><span>في الخطّة</span></div>
-			<div><b class="num">١٠٠٪</b><span>مجاني</span></div>
+			<div><b class="num">{ num( liveCatalog.length ) }</b><span>متاح الآن</span></div>
+			<div><b class="num">{ num( catalog.length ) }</b><span>في الخطّة</span></div>
+			<div><b class="num">100%</b><span>مجاني</span></div>
 		</div>
 
-		<p class="promise">
-			<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v18M5 7h14M7 7l-3 6a3 3 0 0 0 6 0L7 7Zm10 0-3 6a3 3 0 0 0 6 0l-3-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" /></svg>
-			<span><b>وعدنا:</b> لا اختبار بلا مصدر منشور، ولا نتيجة بلا هامش خطأ، ولا رقم ذكاء مُخترَع. وحين لا يوجد مقياس علمي لشيء، نقول ذلك بدل أن نخترع أسئلة.</span>
-		</p>
+		<div class="promise">
+			<ul class="promise-chips" aria-label="وعدنا">
+				<li>📚 مصدر منشور لكل اختبار</li>
+				<li>📏 هامش خطأ لكل نتيجة</li>
+				<li>🚫 لا أرقام مُخترَعة</li>
+			</ul>
+			<details>
+				<summary>وعدنا كاملاً</summary>
+				<p>لا اختبار بلا مصدر منشور، ولا نتيجة بلا هامش خطأ، ولا رقم ذكاء مُخترَع. وحين لا يوجد مقياس علمي لشيء، نقول ذلك بدل أن نخترع أسئلة.</p>
+			</details>
+		</div>
 
 		<label class="search">
 			<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" /><path d="m20 20-3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
@@ -84,10 +91,20 @@ const sourceOf = ( slug: string ) => testBySlug.get( slug )?.instrument.authors.
 
 	<ProductPick topic="علم النفس" campaign="home" medium="home" why="بعد أن تعرف نفسك… طوّرها. خمسون خريطة بصرية في المال والإنتاجية والعادات وعلم النفس — كل قاعدة تُقرأ في دقيقتين." />
 
-	<section class="prose" aria-labelledby="why-h">
+	<section class="why" aria-labelledby="why-h">
 		<h2 id="why-h">لماذا بصيرة مختلفة؟</h2>
-		<p>أغلب مواقع الاختبارات العربية تعطيك نتيجة واثقة لأسئلة لا يُعرف مصدرها. بصيرة تبني كل اختبار على مقياس منشور في الأبحاث — مقياس روزنبرغ لتقدير الذات، ومقياس كوبنهاغن للاحتراق، وبنود IPIP للشخصية — وتذكر مصدره وترخيصه تحت كل اختبار.</p>
-		<p>ولكل نتيجة «ميزان ثقة»: النطاق الذي تقع فيه درجتك على الأرجح محسوباً من ثبات المقياس، وتنبيه إن بدت إجاباتك متسرّعة، وحين تعيد اختباراً، حكم صادق إن كان تغيّرك حقيقياً أم ضمن هامش الخطأ. <a href="/methodology/">اقرأ منهجيتنا كاملة</a>.</p>
+		<ul class="why-cards">
+			<li><span aria-hidden="true">📚</span><b>مقياس منشور</b><small>لا أسئلة مجهولة المصدر</small></li>
+			<li><span aria-hidden="true">⚖️</span><b>ميزان ثقة</b><small>مع كل نتيجة</small></li>
+			<li><span aria-hidden="true">🔒</span><b>على جهازك</b><small>بلا تسجيل ولا خادم</small></li>
+		</ul>
+		<details class="fold">
+			<summary><h3>القصّة كاملة</h3></summary>
+			<div class="prose">
+				<p>أغلب مواقع الاختبارات العربية تعطيك نتيجة واثقة لأسئلة لا يُعرف مصدرها. بصيرة تبني كل اختبار على مقياس منشور في الأبحاث — مقياس روزنبرغ لتقدير الذات، ومقياس كوبنهاغن للاحتراق، وبنود IPIP للشخصية — وتذكر مصدره وترخيصه تحت كل اختبار.</p>
+				<p>ولكل نتيجة «ميزان ثقة»: النطاق الذي تقع فيه درجتك على الأرجح محسوباً من ثبات المقياس، وتنبيه إن بدت إجاباتك متسرّعة، وحين تعيد اختباراً، حكم صادق إن كان تغيّرك حقيقياً أم ضمن هامش الخطأ. <a href="/methodology/">اقرأ منهجيتنا كاملة</a>.</p>
+			</div>
+		</details>
 	</section>
 
 	<script>

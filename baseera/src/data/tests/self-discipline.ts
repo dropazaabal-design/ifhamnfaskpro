@@ -56,7 +56,7 @@ export const selfDiscipline: Test = {
 			max: 50,
 			alpha: 0.85,
 			sd: 7,
-			paramsSource: 'الثبات: جدول IPIP لمقياس Self-Discipline · الانحراف: تقدير محافظ لمقياس من ١٠ بنود',
+			paramsSource: 'الثبات: جدول IPIP لمقياس Self-Discipline · الانحراف: تقدير محافظ لمقياس من 10 بنود',
 			verified: false,
 			higherIs: 'better',
 			about: 'القدرة على البدء في المهامّ وإتمامها رغم الملل أو الإغراء.',

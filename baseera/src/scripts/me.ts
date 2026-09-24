@@ -1,9 +1,9 @@
 import { readProfile, clearProfile, reliableChange, type SavedResult } from '../lib/profile.ts';
-import { toArabicDigits, countNoun, TIMES, formatDate } from '../lib/format.ts';
+import { num, countNoun, TIMES, formatDate } from '../lib/format.ts';
 
 const box = document.querySelector<HTMLElement>( '[data-profile]' )!;
 const esc = ( s: string ) => s.replace( /[&<>"']/g, ( c ) => ( { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } )[ c ]! );
-const f = ( n: number, max: number ) => toArabicDigits( max <= 5 ? n.toFixed( 2 ) : String( Math.round( n ) ) );
+const f = ( n: number, max: number ) => num( max <= 5 ? n.toFixed( 2 ) : String( Math.round( n ) ) );
 const date = ( iso: string ) => formatDate( iso, 'short' );
 
 function render() {

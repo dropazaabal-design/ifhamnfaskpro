@@ -1,5 +1,9 @@
 ---
-/** مصدر المقياس وترخيصه وترجمته — بصدق عن كلٍّ منها. */
+/**
+ * مصدر المقياس وترخيصه وترجمته — بصدق عن كلٍّ منها.
+ *
+ * الشارات ظاهرة (تُقرأ بلمحة)، والتفاصيل والمرجع الكامل بنقرة.
+ */
 import type { Instrument } from '../lib/types.ts';
 
 interface Props { instrument: Instrument }
@@ -19,22 +23,26 @@ const translation = {
 ---
 <section class="card source" aria-labelledby="src-h">
 	<h2 id="src-h" style="font-size:16px;font-weight:800">من أين جاءت هذه الأسئلة؟</h2>
-	<dl>
-		<div>
-			<dt>المقياس</dt>
-			<dd>{ i.name } <span class="num" style="color:var(--color-text-muted)">— { i.authors }</span></dd>
-		</div>
-		<div>
-			<dt>الترخيص</dt>
-			<dd><span class:list={ [ 'pill', license.ok ? 'pill--ok' : 'pill--warn' ] }>{ license.label }</span> { i.licenseNote }</dd>
-		</div>
-		<div>
-			<dt>النصّ العربي</dt>
-			<dd><span class:list={ [ 'pill', translation.ok ? 'pill--ok' : 'pill--warn' ] }>{ translation.label }</span> { i.translationNote }</dd>
-		</div>
-		<div>
-			<dt>المرجع</dt>
-			<dd class="cite">{ i.citation }{ i.url && <> · <a href={ i.url } rel="noopener nofollow" style="color:var(--color-primary)">المصدر</a></> }</dd>
-		</div>
-	</dl>
+	<p class="src-name">{ i.name } <span class="num" style="color:var(--color-text-muted)">— { i.authors }</span></p>
+	<p class="src-pills">
+		<span class:list={ [ 'pill', license.ok ? 'pill--ok' : 'pill--warn' ] }>{ license.label }</span>
+		<span class:list={ [ 'pill', translation.ok ? 'pill--ok' : 'pill--warn' ] }>{ translation.label }</span>
+	</p>
+	<details>
+		<summary>الترخيص والترجمة والمرجع</summary>
+		<dl>
+			<div>
+				<dt>الترخيص</dt>
+				<dd>{ i.licenseNote }</dd>
+			</div>
+			<div>
+				<dt>النصّ العربي</dt>
+				<dd>{ i.translationNote }</dd>
+			</div>
+			<div>
+				<dt>المرجع</dt>
+				<dd class="cite">{ i.citation }{ i.url && <> · <a href={ i.url } rel="noopener nofollow" style="color:var(--color-primary)">المصدر</a></> }</dd>
+			</div>
+		</dl>
+	</details>
 </section>

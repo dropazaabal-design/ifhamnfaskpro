@@ -31,7 +31,7 @@ export const getStaticPaths: GetStaticPaths = () => {
 			accent: CAT_HEX[ t.category ],
 			kicker: categoryById.get( t.category )!.name,
 		} ) ),
-		{ path: `tools/${ salaryPlanner.slug }`, title: salaryPlanner.title, subtitle: 'قاعدة ٥٠/٣٠/٢٠ — وتعديلها حين لا تناسب مدينتك', accent: CAT_HEX.financial, kicker: 'أداة' },
+		{ path: `tools/${ salaryPlanner.slug }`, title: salaryPlanner.title, subtitle: 'قاعدة 50/30/20 — وتعديلها حين لا تناسب مدينتك', accent: CAT_HEX.financial, kicker: 'أداة' },
 		...categories.map( ( c ) => ( { path: `category/${ c.id }`, title: c.name, subtitle: 'اختبارات مبنيّة على مقاييس منشورة', accent: CAT_HEX[ c.id ], kicker: 'فئة' } ) ),
 		...articles.map( ( a ) => ( { path: `articles/${ a.slug }`, title: a.title, subtitle: '', kicker: 'مقال' } ) ),
 		{ path: 'articles', title: 'مقالات', subtitle: 'لمن يريد أن يفهم ما وراء النتيجة' },

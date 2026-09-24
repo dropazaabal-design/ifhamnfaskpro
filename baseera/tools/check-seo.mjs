@@ -47,7 +47,7 @@ for ( const f of files ) {
 	else if ( title.length > 75 ) warn.push( `${ path } — العنوان ${ title.length } حرفاً، قد يُقتطع في نتائج البحث` );
 
 	const desc = html.match( /<meta name="description" content="([^"]*)"/ )?.[ 1 ] ?? '';
-	if ( ! noindex && ( desc.length < 60 || desc.length > 170 ) ) err( `الوصف ${ desc.length } حرفاً (المفيد ٦٠–١٧٠)` );
+	if ( ! noindex && ( desc.length < 60 || desc.length > 170 ) ) err( `الوصف ${ desc.length } حرفاً (المفيد 60–170)` );
 
 	const canon = html.match( /<link rel="canonical" href="([^"]*)"/ )?.[ 1 ];
 	if ( ! canon ) err( 'بلا canonical' );

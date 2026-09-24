@@ -50,6 +50,14 @@ function fonts(): string[] {
 
 const esc = ( s: string ) => s.replace( /&/g, '&amp;' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' );
 
+/**
+ * علامة الاتجاه من اليمين (RLM) أوّل كل سطر عربي.
+ *
+ * سطر يبدأ برقم («10 أسئلة») لا يعرف resvg أن فقرته عربية، فيضع الرقم
+ * في آخرها. العلامة غير مرئية وتحسم الاتجاه.
+ */
+const rtl = ( s: string ) => `\u200F${ esc( s ) }`;
+
 /** تقسيم بعدد الأحرف: resvg لا يلفّ النصّ، والعربية عرضها متقارب بما يكفي. */
 function lines( text: string, budget: number, max: number ): string[] {
 	const out: string[] = [];
@@ -88,11 +96,11 @@ export function ogPng( title: string, subtitle: string, accent = '#2563eb', kick
 		<rect width="1200" height="630" fill="#f8fafc"/>
 		<rect width="1200" height="630" fill="url(#g)"/>
 		<rect x="0" y="0" width="1200" height="12" fill="${ accent }"/>
-		${ kicker ? `<text x="1100" y="${ titleY - 78 }" font-family="Tajawal ExtraBold" font-size="30" fill="${ accent }" text-anchor="end" direction="rtl">${ esc( kicker ) }</text>` : '' }
-		${ t.map( ( l, i ) => `<text x="1100" y="${ titleY + i * 84 }" font-family="Reem Kufi" font-weight="700" font-size="68" fill="#0f172a" text-anchor="end" direction="rtl">${ esc( l ) }</text>` ).join( '' ) }
-		${ s.map( ( l, i ) => `<text x="1100" y="${ titleY + t.length * 84 + 30 + i * 50 }" font-family="Tajawal Medium" font-size="34" fill="#475569" text-anchor="end" direction="rtl">${ esc( l ) }</text>` ).join( '' ) }
+		${ kicker ? `<text x="1100" y="${ titleY - 78 }" font-family="Tajawal ExtraBold" font-size="30" fill="${ accent }" text-anchor="end" direction="rtl">${ rtl( kicker ) }</text>` : '' }
+		${ t.map( ( l, i ) => `<text x="1100" y="${ titleY + i * 84 }" font-family="Reem Kufi" font-weight="700" font-size="68" fill="#0f172a" text-anchor="end" direction="rtl">${ rtl( l ) }</text>` ).join( '' ) }
+		${ s.map( ( l, i ) => `<text x="1100" y="${ titleY + t.length * 84 + 30 + i * 50 }" font-family="Tajawal Medium" font-size="34" fill="#475569" text-anchor="end" direction="rtl">${ rtl( l ) }</text>` ).join( '' ) }
 		<g transform="translate(1040 520)"><path d="M4 24C10 14.5 16.5 12 24 12s14 2.5 20 12c-6 9.5-12.5 12-20 12S10 33.5 4 24Z" fill="none" stroke="#2563eb" stroke-width="2.6" stroke-linejoin="round"/><circle cx="24" cy="24" r="6.5" fill="none" stroke="#2563eb" stroke-width="2.6"/><circle cx="24" cy="24" r="2.4" fill="#2563eb"/></g>
-		<text x="1025" y="557" font-family="Tajawal ExtraBold" font-size="38" fill="#0f172a" text-anchor="end" direction="rtl">${ esc( SITE.name ) }</text>
+		<text x="1025" y="557" font-family="Tajawal ExtraBold" font-size="38" fill="#0f172a" text-anchor="end" direction="rtl">${ rtl( SITE.name ) }</text>
 		<text x="100" y="557" font-family="Tajawal Medium" font-size="28" fill="#64748b">${ esc( SITE.url.replace( /^https?:\/\//, '' ) ) }</text>
 	</svg>`;
 

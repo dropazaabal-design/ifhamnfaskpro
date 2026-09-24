@@ -1,5 +1,5 @@
 /**
- * صورة النتيجة بمقاس القصص (١٠٨٠×١٩٢٠) — سناب شات وتيك توك وحالة واتساب.
+ * صورة النتيجة بمقاس القصص (1080×1920) — سناب شات وتيك توك وحالة واتساب.
  *
  * تُرسم في المتصفّح بـ Canvas لسببين: المتصفّح يشكّل العربية ويصلها
  * صحيحةً بلا مكتبة، والنتيجة لا تغادر الجهاز لتُرسم على خادم.
@@ -8,7 +8,7 @@
  * نفسه الذي رآه صاحبها.
  */
 import type { ScaleResult } from '../lib/scoring.ts';
-import { toArabicDigits } from '../lib/format.ts';
+import { num } from '../lib/format.ts';
 
 const W = 1080;
 const H = 1920;
@@ -46,7 +46,7 @@ function roundRect( ctx: CanvasRenderingContext2D, x: number, y: number, w: numb
 	ctx.closePath();
 }
 
-const fmt = ( n: number, mean: boolean ) => toArabicDigits( mean ? n.toFixed( 2 ) : String( Math.round( n ) ) );
+const fmt = ( n: number, mean: boolean ) => num( mean ? n.toFixed( 2 ) : String( Math.round( n ) ) );
 
 export async function drawShareCard( title: string, scales: ScaleResult[], site: string ): Promise<Blob | null> {
 	try {

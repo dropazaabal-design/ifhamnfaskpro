@@ -2,7 +2,7 @@
  * بصيرة — الرموز من التصميم الأصلي كما هي، والامتداد بلغتها.
  *
  * تغيير واحد عن الأصل: --color-text-subtle (slate-400) كان يُستخدم لنصوص
- * تُقرأ، وتباينه على الأبيض ٢٫٥٦:١ فقط — أقلّ من حدّ القراءة (٤٫٥:١).
+ * تُقرأ، وتباينه على الأبيض 2.56:1 فقط — أقلّ من حدّ القراءة (4.5:1).
  * صار للزخرفة والحقول الفارغة وحدها، والنصوص الثانوية تأخذ muted.
  */
 @import '@fontsource/tajawal/400.css';
@@ -112,9 +112,23 @@ button { font: inherit; color: inherit; }
 .hero .stats b { font-family: var(--font-num); font-weight: 700; font-size: 20px; color: var(--color-primary); display: block; }
 .hero .stats span { font-size: 11px; color: var(--color-text-muted); }
 
-.promise { margin-top: 18px; display: flex; gap: 8px; align-items: flex-start; text-align: start; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 14px; padding: 12px 14px; font-size: 12.5px; line-height: 1.75; color: var(--color-text-muted); }
-.promise svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; color: var(--color-primary); }
-.promise b { color: var(--color-text); }
+.promise { margin-top: 18px; text-align: start; }
+.promise-chips { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.promise-chips li { font-size: 12.5px; font-weight: 700; padding: 5px 12px; border-radius: 100px; background: var(--color-surface); border: 1px solid var(--color-border); }
+.promise details { text-align: center; margin-top: 8px; font-size: 12.5px; line-height: 1.8; color: var(--color-text-muted); }
+.promise summary { cursor: pointer; list-style: none; display: inline-block; font-weight: 800; color: var(--color-primary); }
+.promise summary::-webkit-details-marker { display: none; }
+.promise details p { margin-top: 6px; }
+
+.why { margin-top: 30px; }
+.why h2 { font-family: var(--font-display); font-size: 20px; font-weight: 600; }
+.why-cards { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.why-cards li { display: grid; justify-items: center; text-align: center; gap: 2px; padding: 14px 6px; border-radius: 14px; background: var(--color-surface); border: 1px solid var(--color-border); }
+.why-cards span { font-size: 24px; }
+.why-cards b { font-size: 13.5px; }
+.why-cards small { font-size: 11.5px; color: var(--color-text-muted); line-height: 1.5; }
+.why .fold > summary h3 { font-size: 15px; font-weight: 800; margin: 14px 0; }
+.why .prose { margin-top: 0; }
 
 .search { margin-top: 18px; display: flex; align-items: center; gap: 10px; background: var(--color-surface); border: 1.5px solid var(--color-border); border-radius: 14px; padding: 0 14px; transition: .18s; }
 .search:focus-within { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-ring); }
@@ -187,6 +201,13 @@ a.tcard:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); borde
 .page-h .kicker { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--cc, var(--color-primary)); background: color-mix(in srgb, var(--cc, var(--color-primary)) 12%, transparent); padding: 4px 10px; border-radius: 100px; }
 .page-h h1 { font-family: var(--font-display); font-size: 28px; font-weight: 700; line-height: 1.4; margin-top: 10px; text-wrap: balance; }
 .page-h .lead { color: var(--color-text-muted); font-size: 15px; line-height: 1.85; margin-top: 10px; }
+
+/* ═══ الطيّ: النصّ كلّه في الصفحة، والظاهر منه جملة ═══ */
+.more-inline summary, .limits summary, .guide .band summary, .source summary { cursor: pointer; list-style: none; }
+.more-inline summary::-webkit-details-marker, .limits summary::-webkit-details-marker, .guide .band summary::-webkit-details-marker, .source summary::-webkit-details-marker, .fold > summary::-webkit-details-marker { display: none; }
+.more-inline summary { display: inline-block; font-size: 13px; font-weight: 800; color: var(--color-primary); margin-top: 2px; }
+.more-inline[open] summary { display: none; }
+.more-inline p { margin-top: 6px; }
 .meta-row { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 14px; font-size: 12px; color: var(--color-text-muted); }
 .meta-row span { display: inline-flex; align-items: center; gap: 5px; }
 .meta-row svg { width: 14px; height: 14px; }
@@ -219,27 +240,54 @@ a.tcard:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); borde
 .limits h2 { font-size: 16px; font-weight: 800; display: flex; gap: 8px; align-items: center; }
 .limits ul { list-style: none; margin-top: 10px; display: grid; gap: 10px; }
 .limits li { font-size: 14px; line-height: 1.85; display: grid; grid-template-columns: 16px 1fr; gap: 8px; color: var(--color-text); }
+.limits summary { font-weight: 700; display: flex; justify-content: space-between; gap: 10px; }
+.limits summary::after { content: '+'; font-family: var(--font-num); color: var(--color-primary); font-weight: 700; flex-shrink: 0; }
+.limits details[open] summary::after { content: '−'; }
+.limits details p { font-size: 13.5px; color: var(--color-text-muted); margin-top: 4px; }
 .limits li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--color-primary); margin-top: 11px; }
 
 .source { margin-top: 20px; font-size: 13px; line-height: 1.85; }
 .source dl { display: grid; gap: 10px; margin-top: 10px; }
 .source dt { font-weight: 800; font-size: 12px; color: var(--color-text-muted); }
 .source dd { font-size: 13.5px; }
+.source .src-name { margin-top: 8px; font-size: 13.5px; font-weight: 700; }
+.source .src-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.source summary { margin-top: 10px; font-size: 12.5px; font-weight: 800; color: var(--color-primary); }
 .source .cite { font-family: var(--font-num); direction: ltr; text-align: left; font-size: 12px; color: var(--color-text-muted); line-height: 1.7; overflow-wrap: anywhere; }
 .pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 100px; background: var(--color-surface-2); border: 1px solid var(--color-border); }
 .pill--ok { background: var(--tone-ok-soft); color: var(--tone-low); border-color: color-mix(in srgb, var(--tone-low) 25%, transparent); }
 .pill--warn { background: var(--tone-warn-soft); color: var(--tone-warn); border-color: color-mix(in srgb, var(--tone-warn) 25%, transparent); }
 
 .guide { margin-top: 26px; }
-.guide h2 { font-family: var(--font-display); font-size: 20px; font-weight: 600; }
+.guide h2 { font-family: var(--font-display); font-size: 20px; font-weight: 600; display: flex; justify-content: space-between; align-items: baseline; }
+.guide h2 small { font-family: var(--font-body); font-size: 12px; font-weight: 700; color: var(--color-text-muted); }
 .guide .scale { margin-top: 14px; }
 .guide .scale h3 { font-size: 15px; font-weight: 800; }
 .guide .scale > p { font-size: 13px; color: var(--color-text-muted); margin-top: 2px; }
-.guide .bands { display: grid; gap: 8px; margin-top: 10px; }
-.guide .band { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; padding: 11px 13px; }
-.guide .band b { font-size: 12px; font-weight: 800; padding: 3px 9px; border-radius: 100px; white-space: nowrap; color: var(--tone); background: color-mix(in srgb, var(--tone) 12%, transparent); }
+/* بطاقات تُسحب: مستوى في كل بطاقة، وتظهر حافّة التالية لتدلّ على السحب. */
+.guide .bands { display: grid; grid-auto-flow: column; grid-auto-columns: 80%; gap: 10px; margin: 10px -18px 0; padding: 2px 18px 8px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: thin; }
+.guide .band { scroll-snap-align: start; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; background: var(--color-surface); border: 1px solid var(--color-border); border-top: 3px solid var(--tone); border-radius: 14px; padding: 13px 14px; }
+.guide .band b { font-size: 12.5px; font-weight: 800; padding: 3px 10px; border-radius: 100px; color: var(--tone); background: color-mix(in srgb, var(--tone) 12%, transparent); display: inline-flex; gap: 8px; align-items: baseline; }
 .guide .band p { font-size: 13.5px; line-height: 1.85; }
-.guide .band .rng { font-family: var(--font-num); font-size: 11px; color: var(--color-text-muted); display: block; margin-top: 2px; }
+.guide .band summary { font-size: 12.5px; font-weight: 800; color: var(--color-primary); }
+.guide .band details p { margin-top: 4px; color: var(--color-text-muted); }
+.guide .band .rng { font-size: 11px; color: var(--color-text-muted); }
+
+/* ═══ باختصار ═══ */
+.tldr { margin-top: 26px; padding: 16px 18px; border-radius: var(--radius-lg); background: var(--color-primary-soft); border: 1px solid var(--color-border); }
+.tldr h2 { font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+.tldr ul { list-style: none; display: grid; gap: 8px; margin-top: 8px; }
+.tldr li { display: grid; grid-template-columns: 24px 1fr; gap: 6px; font-size: 14px; line-height: 1.8; }
+.tldr li b { color: var(--color-primary); }
+
+/* ═══ المقال مطويّاً: أوّل قسم مفتوح، والباقي عناوين تُفتح ═══ */
+.read-chip { display: inline-block; font-size: 12.5px !important; font-weight: 700; color: var(--color-text-muted); background: var(--color-surface-2); padding: 4px 12px; border-radius: 100px; margin-bottom: 6px !important; }
+.fold { border-bottom: 1px solid var(--color-border); }
+.fold > summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.fold > summary::after { content: '+'; font-family: var(--font-num); font-size: 20px; color: var(--color-primary); flex-shrink: 0; }
+.fold[open] > summary::after { content: '−'; }
+.prose--fold .fold > summary h2 { margin: 16px 0; font-size: 18.5px; }
+.prose--fold .fold > p:last-child { margin-bottom: 18px; }
 .t-low { --tone: var(--tone-low); } .t-mid { --tone: var(--tone-mid); } .t-high { --tone: var(--tone-high); } .t-alert { --tone: var(--tone-alert); }
 
 .faq { margin-top: 26px; }
@@ -270,3 +318,4 @@ footer.site .copy a { color: var(--color-primary); }
 
 @media (max-width: 360px) { .hero h1 { font-size: 31px; } .fcard { flex-basis: 88%; } .page-h h1 { font-size: 24px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+.tldr .ic.num { width: 22px; height: 22px; border-radius: 50%; background: var(--color-primary); color: var(--color-primary-contrast); display: grid; place-items: center; font-size: 12px; font-weight: 700; margin-top: 3px; }

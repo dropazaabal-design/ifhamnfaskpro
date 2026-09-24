@@ -6,8 +6,8 @@
  *
  * والإضافة العلمية هنا مؤشّر التغيّر الموثوق (Jacobson & Truax, 1991):
  * حين تعيد اختباراً، الفرق بين النتيجتين يُقارَن بهامش خطأ المقياس، فيقال
- * لك إن كان التغيّر حقيقياً أم ضجيجاً. المواقع تقول «تحسّنت ٣ نقاط!» ولو
- * كان هامش الخطأ ٥.
+ * لك إن كان التغيّر حقيقياً أم ضجيجاً. المواقع تقول «تحسّنت 3 نقاط!» ولو
+ * كان هامش الخطأ 5.
  */
 import type { ScaleResult } from './scoring.ts';
 
@@ -61,16 +61,16 @@ export function previousOf( slug: string, before?: string ): SavedResult | undef
 
 export interface Change {
 	delta: number;
-	/** مؤشّر التغيّر الموثوق. |RCI| ≥ ١٫٩٦ تغيّر يتجاوز خطأ القياس بثقة ٩٥٪. */
+	/** مؤشّر التغيّر الموثوق. |RCI| ≥ 1.96 تغيّر يتجاوز خطأ القياس بثقة 95%. */
 	rci: number | null;
 	reliable: boolean;
 	direction: 'better' | 'worse' | 'neutral';
 }
 
 /**
- * RCI = (س٢ − س١) ÷ (√٢ × SEM).
+ * RCI = (س2 − س1) ÷ (√2 × SEM).
  *
- * √٢ لأن للقياسين كليهما خطأً مستقلّاً. وحين لا يكون للمقياس ثبات معروف
+ * √2 لأن للقياسين كليهما خطأً مستقلّاً. وحين لا يكون للمقياس ثبات معروف
  * (بنود غير معايَرة)، لا يُحسب المؤشّر ولا يُدّعى شيء.
  */
 export function reliableChange( before: number, after: number, sem: number, higherIs: string ): Change {

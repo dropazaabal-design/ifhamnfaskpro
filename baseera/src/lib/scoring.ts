@@ -18,9 +18,9 @@ export interface ScaleResult {
 	score: number;
 	min: number;
 	max: number;
-	/** الموضع على مدى المقياس (٠–١٠٠)، لا مئيني مقابل مجتمع. */
+	/** الموضع على مدى المقياس (0–100)، لا مئيني مقابل مجتمع. */
 	position: number;
-	/** نطاق الثقة ٩٠٪ من الخطأ المعياري للقياس. */
+	/** نطاق الثقة 90% من الخطأ المعياري للقياس. */
 	low: number;
 	high: number;
 	sem: number;
@@ -31,14 +31,14 @@ export interface ScaleResult {
 	uncalibrated: boolean;
 }
 
-/** z لنطاق ثقة ٩٠٪. */
+/** z لنطاق ثقة 90%. */
 const Z90 = 1.645;
 
 /**
  * الخطأ المعياري للقياس.
  *
  * SEM = SD × √(1 − α). كلما قلّ ثبات المقياس اتّسع النطاق — وهذا بالضبط
- * ما يخفيه موقعٌ يقول «أنت ٧٣٪» بلا هامش.
+ * ما يخفيه موقعٌ يقول «أنت 73%» بلا هامش.
  */
 export function standardError( sd: number, alpha: number ): number {
 	return sd * Math.sqrt( Math.max( 0, 1 - alpha ) );
@@ -83,6 +83,10 @@ export function scoreTest( test: Test, answers: Record<string, Answer> ): ScaleR
 
 		if ( scale.scoring === 'sum' || scale.scoring === 'count' ) {
 			score = values.reduce( ( a, b ) => a + b, 0 );
+		} else if ( scale.scoring === 'lookup' ) {
+			const raw = values.reduce( ( a, b ) => a + b, 0 );
+			const table = scale.table ?? [];
+			score = table[ Math.max( 0, Math.min( table.length - 1, Math.round( raw ) ) ) ] ?? 0;
 		} else {
 			score = values.length ? values.reduce( ( a, b ) => a + b, 0 ) / values.length : 0;
 		}

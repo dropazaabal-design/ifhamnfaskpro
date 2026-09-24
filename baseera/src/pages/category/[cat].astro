@@ -6,7 +6,7 @@ import AdSlot from '../../components/AdSlot.astro';
 import { categories, categoryById } from '../../data/categories.ts';
 import { catalog } from '../../data/catalog.ts';
 import { breadcrumbs, graph, abs } from '../../lib/seo.ts';
-import { toArabicDigits } from '../../lib/format.ts';
+import { num } from '../../lib/format.ts';
 
 export function getStaticPaths() {
 	return categories.map( ( c ) => ( { params: { cat: c.id } } ) );
@@ -28,7 +28,7 @@ const collection = {
 ---
 <Layout
 	title={ `اختبارات ${ cat.name } — مقاييس علمية مجانية` }
-	description={ `${ cat.intro } ${ toArabicDigits( live.length ) } متاح الآن.`.slice( 0, 165 ) }
+	description={ `${ cat.intro } ${ num( live.length ) } متاح الآن.`.slice( 0, 165 ) }
 	path={ path }
 	jsonld={ graph( breadcrumbs( trail ), collection ) }
 >
@@ -40,7 +40,7 @@ const collection = {
 	</header>
 
 	<section style={ `--cc:${ cat.color }` } aria-labelledby="live-h">
-		<div class="sec-h"><h2 id="live-h">متاح الآن</h2><span class="cnt num">{ toArabicDigits( live.length ) }</span></div>
+		<div class="sec-h"><h2 id="live-h">متاح الآن</h2><span class="cnt num">{ num( live.length ) }</span></div>
 		<div class="grid">{ live.map( ( e ) => <TestCard entry={ e } /> ) }</div>
 	</section>
 

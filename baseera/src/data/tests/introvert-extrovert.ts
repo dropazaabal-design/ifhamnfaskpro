@@ -23,7 +23,7 @@ export const introvertExtrovert: Test = {
 	minutes: 2,
 	kind: 'likert',
 	instrument: {
-		name: 'IPIP Big-Five Markers — مقياس الانبساط (١٠ بنود)',
+		name: 'IPIP Big-Five Markers — مقياس الانبساط (10 بنود)',
 		authors: 'Goldberg, 1992',
 		citation:
 			'Goldberg, L. R. (1992). The development of markers for the Big-Five factor structure. Psychological Assessment, 4(1), 26–42.',

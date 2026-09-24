@@ -6,9 +6,9 @@
  * ثانية. هنا ثلاث علامات معروفة في أدبيات «الاستجابة المتهاونة»، تُكشف
  * على جهاز المستخدم، وتُقال له بلطف ووضوح:
  *
- * ١ — السرعة: أقلّ من ثانيتين للبند في المتوسّط (Huang et al., 2012).
- * ٢ — السلسلة الطويلة: الإجابة نفسها لبنود متتالية كثيرة (Johnson, 2005).
- * ٣ — الموافقة على النقيضين: موافقة عالية على البنود وعلى عكسها معاً،
+ * 1 — السرعة: أقلّ من ثانيتين للبند في المتوسّط (Huang et al., 2012).
+ * 2 — السلسلة الطويلة: الإجابة نفسها لبنود متتالية كثيرة (Johnson, 2005).
+ * 3 — الموافقة على النقيضين: موافقة عالية على البنود وعلى عكسها معاً،
  *     وهو «انحياز القبول» (acquiescence).
  *
  * العلامات لا تُلغي النتيجة ولا تتّهم أحداً: تقول «خذها بحذر أكبر».
@@ -38,7 +38,7 @@ export function assessQuality( test: Test, answers: Record<string, Answer> ): Qu
 		return { level: 'good', flags };
 	}
 
-	// ١ — السرعة (لا تُطبَّق على أسئلة التفكير: الجواب السريع الصحيح ممكن).
+	// 1 — السرعة (لا تُطبَّق على أسئلة التفكير: الجواب السريع الصحيح ممكن).
 	if ( test.kind === 'likert' ) {
 		const total = answered.reduce( ( s, i ) => s + answers[ i.id ].ms, 0 );
 
@@ -50,7 +50,7 @@ export function assessQuality( test: Test, answers: Record<string, Answer> ): Qu
 		}
 	}
 
-	// ٢ — السلسلة الطويلة: لا معنى لها إلا حين يحوي الاختبار بنوداً معكوسة.
+	// 2 — السلسلة الطويلة: لا معنى لها إلا حين يحوي الاختبار بنوداً معكوسة.
 	const hasReverse = test.items.some( ( i ) => i.key === -1 );
 
 	if ( test.kind === 'likert' && hasReverse && answered.length >= 6 ) {
@@ -70,7 +70,7 @@ export function assessQuality( test: Test, answers: Record<string, Answer> ): Qu
 		}
 	}
 
-	// ٣ — الموافقة على النقيضين.
+	// 3 — الموافقة على النقيضين.
 	if ( test.kind === 'likert' && hasReverse ) {
 		const opts = test.options ?? [];
 		const top = Math.max( ...opts.map( ( o ) => o.value ) );

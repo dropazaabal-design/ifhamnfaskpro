@@ -1,12 +1,21 @@
-/** أرقام عربية مشرقية للنصوص المعروضة. */
-export const toArabicDigits = ( s: string | number ) =>
-	String( s ).replace( /[0-9]/g, ( d ) => '٠١٢٣٤٥٦٧٨٩'[ Number( d ) ] ).replace( /\./g, '٫' );
+/**
+ * الأرقام الغربية 1234567890 في كل ما يُعرض.
+ *
+ * جمهور بصيرة الأوسع (جيل Z وألفا في الخليج ومصر) يقرأ الأرقام الغربية على
+ * هاتفه في كل تطبيق، والمشرقية تبطّئ القراءة. والدالّة تحوّل أيّ رقم مشرقي
+ * يتسرّب من مصدر آخر، لا تكتفي بتمرير الرقم.
+ */
+export const num = ( s: string | number ) =>
+	String( s )
+		.replace( /[٠-٩]/g, ( d ) => String( '٠١٢٣٤٥٦٧٨٩'.indexOf( d ) ) )
+		.replace( /(?<=\d)٫(?=\d)/g, '.' )
+		.replace( /(?<=\d)٬(?=\d)/g, ',' );
 
 /**
  * العدد والمعدود بقواعد العربية.
  *
- * «٧ عبارة» خطأ يلاحظه كل قارئ عربي، ويقرأ الصفحة معه أقلّ عناية:
- * ١ مفرد، ٢ مثنّى، ٣–١٠ جمع، ١١–٩٩ مفرد منصوب، ومئة فما فوق مفرد.
+ * «7 عبارة» خطأ يلاحظه كل قارئ عربي، ويقرأ الصفحة معه أقلّ عناية:
+ * 1 مفرد، 2 مثنّى، 3–10 جمع، 11–99 مفرد منصوب، ومئة فما فوق مفرد.
  */
 export interface NounForms {
 	one: string;
@@ -19,7 +28,7 @@ export interface NounForms {
 }
 
 export function countNoun( n: number, forms: NounForms, grammaticalCase: 'nom' | 'gen' = 'nom' ): string {
-	const d = toArabicDigits( n );
+	const d = num( n );
 	const mod = n % 100;
 
 	if ( n === 1 ) {
@@ -48,14 +57,14 @@ export const TESTS: NounForms = { one: 'اختبار واحد', two: 'اختبا
 export const TIMES: NounForms = { one: 'مرّة واحدة', two: 'مرّتان', twoGen: 'مرّتين', few: 'مرّات', many: 'مرّةً', hundred: 'مرّة' };
 
 /**
- * التاريخ بالتقويم الميلادي وأرقام عربية، صراحةً.
+ * التاريخ بالتقويم الميلادي وأرقام غربية، صراحةً.
  *
  * ‎'ar-SA'‎ وحده يعطي التقويم الهجري في أغلب المتصفّحات، و‎'ar'‎ وحده
- * يعطي أرقاماً لاتينية في بعضها. الإعداد الصريح يعطي النتيجة نفسها
+ * يعطي أرقاماً مشرقية في بعضها. الإعداد الصريح يعطي النتيجة نفسها
  * في كل مكان، على الخادم وفي المتصفّح.
  */
 export function formatDate( iso: string, style: 'long' | 'short' = 'long' ): string {
-	return new Intl.DateTimeFormat( 'ar-u-ca-gregory-nu-arab', {
+	return new Intl.DateTimeFormat( 'ar-u-ca-gregory-nu-latn', {
 		year: 'numeric',
 		month: style === 'long' ? 'long' : 'short',
 		day: 'numeric',

@@ -11,7 +11,7 @@ import { tests } from '../data/tests/index.ts';
 import { catalog } from '../data/catalog.ts';
 import { standardError } from '../lib/scoring.ts';
 import { breadcrumbs, graph, article } from '../lib/seo.ts';
-import { toArabicDigits, countNoun, TESTS } from '../lib/format.ts';
+import { num, countNoun, TESTS } from '../lib/format.ts';
 
 const path = '/methodology/';
 const trail = [ { name: 'الرئيسية', path: '/' }, { name: 'منهجيتنا', path } ];
@@ -30,6 +30,8 @@ const rows = tests.flatMap( ( t ) =>
 		source: s.paramsSource,
 	} ) )
 );
+// اختبارات IPIP تتشارك المرجع نفسه: يُذكر مرّة واحدة.
+const references = [ ...new Set( tests.map( ( t ) => t.instrument.citation ) ) ];
 const description = 'كيف نختار المقاييس، وكيف نحسب هامش الخطأ لكل نتيجة، وكيف نكشف الإجابات المتسرّعة، ولماذا لم ننشر بعض الاختبارات. كل رقم مع مصدره.';
 ---
 <Layout title="منهجيتنا وميزان الثقة" description={ description } path={ path } type="article" wide
@@ -40,6 +42,15 @@ const description = 'كيف نختار المقاييس، وكيف نحسب ها
 		<h1>منهجيتنا، وميزان الثقة</h1>
 		<p class="lead">أيّ اختبار نفسي يقيس بهامش خطأ. الفرق بين موقع وآخر ليس في وجود الخطأ، بل في إخفائه أو عرضه. هذه الصفحة تشرح كل ما نفعله بالأرقام، وتضع كل رقم أمامك مع مصدره.</p>
 	</header>
+
+	<section class="tldr" aria-labelledby="tldr-h">
+		<h2 id="tldr-h">باختصار</h2>
+		<ul>
+			<li><span class="ic num" aria-hidden="true">1</span><span>كل اختبار من مقياس منشور، بثبات معروف وترخيص يسمح.</span></li>
+			<li><span class="ic num" aria-hidden="true">2</span><span>مع كل نتيجة: نطاق ثقة، وفحص للإجابات المتسرّعة، ومقارنة صادقة بمرّتك السابقة.</span></li>
+			<li><span class="ic num" aria-hidden="true">3</span><span>لا نِسب مقارنة بلا بيانات عربية، ولا رقم ذكاء، ولا إجابة تغادر جهازك.</span></li>
+		</ul>
+	</section>
 
 	<article class="prose">
 		<h2>أربعة شروط قبل أن ننشر اختباراً</h2>
@@ -52,12 +63,12 @@ const description = 'كيف نختار المقاييس، وكيف نحسب ها
 
 		<h2>ميزان الثقة: ثلاثة أشياء مع كل نتيجة</h2>
 
-		<h3>١ — نطاق الثقة: أين تقع درجتك الحقيقية على الأرجح</h3>
+		<h3>1 — نطاق الثقة: أين تقع درجتك الحقيقية على الأرجح</h3>
 		<p>لو أجبت عن الاختبار نفسه غداً، لن تحصل على الرقم نفسه بالضبط: مزاجك وتفسيرك لبعض العبارات يتغيّران قليلاً. «الخطأ المعياري للقياس» يقدّر حجم هذا التذبذب من ثبات المقياس:</p>
 		<p class="num" style="direction:ltr;text-align:center;font-size:17px">SEM = SD × √(1 − α)</p>
-		<p>حيث α ثبات المقياس المنشور، وSD انحراف الدرجات في المجتمع. نعرض حول درجتك نطاقاً عرضه ١٫٦٤٥ خطأً معيارياً في كل اتّجاه — أي النطاق الذي تقع فيه درجتك الحقيقية في نحو ٩ من ١٠ مرّات. مقياس ثباته عالٍ يعطي نطاقاً ضيّقاً، ومقياس ثباته متوسّط يعطي نطاقاً عريضاً، ونعرض لك العريض كما هو.</p>
+		<p>حيث α ثبات المقياس المنشور، وSD انحراف الدرجات في المجتمع. نعرض حول درجتك نطاقاً عرضه 1.645 خطأً معيارياً في كل اتّجاه — أي النطاق الذي تقع فيه درجتك الحقيقية في نحو 9 من 10 مرّات. مقياس ثباته عالٍ يعطي نطاقاً ضيّقاً، ومقياس ثباته متوسّط يعطي نطاقاً عريضاً، ونعرض لك العريض كما هو.</p>
 
-		<h3>٢ — جودة الإجابات: هل تصلح النتيجة للقراءة أصلاً؟</h3>
+		<h3>2 — جودة الإجابات: هل تصلح النتيجة للقراءة أصلاً؟</h3>
 		<p>النتيجة لا تكون أصدق من الإجابات التي بُنيت عليها. نرصد على جهازك ثلاث علامات معروفة في أدبيات «الاستجابة المتهاونة»، ونقولها لك بلطف إن ظهرت:</p>
 		<ul>
 			<li><b>السرعة:</b> أقلّ من ثانيتين للعبارة في المتوسّط — العتبة الأشهر لقراءة لا تكفي لفهم العبارة (Huang et al., 2012).</li>
@@ -66,10 +77,10 @@ const description = 'كيف نختار المقاييس، وكيف نحسب ها
 		</ul>
 		<p>هذه العلامات لا تُلغي نتيجتك ولا تتّهمك بشيء. تقول: خذ هذه النتيجة بحذر أكبر.</p>
 
-		<h3>٣ — التغيّر الموثوق: هل تغيّرت فعلاً؟</h3>
+		<h3>3 — التغيّر الموثوق: هل تغيّرت فعلاً؟</h3>
 		<p>حين تعيد اختباراً وتحفظه في «ملفّي»، نقارن النتيجتين بـ«مؤشّر التغيّر الموثوق» (Jacobson & Truax, 1991):</p>
 		<p class="num" style="direction:ltr;text-align:center;font-size:17px">RCI = (x₂ − x₁) ÷ (√2 × SEM)</p>
-		<p>إن تجاوز المؤشّر ١٫٩٦ فالتغيّر أكبر من خطأ القياس بثقة ٩٥٪، ونقول لك إنه تغيّر حقيقي. وإن لم يتجاوزه نقول «ضمن هامش الخطأ» — حتى لو بدا الفرق كبيراً. هذا ما يفصل «تحسّنت فعلاً» عن «تذبذب طبيعي».</p>
+		<p>إن تجاوز المؤشّر 1.96 فالتغيّر أكبر من خطأ القياس بثقة 95%، ونقول لك إنه تغيّر حقيقي. وإن لم يتجاوزه نقول «ضمن هامش الخطأ» — حتى لو بدا الفرق كبيراً. هذا ما يفصل «تحسّنت فعلاً» عن «تذبذب طبيعي».</p>
 
 		<h2>ما لا نفعله</h2>
 		<ul>
@@ -92,7 +103,7 @@ const description = 'كيف نختار المقاييس، وكيف نحسب ها
 					<th style="padding:8px;text-align:start">المقياس</th>
 					<th style="padding:8px">α</th>
 					<th style="padding:8px">SD</th>
-					<th style="padding:8px">النطاق ٩٠٪</th>
+					<th style="padding:8px">النطاق 90%</th>
 					<th style="padding:8px">الحالة</th>
 					<th style="padding:8px">الترخيص</th>
 				</tr>
@@ -115,7 +126,7 @@ const description = 'كيف نختار المقاييس، وكيف نحسب ها
 
 	<article class="prose">
 		<h2>اختبارات لم ننشرها، ولماذا</h2>
-		<p>في خطّتنا { countNoun( catalog.length, TESTS ) }، ونشرنا منها { toArabicDigits( catalog.length - held.length ) }. هذا ليس بطئاً: بعضها ينتظر ترخيصاً، وبعضها لا يوجد له مقياس علمي أصلاً كما يُطرح شعبياً، ونفضّل ألّا ننشره على أن نخترع أسئلة ونسمّيها علماً.</p>
+		<p>في خطّتنا { countNoun( catalog.length, TESTS ) }، ونشرنا منها { num( catalog.length - held.length ) }. هذا ليس بطئاً: بعضها ينتظر ترخيصاً، وبعضها لا يوجد له مقياس علمي أصلاً كما يُطرح شعبياً، ونفضّل ألّا ننشره على أن نخترع أسئلة ونسمّيها علماً.</p>
 		<ul>
 			{ held.filter( ( h ) => ! h.holdReason?.startsWith( 'نُعدّ' ) ).map( ( h ) => <li><b>{ h.title }:</b> { h.holdReason }</li> ) }
 		</ul>
@@ -123,12 +134,14 @@ const description = 'كيف نختار المقاييس، وكيف نحسب ها
 		<h2>إن وجدت خطأً</h2>
 		<p>في مصدر، أو رقم، أو ترجمة: <a href="/legal/contact/">راسلنا</a>. نصحّحه، ونذكر التصحيح وتاريخه في هذه الصفحة.</p>
 
-		<h2>المراجع</h2>
+		<details class="fold">
+		<summary><h2>المراجع ({ num( references.length + 3 ) })</h2></summary>
 		<ul class="num" style="direction:ltr;text-align:left;font-size:13px">
 			<li>Huang, J. L., Curran, P. G., Keeney, J., Poposki, E. M., & DeShon, R. P. (2012). Detecting and deterring insufficient effort responding to surveys. Journal of Business and Psychology, 27(1), 99–114.</li>
 			<li>Jacobson, N. S., & Truax, P. (1991). Clinical significance: A statistical approach to defining meaningful change in psychotherapy research. Journal of Consulting and Clinical Psychology, 59(1), 12–19.</li>
 			<li>Johnson, J. A. (2005). Ascertaining the validity of individual protocols from Web-based personality inventories. Journal of Research in Personality, 39(1), 103–129.</li>
-			{ tests.map( ( t ) => <li>{ t.instrument.citation }</li> ) }
+			{ references.map( ( c ) => <li>{ c }</li> ) }
 		</ul>
+		</details>
 	</article>
 </Layout>

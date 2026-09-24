@@ -3,12 +3,16 @@
  *
  * كل ما يحدث هنا على جهاز الزائر: العرض، والتوقيت، والتصحيح، وميزان
  * الثقة، والحفظ. لا طلب شبكة واحد حتى النهاية.
+ *
+ * والعرض مختصر عمداً: سؤال في الشاشة، ونتيجة بجملة واحدة، وكل شرح خلف
+ * «اقرأ أكثر». القارئ الذي يريد التفاصيل يجدها كاملة بنقرة.
  */
 import type { Test, Item, Option } from '../lib/types.ts';
 import { scoreTest, intuitiveCount, type Answer, type ScaleResult } from '../lib/scoring.ts';
 import { assessQuality } from '../lib/quality.ts';
 import { saveResult, previousOf, reliableChange } from '../lib/profile.ts';
-import { toArabicDigits, formatDate } from '../lib/format.ts';
+import { num, formatDate } from '../lib/format.ts';
+import { splitLead } from '../lib/text.ts';
 import { drawShareCard } from './share-card.ts';
 import { copy } from './copy.ts';
 
@@ -16,6 +20,27 @@ const esc = ( s: string ) =>
 	s.replace( /[&<>"']/g, ( c ) => ( { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } )[ c ]! );
 
 const TONE: Record<string, string> = { low: 't-low', mid: 't-mid', high: 't-high', alert: 't-alert' };
+
+/** رسائل صغيرة على الطريق: الاختبار الطويل يُترك في منتصفه بلا إحساس بالتقدّم. */
+function milestone( index: number, total: number ): string {
+	if ( total < 6 ) {
+		return '';
+	}
+
+	if ( index === total - 1 ) {
+		return 'آخر سؤال ✨';
+	}
+
+	if ( index === Math.floor( total / 2 ) ) {
+		return 'نصّ الطريق 💪';
+	}
+
+	if ( total >= 20 && index === Math.floor( total * 0.8 ) ) {
+		return 'قربت 🔥';
+	}
+
+	return '';
+}
 
 function boot( root: HTMLElement ) {
 	const test: Test = JSON.parse( root.querySelector( '[data-test]' )!.textContent! );
@@ -29,20 +54,23 @@ function boot( root: HTMLElement ) {
 	const el = {
 		bar: root.querySelector<HTMLElement>( '[data-bar]' )!,
 		count: root.querySelector<HTMLElement>( '[data-count]' )!,
+		cheer: root.querySelector<HTMLElement>( '[data-cheer]' )!,
 		question: root.querySelector<HTMLElement>( '[data-question]' )!,
 		figure: root.querySelector<HTMLElement>( '[data-figure]' )!,
 		options: root.querySelector<HTMLElement>( '[data-options]' )!,
 		back: root.querySelector<HTMLButtonElement>( '[data-back]' )!,
+		setup: root.querySelector<HTMLInputElement>( '[data-setup]' ),
 	};
 
 	let index = 0;
 	let answers: Record<string, Answer> = {};
+	let personal = '';
 	let shownAt = 0;
 	let advancing = 0;
 
 	const persist = () => {
 		try {
-			sessionStorage.setItem( store, JSON.stringify( { index, answers } ) );
+			sessionStorage.setItem( store, JSON.stringify( { index, answers, personal } ) );
 		} catch {
 			// بلا تخزين: يعمل الاختبار ولا يُستأنف بعد التحديث.
 		}
@@ -53,14 +81,16 @@ function boot( root: HTMLElement ) {
 	};
 
 	const optionsFor = ( item: Item ): Option[] => item.options ?? test.options ?? [];
+	const textOf = ( item: Item ) => ( test.setup ? item.text.replaceAll( `{${ test.setup.token }}`, personal ) : item.text );
 
 	const render = () => {
 		const item = test.items[ index ];
 		const total = test.items.length;
 
 		el.bar.style.width = `${ ( index / total ) * 100 }%`;
-		el.count.textContent = `${ toArabicDigits( index + 1 ) } من ${ toArabicDigits( total ) }`;
-		el.question.textContent = item.text;
+		el.count.textContent = `${ num( index + 1 ) } / ${ num( total ) }`;
+		el.cheer.textContent = milestone( index, total );
+		el.question.textContent = textOf( item );
 		el.figure.innerHTML = item.figure ?? '';
 		el.back.disabled = index === 0;
 
@@ -68,17 +98,26 @@ function boot( root: HTMLElement ) {
 		const name = `q-${ test.slug }-${ item.id }`;
 		let html = '';
 
+		el.options.classList.remove( 'figs', 'scale' );
+
 		if ( test.kind === 'choice' ) {
 			const figs = item.choices!.some( ( c ) => c.figure );
 			el.options.classList.toggle( 'figs', figs );
 			item.choices!.forEach( ( c, i ) => {
-				const body = c.figure ? `${ c.figure }<span class="sr-only">${ esc( c.label ) }</span>` : `<span class="k">${ toArabicDigits( i + 1 ) }</span><span>${ esc( c.label ) }</span>`;
+				const body = c.figure ? `${ c.figure }<span class="sr-only">${ esc( c.label ) }</span>` : `<span class="k">${ num( i + 1 ) }</span><span>${ esc( c.label ) }</span>`;
 				html += `<label class="opt${ c.figure ? ' opt--fig' : '' }"><input type="radio" name="${ name }" value="${ i }"${ current === i ? ' checked' : '' }>${ body }</label>`;
 			} );
+		} else if ( test.optionsLayout === 'scale' ) {
+			const opts = optionsFor( item );
+			el.options.classList.add( 'scale' );
+			html += '<div class="scale-row">';
+			opts.forEach( ( o ) => {
+				html += `<label class="opt opt--num"><input type="radio" name="${ name }" value="${ o.value }"${ current === o.value ? ' checked' : '' }><span>${ num( o.value ) }</span></label>`;
+			} );
+			html += `</div><div class="scale-ends"><span>${ esc( opts[ 0 ].label ) }</span><span>${ esc( opts[ opts.length - 1 ].label ) }</span></div>`;
 		} else {
-			el.options.classList.remove( 'figs' );
 			optionsFor( item ).forEach( ( o, i ) => {
-				html += `<label class="opt"><input type="radio" name="${ name }" value="${ o.value }"${ current === o.value ? ' checked' : '' }><span class="k">${ toArabicDigits( i + 1 ) }</span><span>${ esc( o.label ) }</span></label>`;
+				html += `<label class="opt"><input type="radio" name="${ name }" value="${ o.value }"${ current === o.value ? ' checked' : '' }><span class="k">${ num( i + 1 ) }</span><span>${ esc( o.label ) }</span></label>`;
 			} );
 		}
 
@@ -132,17 +171,29 @@ function boot( root: HTMLElement ) {
 		const n = Number( e.key );
 		const inputs = el.options.querySelectorAll<HTMLInputElement>( 'input' );
 
-		if ( n >= 1 && n <= inputs.length ) {
+		// في مقياس 0–10 يعني المفتاح 0 البديل الأوّل؛ في غيره المفتاح 1.
+		const at = test.optionsLayout === 'scale' ? n : n - 1;
+
+		if ( e.key.length === 1 && ! Number.isNaN( n ) && at >= 0 && at < inputs.length ) {
 			e.preventDefault();
-			inputs[ n - 1 ].checked = true;
-			choose( Number( inputs[ n - 1 ].value ) );
+			inputs[ at ].checked = true;
+			choose( Number( inputs[ at ].value ) );
 		}
 	} );
+
+	const startBtn = root.querySelector<HTMLButtonElement>( '[data-start]' )!;
+
+	if ( el.setup ) {
+		const sync = () => ( startBtn.disabled = el.setup!.value.trim().length < 2 );
+		el.setup.addEventListener( 'input', sync );
+		sync();
+	}
 
 	const start = ( resume = false ) => {
 		if ( ! resume ) {
 			index = 0;
 			answers = {};
+			personal = el.setup?.value.trim().slice( 0, 60 ) ?? '';
 		}
 
 		show( 'question' );
@@ -150,7 +201,7 @@ function boot( root: HTMLElement ) {
 		root.scrollIntoView( { behavior: 'smooth', block: 'start' } );
 	};
 
-	root.querySelector( '[data-start]' )!.addEventListener( 'click', () => start() );
+	startBtn.addEventListener( 'click', () => start() );
 
 	// استئناف ما لم يكتمل.
 	try {
@@ -162,6 +213,7 @@ function boot( root: HTMLElement ) {
 			root.querySelector( '[data-resume-go]' )!.addEventListener( 'click', () => {
 				index = saved.index;
 				answers = saved.answers;
+				personal = saved.personal ?? '';
 				start( true );
 			} );
 		}
@@ -171,56 +223,81 @@ function boot( root: HTMLElement ) {
 
 	/* ─────────────── النتيجة ─────────────── */
 
+	const isMean = ( s: ScaleResult ) => s.score % 1 !== 0 || s.max <= 7;
+	const fmt = ( s: ScaleResult, v: number ) => num( isMean( s ) ? v.toFixed( 2 ) : String( Math.round( v ) ) );
+
 	function meter( s: ScaleResult ) {
 		const pos = ( v: number ) => ( ( v - s.min ) / ( s.max - s.min ) ) * 100;
-		const mean = s.score % 1 !== 0 || s.max <= 5;
-		const f = ( v: number ) => toArabicDigits( mean ? v.toFixed( 2 ) : String( Math.round( v ) ) );
 		const ci = s.uncalibrated || s.high <= s.low ? '' : `<span class="ci" style="right:${ pos( s.low ) }%;width:${ pos( s.high ) - pos( s.low ) }%"></span>`;
-		const range = s.uncalibrated
-			? '<p class="band-range" style="font-size:12px;color:var(--color-text-muted);margin-top:6px">بلا نطاق ثقة: البنود لم تُعايَر بعد.</p>'
-			: `<p class="band-range" style="font-size:12px;color:var(--color-text-muted);margin-top:6px">النطاق المرجّح لدرجتك: <b class="num">${ f( s.low ) }–${ f( s.high ) }</b></p>`;
+		const [ lead, rest ] = splitLead( s.band.text );
+		const range = s.uncalibrated ? '' : `<span class="rng-chip">📏 ${ fmt( s, s.low ) }–${ fmt( s, s.high ) }</span>`;
 
 		return `
 			<div class="scale ${ TONE[ s.band.tone ] }">
-				<h3><span>${ esc( s.name ) }</span><span class="num">${ f( s.score ) }</span></h3>
-				<span class="band-label">${ esc( s.band.label ) }</span>
-				<div class="meter" role="img" aria-label="${ esc( `${ s.name }: ${ f( s.score ) } من مدى ${ f( s.min ) } إلى ${ f( s.max ) }` ) }">
+				<h3><span>${ esc( s.name ) }</span><span class="num">${ fmt( s, s.score ) }</span></h3>
+				<div class="chips"><span class="band-label">${ esc( s.band.label ) }</span>${ range }</div>
+				<div class="meter" role="img" aria-label="${ esc( `${ s.name }: ${ fmt( s, s.score ) } من ${ fmt( s, s.min ) } إلى ${ fmt( s, s.max ) }` ) }">
 					${ ci }<span class="pt" style="right:${ pos( s.score ) }%;transform:translate(50%,-50%)"></span>
 				</div>
-				<div class="meter-axis"><span class="num">${ f( s.min ) }</span><span class="num">${ f( s.max ) }</span></div>
-				${ range }
-				<p>${ esc( s.band.text ) }</p>
+				<div class="meter-axis"><span class="num">${ fmt( s, s.min ) }</span><span class="num">${ fmt( s, s.max ) }</span></div>
+				<p class="lead-line">${ esc( lead ) }</p>
+				${ rest ? `<details class="more"><summary>اقرأ أكثر</summary><p>${ esc( rest ) }</p></details>` : '' }
 			</div>`;
+	}
+
+	function typologyCard( scales: ScaleResult[] ) {
+		const t = test.typology;
+
+		if ( ! t ) {
+			return '';
+		}
+
+		const x = scales.find( ( s ) => s.id === t.x );
+		const y = scales.find( ( s ) => s.id === t.y );
+
+		if ( ! x || ! y ) {
+			return '';
+		}
+
+		const key = `${ x.score >= t.cut ? 'high' : 'low' }${ y.score >= t.cut ? 'high' : 'low' }` as keyof typeof t.cells;
+		const cell = t.cells[ key ];
+
+		return `<div class="typology"><span class="kick">الأقرب إليك</span><h3>${ esc( cell.label ) }</h3><p>${ esc( cell.text ) }</p><p class="fine">الأنماط الأربعة تبسيط: البُعدان أدقّ من النمط، ومن يقترب من الحدّ بينها لا يُصنَّف بثقة.</p></div>`;
 	}
 
 	function trustPanel( scales: ScaleResult[], flags: { text: string }[], savedAt: string, shaky: boolean ) {
 		const items: string[] = [];
 		const calibrated = scales.filter( ( s ) => ! s.uncalibrated );
+		const chips: string[] = [ '<span class="tchip">⚖️ تقدير لا حكم</span>' ];
 
 		items.push( '<li><span class="i">⚖️</span><span><b>هذا تقدير لا حكم.</b> أيّ اختبار نفسي يقيس بهامش خطأ، ومن يعطيك رقماً بلا هامش يخفي عنك شيئاً.</span></li>' );
 
 		if ( calibrated.length ) {
-			items.push( '<li><span class="i">📏</span><span>الشريط الفاتح حول درجتك هو <b>النطاق المرجّح</b>: لو أعدت الاختبار، ففي نحو ٩ من ١٠ مرّات تقع درجتك الحقيقية داخله. يُحسب من ثبات المقياس المنشور — كلما قلّ ثباته اتّسع النطاق.</span></li>' );
+			chips.push( '<span class="tchip">📏 له هامش خطأ</span>' );
+			items.push( '<li><span class="i">📏</span><span>الشريط الفاتح حول درجتك هو <b>النطاق المرجّح</b>: لو أعدت الاختبار، ففي نحو 9 من 10 مرّات تقع درجتك الحقيقية داخله. يُحسب من ثبات المقياس المنشور — كلما قلّ ثباته اتّسع النطاق.</span></li>' );
 		} else {
-			items.push( '<li><span class="i">📏</span><span>لا نعرض نطاق ثقة لهذا الاختبار: بنوده أصلية ولم يُقَس ثباتها بعد، واختراع رقم لها أسوأ من غيابه.</span></li>' );
+			chips.push( '<span class="tchip">📏 بلا نطاق</span>' );
+			items.push( '<li><span class="i">📏</span><span>لا نعرض نطاق ثقة هنا: البنود لم يُقَس ثباتها بعد، واختراع رقم لها أسوأ من غيابه.</span></li>' );
 		}
 
 		if ( test.kind === 'likert' ) {
 			if ( flags.length ) {
+				chips.push( '<span class="tchip warn">⚠️ إجابات متسرّعة</span>' );
 				flags.forEach( ( f ) => items.push( `<li class="caution-line"><span class="i">⚠️</span><span>${ esc( f.text ) }</span></li>` ) );
 			} else {
-				items.push( '<li><span class="i">✅</span><span>إجاباتك متّسقة: لم نرصد سرعة زائدة، ولا الإجابة نفسها على كل شيء، ولا موافقة على العبارة ونقيضها.</span></li>' );
+				chips.push( '<span class="tchip ok">✅ إجاباتك متّسقة</span>' );
+				items.push( '<li><span class="i">✅</span><span>إجاباتك متّسقة: لا سرعة زائدة، ولا الإجابة نفسها على كل شيء، ولا موافقة على العبارة ونقيضها.</span></li>' );
 			}
 		}
 
 		if ( scales.some( ( s ) => ! s.verified && ! s.uncalibrated ) ) {
-			items.push( '<li><span class="i">🔎</span><span>بعض قيم الثبات المستخدمة في النطاق تقديرية من الأدبيات، ومصادرها كلّها في <a href="/methodology/" style="color:var(--color-primary)">صفحة المنهجية</a>.</span></li>' );
+			items.push( '<li><span class="i">🔎</span><span>بعض قيم الثبات المستخدمة تقديرية من الأدبيات، ومصادرها في <a href="/methodology/" style="color:var(--color-primary)">صفحة المنهجية</a>.</span></li>' );
 		}
 
-		// مقارنة بالمرّة السابقة، بمؤشّر التغيّر الموثوق.
 		const prev = previousOf( test.slug, savedAt );
 
 		if ( prev ) {
+			chips.push( '<span class="tchip">📈 مقارنة بمرّتك السابقة</span>' );
 			const lines = scales
 				.map( ( s ) => {
 					const p = prev.scales.find( ( x ) => x.id === s.id );
@@ -230,7 +307,7 @@ function boot( root: HTMLElement ) {
 					}
 
 					const c = reliableChange( p.score, s.score, s.sem, s.higherIs );
-					const d = c.delta === 0 ? 'لا تغيّر' : `${ c.delta > 0 ? '+' : '−' }${ toArabicDigits( Math.abs( Math.round( c.delta * 100 ) / 100 ) ) }`;
+					const d = c.delta === 0 ? 'لا تغيّر' : `${ c.delta > 0 ? '+' : '−' }${ num( Math.abs( Math.round( c.delta * 100 ) / 100 ) ) }`;
 					// مؤشّر التغيّر يفترض أن القياسين كليهما صالحان. إن رصد الميزان
 					// إجابات متسرّعة في أيّ منهما، فالحساب صحيح والاستنتاج لا.
 					const unreliableRun = shaky || prev.quality === 'caution';
@@ -249,7 +326,10 @@ function boot( root: HTMLElement ) {
 			items.push( `<li><span class="i">📈</span><span><b>مقارنة بمرّتك السابقة</b> (مؤشّر التغيّر الموثوق، Jacobson & Truax 1991):${ lines }</span></li>` );
 		}
 
-		return `<section class="trust" aria-labelledby="trust-h-${ test.slug }"><h3 id="trust-h-${ test.slug }"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v18M5 7h14M7 7l-3 6a3 3 0 0 0 6 0L7 7Zm10 0-3 6a3 3 0 0 0 6 0l-3-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>ميزان الثقة</h3><ul>${ items.join( '' ) }</ul></section>`;
+		// مفتوح تلقائياً حين يكون فيه ما يجب ألّا يفوت: تسرّع أو مقارنة.
+		const open = shaky || Boolean( prev );
+
+		return `<details class="trust"${ open ? ' open' : '' }><summary><span class="t-title">ميزان الثقة</span><span class="tchips">${ chips.join( '' ) }</span></summary><ul>${ items.join( '' ) }</ul></details>`;
 	}
 
 	function answersReview() {
@@ -263,18 +343,18 @@ function boot( root: HTMLElement ) {
 				const chosen = a ? item.choices![ a.value ] : undefined;
 				const right = item.choices!.find( ( c ) => c.correct )!;
 				const ok = Boolean( chosen?.correct );
-				const trap = chosen?.intuitive ? ' — وهو الجواب الحدسي الذي يقع فيه أغلب الناس' : '';
+				const trap = chosen?.intuitive ? ' — وهو الجواب الذي يقع فيه أغلب الناس' : '';
 
-				return `<details><summary><span class="mark ${ ok ? 'ok' : 'no' }">${ ok ? '✓' : '✗' }</span><span>${ toArabicDigits( i + 1 ) }. ${ esc( item.text ) }</span></summary><div class="body">جوابك: <b>${ esc( chosen?.label ?? '—' ) }</b>${ trap }<br>الصحيح: <b>${ esc( right.label ) }</b><br>${ esc( item.solution ?? '' ) }</div></details>`;
+				return `<details><summary><span class="mark ${ ok ? 'ok' : 'no' }">${ ok ? '✓' : '✗' }</span><span>${ num( i + 1 ) }. ${ esc( item.text ) }</span></summary><div class="body">جوابك: <b>${ esc( chosen?.label ?? '—' ) }</b>${ trap }<br>الصحيح: <b>${ esc( right.label ) }</b><br>${ esc( item.solution ?? '' ) }</div></details>`;
 			} )
 			.join( '' );
 
 		const traps = intuitiveCount( test, answers );
 		const trapLine = test.items.some( ( i ) => i.choices?.some( ( c ) => c.intuitive ) )
-			? `<p style="font-size:14px;margin-top:14px">وقعت في <b class="num">${ toArabicDigits( traps ) }</b> من الفخاخ الحدسية. كل لغز صُمّم ليقفز فيه جواب خاطئ أوّلاً.</p>`
+			? `<p class="trap-line">🪤 وقعت في <b class="num">${ num( traps ) }</b> من الفخاخ</p>`
 			: '';
 
-		return `${ trapLine }<h3 style="font-size:15px;font-weight:800;margin-top:18px">الحلول</h3><div class="answers">${ rows }</div>`;
+		return `${ trapLine }<details class="solutions"><summary>الحلول (${ num( test.items.length ) })</summary><div class="answers">${ rows }</div></details>`;
 	}
 
 	function finish() {
@@ -283,6 +363,7 @@ function boot( root: HTMLElement ) {
 		const at = new Date().toISOString();
 		const url = `${ site }/tests/${ test.slug }/`;
 		const alert = scales.some( ( s ) => s.band.tone === 'alert' );
+		const title = test.setup && personal ? `${ test.title } — ${ personal }` : test.title;
 
 		try {
 			sessionStorage.removeItem( store );
@@ -291,14 +372,15 @@ function boot( root: HTMLElement ) {
 		}
 
 		const shareText = test.sensitive
-			? `مقياس «${ test.title }» على بصيرة — مبني على مقياس منشور، ويخبرك بحدوده بصدق:\n${ url }`
+			? `«${ test.title }» على بصيرة — مبني على مقياس منشور، ويخبرك بحدوده بصدق:\n${ url }`
 			: `أخذت «${ test.title }» على بصيرة: ${ scales.map( ( s ) => `${ s.name } — ${ s.band.label }` ).join( '، ' ) }.\nمبني على مقياس منشور، ويعطيك هامش الخطأ مع النتيجة. جرّبه:\n${ url }`;
 
-		const html = `
+		screens.result.innerHTML = `
 			<div class="res">
 				<h2>نتيجتك</h2>
 				${ test.sensitive && alert ? '<p class="caution" style="margin-top:12px"><span>نتيجتك في المستوى الذي يُنصح عنده بالحديث مع مختصّ. <a href="#crisis-h" style="color:var(--color-primary);font-weight:700">موارد الدعم أدناه</a>.</span></p>' : '' }
 				${ scales.map( meter ).join( '' ) }
+				${ typologyCard( scales ) }
 				${ trustPanel( scales, quality.flags, at, quality.level === 'caution' ) }
 				${ answersReview() }
 				<div class="share">
@@ -306,32 +388,33 @@ function boot( root: HTMLElement ) {
 						<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.3-.5 0-1 .2-3.2-.7-2.7-1.1-4.4-3.9-4.5-4-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.5.3.1.2.1.6-.1 1.2Z"/></svg>
 						شارك على واتساب
 					</a>
-					<a class="btn btn--ghost" href="https://x.com/intent/post?text=${ encodeURIComponent( shareText ) }" rel="noopener" target="_blank">شارك على X</a>
+					<a class="btn btn--ghost" href="https://x.com/intent/post?text=${ encodeURIComponent( shareText ) }" rel="noopener" target="_blank">X</a>
 					<button type="button" class="btn btn--ghost" data-copy-link>انسخ الرابط</button>
-					${ test.sensitive ? '' : '<button type="button" class="btn btn--ghost wide" data-story>صورة للقصص (سناب وتيك توك)</button>' }
+					${ test.sensitive ? '' : '<button type="button" class="btn btn--ghost wide" data-story>📸 صورة للقصص</button>' }
 				</div>
 				<div class="share" style="margin-top:9px">
 					<button type="button" class="btn btn--primary" data-save>احفظ في ملفّي</button>
 					<button type="button" class="btn btn--ghost" data-retake>أعد الاختبار</button>
 				</div>
-				<p class="save-note">الحفظ على هذا الجهاز وحده، ولا يُرسل شيء إلى أي خادم. تحذفه من <a href="/me/" style="color:var(--color-primary)">ملفّي</a> متى شئت.</p>
+				<p class="save-note">🔒 الحفظ على جهازك وحده. تحذفه من <a href="/me/" style="color:var(--color-primary)">ملفّي</a> متى شئت.</p>
 			</div>`;
 
-		screens.result.innerHTML = html;
 		show( 'result' );
 		el.bar.style.width = '100%';
 		screens.result.focus( { preventScroll: true } );
 		root.scrollIntoView( { behavior: 'smooth', block: 'start' } );
 
 		screens.result.querySelector( '[data-copy-link]' )?.addEventListener( 'click', () => copy( url ) );
-
-		screens.result.querySelector( '[data-retake]' )?.addEventListener( 'click', () => start() );
+		screens.result.querySelector( '[data-retake]' )?.addEventListener( 'click', () => {
+			show( 'start' );
+			root.scrollIntoView( { behavior: 'smooth', block: 'start' } );
+		} );
 
 		screens.result.querySelector<HTMLButtonElement>( '[data-save]' )?.addEventListener( 'click', ( e ) => {
 			const btn = e.currentTarget as HTMLButtonElement;
 			const ok = saveResult( {
 				slug: test.slug,
-				title: test.title,
+				title,
 				at,
 				quality: quality.level,
 				scales: scales.map( ( s ) => ( {
@@ -350,13 +433,13 @@ function boot( root: HTMLElement ) {
 			} );
 
 			btn.disabled = true;
-			btn.textContent = ok ? 'حُفظ في ملفّي ✓' : 'تعذّر الحفظ في هذا المتصفّح';
+			btn.textContent = ok ? 'حُفظ ✓' : 'تعذّر الحفظ في هذا المتصفّح';
 		} );
 
 		screens.result.querySelector<HTMLButtonElement>( '[data-story]' )?.addEventListener( 'click', async ( e ) => {
 			const btn = e.currentTarget as HTMLButtonElement;
 			btn.disabled = true;
-			const blob = await drawShareCard( test.title, scales, site );
+			const blob = await drawShareCard( title, scales, site );
 			btn.disabled = false;
 
 			if ( ! blob ) {
@@ -385,4 +468,3 @@ function boot( root: HTMLElement ) {
 }
 
 document.querySelectorAll<HTMLElement>( '[data-runner]' ).forEach( boot );
-

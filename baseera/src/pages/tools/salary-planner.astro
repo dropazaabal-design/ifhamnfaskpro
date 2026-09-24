@@ -38,18 +38,18 @@ const related = tool.related.map( ( s ) => catalog.find( ( c ) => c.slug === s )
 	<section class="runner card" data-salary style="margin-top:22px;padding:20px;box-shadow:var(--shadow)">
 		<label for="salary" style="font-weight:800;font-size:14.5px">راتبك الصافي الشهري</label>
 		<div style="display:flex;gap:8px;margin-top:8px">
-			<input id="salary" type="text" inputmode="decimal" autocomplete="off" placeholder="مثال: ٨٠٠٠" style="flex:1;min-width:0;font:inherit;font-size:20px;font-weight:800;padding:12px 14px;border-radius:12px;border:1.5px solid var(--color-border-strong);background:var(--color-bg);color:var(--color-text)" />
+			<input id="salary" type="text" inputmode="decimal" autocomplete="off" placeholder="مثال: 8000" style="flex:1;min-width:0;font:inherit;font-size:20px;font-weight:800;padding:12px 14px;border-radius:12px;border:1.5px solid var(--color-border-strong);background:var(--color-bg);color:var(--color-text)" />
 			<input id="currency" type="text" value="ريال" aria-label="العملة" style="width:84px;font:inherit;font-size:15px;padding:12px;border-radius:12px;border:1.5px solid var(--color-border-strong);background:var(--color-bg);color:var(--color-text);text-align:center" />
 		</div>
 
 		<fieldset style="border:0;margin-top:16px">
 			<legend style="font-weight:800;font-size:14px">التقسيم</legend>
 			<div class="filters" style="padding-top:8px" role="group">
-				<button type="button" class="chip" aria-pressed="true" data-split="50,30,20">٥٠ / ٣٠ / ٢٠</button>
-				<button type="button" class="chip" aria-pressed="false" data-split="60,20,20">٦٠ / ٢٠ / ٢٠</button>
-				<button type="button" class="chip" aria-pressed="false" data-split="70,20,10">٧٠ / ٢٠ / ١٠</button>
+				<button type="button" class="chip" aria-pressed="true" data-split="50,30,20">50 / 30 / 20</button>
+				<button type="button" class="chip" aria-pressed="false" data-split="60,20,20">60 / 20 / 20</button>
+				<button type="button" class="chip" aria-pressed="false" data-split="70,20,10">70 / 20 / 10</button>
 			</div>
-			<p style="font-size:12.5px;color:var(--color-text-muted);margin-top:6px">إن كان إيجارك وحده يأخذ نصف راتبك، ٦٠/٢٠/٢٠ أو ٧٠/٢٠/١٠ أصدق من قاعدة لا تناسب مدينتك.</p>
+			<p style="font-size:12.5px;color:var(--color-text-muted);margin-top:6px">إن كان إيجارك وحده يأخذ نصف راتبك، 60/20/20 أو 70/20/10 أصدق من قاعدة لا تناسب مدينتك.</p>
 		</fieldset>
 
 		<div data-out style="display:grid;gap:10px;margin-top:16px"></div>
