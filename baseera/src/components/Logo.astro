@@ -1,11 +1,15 @@
 ---
-/** شعار العين من التصميم الأصلي. */
+/**
+ * شعار بصيرة V2: عين بؤبؤها المؤشّر البرتقالي، فوق مسطرة قصيرة.
+ * العين من الاسم، والمسطرة من الوعد: كل نظرة قياس، وكل قياس له هامش.
+ */
 interface Props { rays?: boolean }
 const { rays = false } = Astro.props;
 ---
 <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-	<path d="M4 24C10 14.5 16.5 12 24 12s14 2.5 20 12c-6 9.5-12.5 12-20 12S10 33.5 4 24Z" stroke="var(--color-primary)" stroke-width="2" stroke-linejoin="round" />
-	<circle cx="24" cy="24" r="6.5" stroke="var(--color-primary)" stroke-width="2" />
-	<circle cx="24" cy="24" r="2.3" fill="var(--color-primary)" />
-	{ rays && <path d="M24 9v3M24 36v3M9 24H6M42 24h-3" stroke="var(--color-primary)" stroke-width="1.6" stroke-linecap="round" /> }
+	<path d="M5 21C10.5 12.8 16.6 9.5 24 9.5S37.5 12.8 43 21c-5.5 8.2-11.6 11.5-19 11.5S10.5 29.2 5 21Z" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" />
+	<circle cx="24" cy="21" r="6.2" stroke="currentColor" stroke-width="2.6" />
+	<circle cx="24" cy="21" r="2.6" fill="var(--signal)" />
+	<path d="M8 41h32M8 38v3M16 39v2M24 37v4M32 39v2M40 38v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+	{ rays && <path d="M24 3v2.5" stroke="var(--signal)" stroke-width="2" stroke-linecap="round" /> }
 </svg>

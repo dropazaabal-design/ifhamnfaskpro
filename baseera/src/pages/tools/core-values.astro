@@ -39,7 +39,7 @@ const data = JSON.stringify( { values: VALUES, poles: POLES } ).replace( /</g, '
 <Layout title={ tool.seoTitle } description={ tool.description } path={ path } jsonld={ graph( breadcrumbs( trail ), app, faqPage( tool.faq ) ) }>
 	<Breadcrumbs trail={ trail } />
 	<header class="page-h" style={ `--cc:${ cat.color }` }>
-		<span class="kicker"><span aria-hidden="true">{ tool.icon }</span> أداة تأمّل</span>
+		<span class="kicker">أداة تأمّل</span>
 		<h1>{ tool.title }</h1>
 		<div class="lead">
 			<p>{ introLead }</p>

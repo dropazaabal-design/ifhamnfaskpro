@@ -20,7 +20,7 @@ const reading = readingMinutes( a.lead, ...a.sections.flatMap( ( s ) => s.p ) );
 <Layout title={ a.title } description={ a.description } path={ path } type="article" jsonld={ graph( breadcrumbs( trail ), articleLd( { title: a.title, description: a.description, path, updated: a.updated } ) ) }>
 	<Breadcrumbs trail={ trail } />
 	<header class="page-h">
-		<span class="kicker">📖 مقال</span>
+		<span class="kicker">مقال</span>
 		<h1>{ a.title }</h1>
 		<p class="lead">{ a.lead }</p>
 		<div class="meta-row"><span>📖 نحو { countNoun( reading, MINUTES, 'gen' ) }</span><span>حُدّث <time datetime={ a.updated }>{ updated }</time></span></div>

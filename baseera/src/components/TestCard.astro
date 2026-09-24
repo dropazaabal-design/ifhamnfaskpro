@@ -20,7 +20,7 @@ const label = entry.status === 'soon' ? 'قريباً' : entry.status === 'tool'
 			<div class="ic" aria-hidden="true">{ entry.icon }</div>
 			<h3>{ entry.title }</h3>
 			<p>{ entry.blurb }</p>
-			{ source && <div class="src">📚 { source }</div> }
+			{ source && <div class="src">{ source }</div> }
 			<div class="go">
 				{ entry.status === 'tool' ? 'افتح الأداة' : 'ابدأ الاختبار' }
 				<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -30,7 +30,7 @@ const label = entry.status === 'soon' ? 'قريباً' : entry.status === 'tool'
 		<div class="tcard soon" data-title={ entry.title } data-cat={ entry.category } style={ `--cc:${ cat.color }` }>
 			<div class="top"><div class="ic" aria-hidden="true">{ entry.icon }</div><span class="st soon">{ label }</span></div>
 			<h3>{ entry.title }</h3>
-			<div class="foot"><span class="tag"><span class="dot" /><span>{ cat.name }</span></span><span class="num">{ entry.minutes }</span></div>
+			<div class="foot"><span class="tag"><span class="dot" /><span>{ cat.name }</span></span><span>{ entry.minutes }</span></div>
 		</div>
 	) : (
 		<a class="tcard" href={ href } data-title={ entry.title } data-cat={ entry.category } style={ `--cc:${ cat.color }` }>

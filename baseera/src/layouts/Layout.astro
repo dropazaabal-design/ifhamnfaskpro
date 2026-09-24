@@ -18,6 +18,27 @@ interface Props {
 
 const props = Astro.props;
 const year = new Date().getFullYear();
+
+const NAV = [
+	{ href: '/', label: 'الاختبارات' },
+	{ href: '/articles/', label: 'مقالات' },
+	{ href: '/methodology/', label: 'المنهجية' },
+	{ href: '/library/', label: 'المكتبة' },
+	{ href: '/me/', label: 'ملفّي' },
+];
+
+const TABS = [
+	{ href: '/', label: 'الرئيسية', icon: '<path d="M4 10.5 12 4l8 6.5V20h-5.5v-6h-5v6H4v-9.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>' },
+	{ href: '/articles/', label: 'اقرأ', icon: '<path d="M5 4.5h9.5L19 9v10.5H5v-15Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.5 12h7M8.5 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>' },
+	{ href: '/methodology/', label: 'المنهجية', icon: '<path d="M3.5 15.5h17M3.5 15.5v-3M8 15.5v-2M12 15.5v-4M16 15.5v-2M20.5 15.5v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="7" r="2.2" fill="currentColor"/>' },
+	{ href: '/me/', label: 'ملفّي', icon: '<circle cx="12" cy="8" r="3.6" stroke="currentColor" stroke-width="1.8"/><path d="M5 20c.6-3.6 3.4-5.6 7-5.6s6.4 2 7 5.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>' },
+];
+
+// الرئيسية نشطة في صفحات الاختبارات والفئات أيضاً: هي «مكتبة الاختبارات».
+const isActive = ( href: string ) =>
+	href === '/'
+		? props.path === '/' || /^\/(tests|category|tools)\//.test( props.path )
+		: props.path.startsWith( href );
 ---
 <!doctype html>
 <html lang="ar" dir="rtl">
@@ -32,14 +53,16 @@ const year = new Date().getFullYear();
 					<span class="mark"><Logo /></span>
 					<span class="nm">{ SITE.name }<small>من { SITE.publisher }</small></span>
 				</a>
-				<a class="icon-btn" href="/me/" aria-label="ملفّي: نتائجي المحفوظة على هذا الجهاز" title="ملفّي">
+				<nav class="topnav" aria-label="الأقسام">
+					{ NAV.map( ( n ) => <a href={ n.href } aria-current={ isActive( n.href ) ? 'page' : undefined }>{ n.label }</a> ) }
+				</nav>
+				<a class="icon-btn tb-me" href="/me/" aria-label="ملفّي: نتائجي المحفوظة على هذا الجهاز" title="ملفّي">
 					<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.6" stroke="currentColor" stroke-width="1.8" /><path d="M5 20c.6-3.6 3.4-5.6 7-5.6s6.4 2 7 5.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
 				</a>
 				<button class="icon-btn" type="button" data-theme-toggle aria-label="تبديل الوضع الليلي">
 					<svg class="sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8" /><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
 					<svg class="moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" /></svg>
 				</button>
-				<a class="tb-link" href="/library/">المكتبة</a>
 			</div>
 		</header>
 
@@ -49,9 +72,10 @@ const year = new Date().getFullYear();
 
 		<footer class="site">
 			<div class="wrap">
-				<div class="fbrand">{ SITE.name }</div>
+				<div class="fbrand"><Logo />{ SITE.name }</div>
 				<nav class="legal" aria-label="روابط الموقع">
 					<a href="/methodology/">منهجيتنا</a>
+					<a href="/articles/">مقالات</a>
 					<a href="/legal/about/">من نحن</a>
 					<a href="/legal/privacy-policy/">سياسة الخصوصية</a>
 					<a href="/legal/terms-of-use/">شروط الاستخدام</a>
@@ -65,6 +89,16 @@ const year = new Date().getFullYear();
 				</p>
 			</div>
 		</footer>
+
+		<!-- شريط التبويب: على الهاتف فقط، كما في التطبيقات التي يستعملها جمهور بصيرة كل يوم. -->
+		<nav class="tabbar" aria-label="التنقّل الرئيسي">
+			{ TABS.map( ( t ) => (
+				<a href={ t.href } aria-current={ isActive( t.href ) ? 'page' : undefined }>
+					<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" set:html={ t.icon } />
+					<span>{ t.label }</span>
+				</a>
+			) ) }
+		</nav>
 
 		<script>
 			import '../scripts/theme.ts';

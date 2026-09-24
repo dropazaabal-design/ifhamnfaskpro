@@ -30,7 +30,7 @@ const related = tool.related.map( ( s ) => catalog.find( ( c ) => c.slug === s )
 <Layout title={ tool.seoTitle } description={ tool.description } path={ path } jsonld={ graph( breadcrumbs( trail ), app, faqPage( tool.faq ) ) }>
 	<Breadcrumbs trail={ trail } />
 	<header class="page-h" style={ `--cc:${ cat.color }` }>
-		<span class="kicker"><span aria-hidden="true">{ tool.icon }</span> أداة</span>
+		<span class="kicker">أداة</span>
 		<h1>{ tool.title }</h1>
 		<p class="lead">{ tool.intro }</p>
 	</header>
