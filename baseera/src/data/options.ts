@@ -67,3 +67,38 @@ export const BSMAS5: Option[] = [
 	{ value: 4, label: 'غالباً' },
 	{ value: 5, label: 'غالباً جداً' },
 ];
+
+/** سبع نقاط للموافقة، كما في ECR-RS الأصلي (Fraley 2011) وSRBAI (Gardner 2012). */
+export const AGREE7: Option[] = [
+	{ value: 1, label: 'لا أوافق بشدّة' },
+	{ value: 2, label: 'لا أوافق' },
+	{ value: 3, label: 'لا أوافق قليلاً' },
+	{ value: 4, label: 'محايد' },
+	{ value: 5, label: 'أوافق قليلاً' },
+	{ value: 6, label: 'أوافق' },
+	{ value: 7, label: 'أوافق بشدّة' },
+];
+
+/** مقياس الرفاه المالي (CFPB)، الجزء الأوّل: «هذه العبارة تصفني…» — بترتيب ورقة التصحيح الرسمية. */
+export const CFPB_DESCRIBE: Option[] = [
+	{ value: 4, label: 'تصفني تماماً' },
+	{ value: 3, label: 'تصفني جيّداً' },
+	{ value: 2, label: 'تصفني إلى حدّ ما' },
+	{ value: 1, label: 'تصفني قليلاً' },
+	{ value: 0, label: 'لا تصفني إطلاقاً' },
+];
+
+/** مقياس الرفاه المالي (CFPB)، الجزء الثاني: «هذه العبارة تنطبق عليّ…». */
+export const CFPB_FREQ: Option[] = [
+	{ value: 4, label: 'دائماً' },
+	{ value: 3, label: 'غالباً' },
+	{ value: 2, label: 'أحياناً' },
+	{ value: 1, label: 'نادراً' },
+	{ value: 0, label: 'أبداً' },
+];
+
+/** سؤال المخاطرة في SOEP (Dohmen et al. 2011): من 0 إلى 10، والطرفان وحدهما موسومان. */
+export const RISK11: Option[] = Array.from( { length: 11 }, ( _, v ) => ( {
+	value: v,
+	label: v === 0 ? 'أتجنّب المخاطرة تماماً' : v === 10 ? 'مستعدّ تماماً للمخاطرة' : String( v ),
+} ) );

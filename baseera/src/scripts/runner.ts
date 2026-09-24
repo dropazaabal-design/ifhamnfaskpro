@@ -8,13 +8,14 @@
  * «اقرأ أكثر». القارئ الذي يريد التفاصيل يجدها كاملة بنقرة.
  */
 import type { Test, Item, Option } from '../lib/types.ts';
-import { scoreTest, intuitiveCount, type Answer, type ScaleResult } from '../lib/scoring.ts';
+import { scoreTest, resultFor, intuitiveCount, type Answer, type ScaleResult } from '../lib/scoring.ts';
 import { assessQuality } from '../lib/quality.ts';
 import { saveResult, previousOf, reliableChange } from '../lib/profile.ts';
-import { num, formatDate } from '../lib/format.ts';
+import { num, formatDate, countNoun, TRAPS } from '../lib/format.ts';
 import { splitLead } from '../lib/text.ts';
 import { drawShareCard } from './share-card.ts';
 import { copy } from './copy.ts';
+import { runDigitSpan, runSart, type TaskOutcome } from './tasks.ts';
 
 const esc = ( s: string ) =>
 	s.replace( /[&<>"']/g, ( c ) => ( { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } )[ c ]! );
@@ -50,6 +51,7 @@ function boot( root: HTMLElement ) {
 		start: root.querySelector<HTMLElement>( '[data-screen="start"]' )!,
 		question: root.querySelector<HTMLElement>( '[data-screen="question"]' )!,
 		result: root.querySelector<HTMLElement>( '[data-screen="result"]' )!,
+		task: root.querySelector<HTMLElement>( '[data-screen="task"]' )!,
 	};
 	const el = {
 		bar: root.querySelector<HTMLElement>( '[data-bar]' )!,
@@ -104,7 +106,8 @@ function boot( root: HTMLElement ) {
 			const figs = item.choices!.some( ( c ) => c.figure );
 			el.options.classList.toggle( 'figs', figs );
 			item.choices!.forEach( ( c, i ) => {
-				const body = c.figure ? `${ c.figure }<span class="sr-only">${ esc( c.label ) }</span>` : `<span class="k">${ num( i + 1 ) }</span><span>${ esc( c.label ) }</span>`;
+				// الرقم ظاهر فوق الرسم أيضاً، كي يشير إليه شرح الحلّ («الشكل 3»).
+				const body = c.figure ? `<span class="k" aria-hidden="true">${ num( i + 1 ) }</span>${ c.figure }<span class="sr-only">${ esc( c.label ) }</span>` : `<span class="k">${ num( i + 1 ) }</span><span>${ esc( c.label ) }</span>`;
 				html += `<label class="opt${ c.figure ? ' opt--fig' : '' }"><input type="radio" name="${ name }" value="${ i }"${ current === i ? ' checked' : '' }>${ body }</label>`;
 			} );
 		} else if ( test.optionsLayout === 'scale' ) {
@@ -189,7 +192,15 @@ function boot( root: HTMLElement ) {
 		sync();
 	}
 
-	const start = ( resume = false ) => {
+	const start = async ( resume = false ) => {
+		if ( test.kind === 'task' ) {
+			show( 'task' );
+			root.scrollIntoView( { behavior: 'smooth', block: 'start' } );
+			finish( test.task === 'digit-span' ? await runDigitSpan( screens.task ) : await runSart( screens.task ) );
+
+			return;
+		}
+
 		if ( ! resume ) {
 			index = 0;
 			answers = {};
@@ -223,8 +234,7 @@ function boot( root: HTMLElement ) {
 
 	/* ─────────────── النتيجة ─────────────── */
 
-	const isMean = ( s: ScaleResult ) => s.score % 1 !== 0 || s.max <= 7;
-	const fmt = ( s: ScaleResult, v: number ) => num( isMean( s ) ? v.toFixed( 2 ) : String( Math.round( v ) ) );
+	const fmt = ( s: ScaleResult, v: number ) => num( s.mean ? v.toFixed( 2 ) : String( Math.round( v ) ) );
 
 	function meter( s: ScaleResult ) {
 		const pos = ( v: number ) => ( ( v - s.min ) / ( s.max - s.min ) ) * 100;
@@ -259,7 +269,8 @@ function boot( root: HTMLElement ) {
 			return '';
 		}
 
-		const key = `${ x.score >= t.cut ? 'high' : 'low' }${ y.score >= t.cut ? 'high' : 'low' }` as keyof typeof t.cells;
+		// فوق منتصف المقياس «مرتفع»؛ المنتصف نفسه («بين بين») لا يُحسب ميلاً.
+		const key = `${ x.score > t.cut ? 'high' : 'low' }${ y.score > t.cut ? 'high' : 'low' }` as keyof typeof t.cells;
 		const cell = t.cells[ key ];
 
 		return `<div class="typology"><span class="kick">الأقرب إليك</span><h3>${ esc( cell.label ) }</h3><p>${ esc( cell.text ) }</p><p class="fine">الأنماط الأربعة تبسيط: البُعدان أدقّ من النمط، ومن يقترب من الحدّ بينها لا يُصنَّف بثقة.</p></div>`;
@@ -278,6 +289,16 @@ function boot( root: HTMLElement ) {
 		} else {
 			chips.push( '<span class="tchip">📏 بلا نطاق</span>' );
 			items.push( '<li><span class="i">📏</span><span>لا نعرض نطاق ثقة هنا: البنود لم يُقَس ثباتها بعد، واختراع رقم لها أسوأ من غيابه.</span></li>' );
+		}
+
+		if ( test.kind === 'task' ) {
+			if ( flags.length ) {
+				chips.push( '<span class="tchip warn">⚠️ أداء غير معتاد</span>' );
+				flags.forEach( ( f ) => items.push( `<li class="caution-line"><span class="i">⚠️</span><span>${ esc( f.text ) }</span></li>` ) );
+			} else {
+				chips.push( '<span class="tchip ok">✅ المهمّة اكتملت</span>' );
+				items.push( '<li><span class="i">✅</span><span>اكتملت المهمّة بلا علامة على سوء فهم أو انقطاع. أداؤك في مهمّة واحدة يتأثّر بالتعب والتشتّت والجهاز: أعدها في وقت آخر لترى إن ثبت.</span></li>' );
+			}
 		}
 
 		if ( test.kind === 'likert' ) {
@@ -350,16 +371,20 @@ function boot( root: HTMLElement ) {
 			.join( '' );
 
 		const traps = intuitiveCount( test, answers );
-		const trapLine = test.items.some( ( i ) => i.choices?.some( ( c ) => c.intuitive ) )
-			? `<p class="trap-line">🪤 وقعت في <b class="num">${ num( traps ) }</b> من الفخاخ</p>`
+		const trapItems = test.items.filter( ( i ) => i.choices?.some( ( c ) => c.intuitive ) ).length;
+		const trapLine = trapItems
+			? `<p class="trap-line">🪤 ${ traps ? `وقعت في <b>${ countNoun( traps, TRAPS, 'gen' ) }</b> من ${ num( trapItems ) }` : `لم تقع في أيّ فخّ من ${ num( trapItems ) }` }</p>`
 			: '';
 
 		return `${ trapLine }<details class="solutions"><summary>الحلول (${ num( test.items.length ) })</summary><div class="answers">${ rows }</div></details>`;
 	}
 
-	function finish() {
-		const scales = scoreTest( test, answers );
-		const quality = assessQuality( test, answers );
+	function finish( outcome?: TaskOutcome ) {
+		// المهمّة تحسب درجاتها بنفسها، ثم تمرّ بالعرض وميزان الثقة نفسيهما.
+		const scales = outcome ? test.subscales.map( ( s ) => resultFor( s, outcome.scores[ s.id ] ?? 0 ) ) : scoreTest( test, answers );
+		const quality = outcome
+			? { level: outcome.caution ? ( 'caution' as const ) : ( 'good' as const ), flags: outcome.caution ? [ { id: 'task' as const, text: outcome.caution } ] : [] }
+			: assessQuality( test, answers );
 		const at = new Date().toISOString();
 		const url = `${ site }/tests/${ test.slug }/`;
 		const alert = scales.some( ( s ) => s.band.tone === 'alert' );
@@ -371,15 +396,17 @@ function boot( root: HTMLElement ) {
 			// لا شيء.
 		}
 
+		const basis = test.instrument.license === 'original' ? 'بنود أصلية مع شرح كل حلّ' : 'مبني على مقياس منشور';
 		const shareText = test.sensitive
-			? `«${ test.title }» على بصيرة — مبني على مقياس منشور، ويخبرك بحدوده بصدق:\n${ url }`
-			: `أخذت «${ test.title }» على بصيرة: ${ scales.map( ( s ) => `${ s.name } — ${ s.band.label }` ).join( '، ' ) }.\nمبني على مقياس منشور، ويعطيك هامش الخطأ مع النتيجة. جرّبه:\n${ url }`;
+			? `«${ test.title }» على بصيرة — ${ basis }، ويخبرك بحدوده بصدق:\n${ url }`
+			: `أخذت «${ test.title }» على بصيرة: ${ scales.map( ( s ) => `${ s.name } — ${ s.band.label }` ).join( '، ' ) }.\n${ basis }، ويخبرك بحدوده بصدق. جرّبه:\n${ url }`;
 
 		screens.result.innerHTML = `
 			<div class="res">
 				<h2>نتيجتك</h2>
 				${ test.sensitive && alert ? '<p class="caution" style="margin-top:12px"><span>نتيجتك في المستوى الذي يُنصح عنده بالحديث مع مختصّ. <a href="#crisis-h" style="color:var(--color-primary);font-weight:700">موارد الدعم أدناه</a>.</span></p>' : '' }
 				${ scales.map( meter ).join( '' ) }
+				${ outcome ? `<ul class="task-details">${ outcome.details.map( ( d ) => `<li>${ esc( d ) }</li>` ).join( '' ) }</ul>` : '' }
 				${ typologyCard( scales ) }
 				${ trustPanel( scales, quality.flags, at, quality.level === 'caution' ) }
 				${ answersReview() }
@@ -428,6 +455,7 @@ function boot( root: HTMLElement ) {
 					sem: s.sem,
 					higherIs: s.higherIs,
 					uncalibrated: s.uncalibrated,
+					mean: s.mean,
 					band: s.band.label,
 				} ) ),
 			} );

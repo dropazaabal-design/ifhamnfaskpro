@@ -17,12 +17,22 @@ const { test } = Astro.props;
 // «<» يُهرَّب كي لا يُغلق نصٌّ داخل البيانات وسمَ script.
 const [ instrLead, instrRest ] = splitLead( test.instructions );
 
+// الوعد على قدر ما نملك: هامش الخطأ لا يُعرض حيث لم يُقَس الثبات.
+const calibrated = test.subscales.some( ( s ) => ! s.uncalibrated );
+const honest = calibrated
+	? 'النتيجة تقدير لا حكم: سنعرض لك معها هامش الخطأ، ونخبرك إن بدت إجاباتك متسرّعة.'
+	: test.kind === 'task'
+		? 'النتيجة تقدير لا حكم: أداؤك في جلسة واحدة يتأثّر بالتعب والتشتّت والجهاز. هذه النسخة لم يُقَس ثباتها، فلن نعرض هامش خطأ مُخترَعاً ولن نقارنك بأحد.'
+		: 'النتيجة تقدير لا حكم: هذه الأسئلة لم يُقَس ثباتها بعد، فلن نعرض هامش خطأ مُخترَعاً ولن نقارنك بأحد — وسنشرح لك كل جواب.';
+
 const json = JSON.stringify( { ...test, article: undefined, faq: undefined } ).replace( /</g, '\\u003c' );
 ---
 <section class="runner card" data-runner data-slug={ test.slug } data-site={ SITE.url } aria-live="polite">
 	<div data-screen="start">
 		<p class="runner__meta">
-			<span class="mchip">📝 <b>{ countNoun( test.items.length, test.kind === 'choice' ? QUESTIONS : STATEMENTS ) }</b></span>
+			{ test.kind === 'task'
+				? <span class="mchip">🎮 <b>مهمّة تفاعلية</b></span>
+				: <span class="mchip">📝 <b>{ countNoun( test.items.length, test.kind === 'choice' ? QUESTIONS : STATEMENTS ) }</b></span> }
 			<span class="mchip">⏱️ نحو <b>{ countNoun( test.minutes, MINUTES, 'gen' ) }</b></span>
 			<span class="mchip">🔒 على جهازك</span>
 		</p>
@@ -36,8 +46,8 @@ const json = JSON.stringify( { ...test, article: undefined, faq: undefined } ).r
 			</label>
 		) }
 		<details class="runner__honest">
-			<summary>⚖️ <b>تقدير لا حكم</b> — مع هامش الخطأ</summary>
-			<p>النتيجة تقدير لا حكم: سنعرض لك معها هامش الخطأ، ونخبرك إن بدت إجاباتك متسرّعة.</p>
+			<summary>⚖️ <b>تقدير لا حكم</b> — { calibrated ? 'مع هامش الخطأ' : 'بلا أرقام مُخترَعة' }</summary>
+			<p>{ honest }</p>
 		</details>
 		<button type="button" class="btn btn--primary btn--block" data-start>
 			ابدأ الاختبار
@@ -60,6 +70,8 @@ const json = JSON.stringify( { ...test, article: undefined, faq: undefined } ).r
 			<button type="button" class="btn btn--ghost" data-back>السابق</button>
 		</div>
 	</div>
+
+	<div data-screen="task" hidden></div>
 
 	<div data-screen="result" hidden tabindex="-1"></div>
 
@@ -109,7 +121,9 @@ const json = JSON.stringify( { ...test, article: undefined, faq: undefined } ).r
 	.opt:has(input:checked) .k { background: var(--color-primary); color: var(--color-primary-contrast); }
 	.opt:has(input:focus-visible) { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 	.opt--fig { flex-direction: column; justify-content: center; padding: 10px 4px; color: var(--color-text); }
-	.opt--fig svg { width: 100%; max-width: 56px; height: auto; }
+	.opt--fig { gap: 6px; }
+	.opt--fig .k { width: 20px; height: 20px; font-size: 11px; border-radius: 6px; }
+	.opt--fig svg { width: 100%; max-width: 64px; height: auto; }
 	/* مقياس 0–10: صفّ أرقام بطرفين موسومين، كما في استبيانات Dohmen وزملائه. */
 	.runner__opts.scale { gap: 6px; }
 	.scale-row { display: grid; grid-template-columns: repeat(11, 1fr); gap: 4px; }
@@ -177,6 +191,28 @@ const json = JSON.stringify( { ...test, article: undefined, faq: undefined } ).r
 	.share .btn { min-height: 46px; font-size: 14px; }
 	.share .wide { grid-column: 1 / -1; }
 	.save-note { font-size: 12px; color: var(--color-text-muted); text-align: center; margin-top: 8px; line-height: 1.7; }
+	/* المهامّ التفاعلية */
+	.task { display: grid; gap: 14px; }
+	.task__phase { font-size: 13px; font-weight: 700; color: var(--color-text-muted); text-align: center; }
+	.task__stage { min-height: 132px; display: grid; place-items: center; font-size: 72px; font-weight: 700; border-radius: 18px; background: var(--color-bg); border: 1px solid var(--color-border); transition: background .15s; }
+	.task__stage:not(:empty):not(.is-ok):not(.is-no) { font-variant-numeric: tabular-nums; }
+	.task__stage.msg { font-size: 19px; font-weight: 800; color: var(--color-text-muted); }
+	.task__stage.is-ok { color: var(--tone-low); background: var(--tone-ok-soft); }
+	.task__stage.is-no { color: var(--tone-alert); background: var(--tone-alert-soft); }
+	.task__typed { display: block; text-align: center; font-size: 26px; font-weight: 700; letter-spacing: 2px; min-height: 40px; }
+	.keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; direction: ltr; margin-top: 8px; }
+	.key { min-height: 54px; border-radius: 12px; border: 1.5px solid var(--color-border); background: var(--color-surface); font-size: 22px; font-weight: 700; cursor: pointer; touch-action: manipulation; }
+	.key:active { background: var(--color-primary-soft); border-color: var(--color-primary); }
+	.key--ok { grid-column: span 2; background: var(--color-primary); color: var(--color-primary-contrast); border-color: var(--color-primary); font-family: var(--font-body); font-size: 17px; }
+	.task__gate { display: grid; gap: 10px; font-size: 14.5px; line-height: 1.9; }
+	.task__gate .fine { font-size: 12.5px; color: var(--color-text-muted); }
+	.sart { width: 100%; aspect-ratio: 1.3; max-height: 300px; border-radius: 22px; border: 2px solid var(--color-border-strong); background: var(--color-bg); display: grid; place-items: center; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; transition: background .08s; }
+	.sart.hit { background: var(--color-primary-soft); border-color: var(--color-primary); }
+	.sart__digit { font-weight: 700; line-height: 1; color: var(--color-text); }
+	.task__bar { height: 5px; background: var(--color-surface-2); border-radius: 100px; overflow: hidden; }
+	.task__bar span { display: block; height: 100%; width: 0; background: var(--color-primary); }
+	.task-details { list-style: none; margin-top: 14px; display: grid; gap: 6px; font-size: 13.5px; padding: 12px 14px; border-radius: 12px; background: var(--color-surface-2); }
+	.task-details li::before { content: '• '; color: var(--color-primary); font-weight: 800; }
 	.toast { position: fixed; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--color-text); color: var(--color-bg); padding: 10px 16px; border-radius: 100px; font-size: 13px; font-weight: 700; z-index: 60; box-shadow: var(--shadow-lg); }
 </style>
 

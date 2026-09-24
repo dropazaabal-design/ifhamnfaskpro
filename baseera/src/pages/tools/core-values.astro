@@ -1,0 +1,115 @@
+---
+/**
+ * أداة القيم الأساسية — ترتيب بطاقات على دائرة شوارتز.
+ *
+ * البطاقات HTML جاهز في الصفحة (يقرؤها Google ومن لا يشغّل JavaScript)،
+ * والسكربت للاختيار ورسم النتيجة وحدهما.
+ */
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Limits from '../../components/Limits.astro';
+import Faq from '../../components/Faq.astro';
+import ProductPick from '../../components/ProductPick.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import TestCard from '../../components/TestCard.astro';
+import { coreValues as tool, VALUES, POLES } from '../../data/tools/core-values.ts';
+import { categoryById } from '../../data/categories.ts';
+import { catalog } from '../../data/catalog.ts';
+import { breadcrumbs, faqPage, graph, abs } from '../../lib/seo.ts';
+import { splitLead } from '../../lib/text.ts';
+
+const cat = categoryById.get( tool.category )!;
+const path = `/tools/${ tool.slug }/`;
+const trail = [ { name: 'الرئيسية', path: '/' }, { name: cat.name, path: `/category/${ cat.id }/` }, { name: tool.title, path } ];
+const app = {
+	'@type': 'WebApplication',
+	name: tool.title,
+	description: tool.description,
+	url: abs( path ),
+	applicationCategory: 'LifestyleApplication',
+	operatingSystem: 'Any',
+	inLanguage: 'ar',
+	isAccessibleForFree: true,
+	offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+const related = tool.related.map( ( s ) => catalog.find( ( c ) => c.slug === s ) ).filter( Boolean );
+const [ introLead, introRest ] = splitLead( tool.intro );
+const data = JSON.stringify( { values: VALUES, poles: POLES } ).replace( /</g, '\\u003c' );
+---
+<Layout title={ tool.seoTitle } description={ tool.description } path={ path } jsonld={ graph( breadcrumbs( trail ), app, faqPage( tool.faq ) ) }>
+	<Breadcrumbs trail={ trail } />
+	<header class="page-h" style={ `--cc:${ cat.color }` }>
+		<span class="kicker"><span aria-hidden="true">{ tool.icon }</span> أداة تأمّل</span>
+		<h1>{ tool.title }</h1>
+		<div class="lead">
+			<p>{ introLead }</p>
+			{ introRest && <details class="more-inline"><summary>المزيد</summary><p>{ introRest }</p></details> }
+		</div>
+		<div class="meta-row"><span>📚 نظرية شوارتز للقيم</span><span>⏱ نحو دقيقتين</span><span>🔒 على جهازك</span></div>
+	</header>
+
+	<section class="runner card values" data-values>
+		<p class="values__step" data-step>اختر <b>3 قيم</b> هي الأهمّ عندك <span class="num" data-count>0 / 3</span></p>
+		<div class="values__grid" role="group" aria-label="القيم العشر">
+			{ VALUES.map( ( v ) => (
+				<button type="button" class="vcard" data-value={ v.id } aria-pressed="false">
+					<span class="vcard__ic" aria-hidden="true">{ v.icon }</span>
+					<b>{ v.name }</b>
+					<small>{ v.text }</small>
+				</button>
+			) ) }
+		</div>
+		<button type="button" class="btn btn--primary btn--block" data-show disabled>اعرض خريطتي</button>
+		<div data-result hidden tabindex="-1"></div>
+		<p class="save-note">🔒 اختيارك يبقى في متصفّحك، ولا يُرسل إلى أيّ مكان.</p>
+		<script type="application/json" data-values-data set:html={ data } />
+	</section>
+
+	<Limits items={ tool.cannot } title="ما لا تستطيع هذه الأداة قوله" />
+	<AdSlot slot="inArticle" />
+
+	<article class="prose prose--fold">
+		{ tool.article.map( ( s, i ) => (
+			<details class="fold" open={ i === 0 }>
+				<summary><h2>{ s.heading }</h2></summary>
+				{ s.body.split( '\n\n' ).map( ( p ) => <p>{ p }</p> ) }
+			</details>
+		) ) }
+		<p style="font-size:13px;color:var(--color-text-muted)">المصدر: <span class="num" style="direction:ltr">{ tool.source.citation }</span></p>
+	</article>
+
+	<ProductPick topic={ tool.product.topic } why={ tool.product.why } campaign={ tool.slug } />
+	<Faq items={ tool.faq } />
+	<AdSlot slot="afterResult" />
+
+	<section class="related" aria-labelledby="rel-h">
+		<div class="sec-h"><h2 id="rel-h">اختبارات قريبة</h2></div>
+		<div class="grid">{ related.map( ( r ) => <TestCard entry={ r! } /> ) }</div>
+	</section>
+
+	<style is:global>
+		.values { margin-top: 22px; padding: 18px; box-shadow: var(--shadow); display: grid; gap: 14px; }
+		.values__step { font-size: 14.5px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+		.values__step .num { font-size: 13px; font-weight: 700; color: var(--color-primary); }
+		.values__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+		.vcard { display: grid; gap: 2px; justify-items: start; text-align: start; padding: 11px 12px; border-radius: 14px; border: 1.5px solid var(--color-border); background: var(--color-surface); cursor: pointer; transition: border-color .14s, background .14s; }
+		.vcard b { font-size: 14.5px; }
+		.vcard small { font-size: 11.5px; line-height: 1.6; color: var(--color-text-muted); }
+		.vcard__ic { font-size: 20px; }
+		.vcard[aria-pressed='true'] { border-color: var(--color-primary); background: var(--color-primary-soft); }
+		.vcard[aria-pressed='true'] b::after { content: ' ✓'; color: var(--color-primary); }
+		.vcard:disabled { opacity: .45; cursor: default; }
+		.wheel { display: block; width: min(100%, 280px); margin: 6px auto 0; }
+		.wheel text { font-family: var(--font-body); font-size: 10px; font-weight: 700; fill: var(--color-text); }
+		.vres h3 { font-family: var(--font-display); font-size: 18px; margin-top: 14px; }
+		.vres ol { margin-top: 8px; padding-inline-start: 22px; display: grid; gap: 6px; font-size: 14px; line-height: 1.8; }
+		.vres .poles { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+		.vres .poles span { font-size: 12.5px; font-weight: 700; padding: 4px 11px; border-radius: 100px; background: var(--color-primary-soft); color: var(--color-primary); }
+		.vres .tension { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: var(--tone-warn-soft); font-size: 13.5px; line-height: 1.85; }
+		.vres .redo { margin-top: 12px; }
+	</style>
+
+	<script>
+		import '../../scripts/values.ts';
+	</script>
+</Layout>

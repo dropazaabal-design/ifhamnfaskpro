@@ -19,7 +19,8 @@ export interface SavedResult {
 	title: string;
 	at: string;
 	quality: 'good' | 'caution';
-	scales: Pick<ScaleResult, 'id' | 'name' | 'score' | 'min' | 'max' | 'low' | 'high' | 'sem' | 'higherIs' | 'uncalibrated'> & { band: string }[];
+	/** ‎mean‎ اختياري: النتائج المحفوظة قبل إضافته تُقرأ بالتقدير القديم. */
+	scales: ( Pick<ScaleResult, 'id' | 'name' | 'score' | 'min' | 'max' | 'low' | 'high' | 'sem' | 'higherIs' | 'uncalibrated'> & { band: string; mean?: boolean } )[];
 }
 
 export function readProfile(): SavedResult[] {

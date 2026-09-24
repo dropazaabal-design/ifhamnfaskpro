@@ -3,7 +3,8 @@ import { num, countNoun, TIMES, formatDate } from '../lib/format.ts';
 
 const box = document.querySelector<HTMLElement>( '[data-profile]' )!;
 const esc = ( s: string ) => s.replace( /[&<>"']/g, ( c ) => ( { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } )[ c ]! );
-const f = ( n: number, max: number ) => num( max <= 5 ? n.toFixed( 2 ) : String( Math.round( n ) ) );
+// النتائج القديمة بلا ‎mean‎: كانت كل مقاييس المتوسّط حينها حتى 5.
+const f = ( n: number, s: { max: number; mean?: boolean } ) => num( ( s.mean ?? s.max <= 5 ) ? n.toFixed( 2 ) : String( Math.round( n ) ) );
 const date = ( iso: string ) => formatDate( iso, 'short' );
 
 function render() {
@@ -32,11 +33,11 @@ function render() {
 						if ( p ) {
 							const c = reliableChange( p.score, s.score, s.sem, s.higherIs );
 							const verdict = c.rci === null ? 'غير قابل للحكم' : c.reliable ? ( c.direction === 'better' ? 'تغيّر موثوق نحو الأفضل' : c.direction === 'worse' ? 'تغيّر موثوق يستحقّ الانتباه' : 'تغيّر موثوق' ) : 'ضمن هامش الخطأ';
-							change = `<span style="font-size:12px;color:var(--color-text-muted)"> · ${ c.delta >= 0 ? '+' : '−' }${ f( Math.abs( c.delta ), s.max ) } — ${ verdict }</span>`;
+							change = `<span style="font-size:12px;color:var(--color-text-muted)"> · ${ c.delta >= 0 ? '+' : '−' }${ f( Math.abs( c.delta ), s ) } — ${ verdict }</span>`;
 						}
 					}
 
-					return `<li style="display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:6px 0;border-bottom:1px solid var(--color-border)"><span>${ esc( s.name ) }${ change }</span><b class="num">${ f( s.score, s.max ) } <span style="font-weight:500;color:var(--color-text-muted);font-size:12px">${ esc( s.band ) }</span></b></li>`;
+					return `<li style="display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:6px 0;border-bottom:1px solid var(--color-border)"><span>${ esc( s.name ) }${ change }</span><b class="num">${ f( s.score, s ) } <span style="font-weight:500;color:var(--color-text-muted);font-size:12px">${ esc( s.band ) }</span></b></li>`;
 				} )
 				.join( '' );
 

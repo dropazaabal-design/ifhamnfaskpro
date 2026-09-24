@@ -54,6 +54,8 @@ export const QUESTIONS: NounForms = { one: 'سؤال واحد', two: 'سؤالا
 export const STATEMENTS: NounForms = { one: 'عبارة واحدة', two: 'عبارتان', twoGen: 'عبارتين', few: 'عبارات', many: 'عبارةً', hundred: 'عبارة' };
 export const MINUTES: NounForms = { one: 'دقيقة واحدة', two: 'دقيقتان', twoGen: 'دقيقتين', few: 'دقائق', many: 'دقيقةً', hundred: 'دقيقة' };
 export const TESTS: NounForms = { one: 'اختبار واحد', two: 'اختباران', twoGen: 'اختبارين', few: 'اختبارات', many: 'اختباراً', hundred: 'اختبار' };
+export const DIGITS: NounForms = { one: 'رقم واحد', two: 'رقمان', twoGen: 'رقمين', few: 'أرقام', many: 'رقماً', hundred: 'رقم' };
+export const TRAPS: NounForms = { one: 'فخّ واحد', two: 'فخّان', twoGen: 'فخّين', few: 'فخاخ', many: 'فخّاً', hundred: 'فخّ' };
 export const TIMES: NounForms = { one: 'مرّة واحدة', two: 'مرّتان', twoGen: 'مرّتين', few: 'مرّات', many: 'مرّةً', hundred: 'مرّة' };
 
 /**

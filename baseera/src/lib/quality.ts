@@ -18,7 +18,7 @@ import type { Answer } from './scoring.ts';
 import { countNoun, STATEMENTS } from './format.ts';
 
 export interface QualityFlag {
-	id: 'speed' | 'longstring' | 'acquiescence';
+	id: 'speed' | 'longstring' | 'acquiescence' | 'task';
 	text: string;
 }
 

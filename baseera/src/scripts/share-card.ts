@@ -114,7 +114,7 @@ export async function drawShareCard( title: string, scales: ScaleResult[], site:
 	const x1 = W - 110;
 
 	for ( const s of shown ) {
-		const mean = s.score % 1 !== 0 || s.max <= 5;
+		const mean = s.mean;
 
 		ctx.textAlign = 'right';
 		ctx.fillStyle = '#eef2fb';

@@ -29,6 +29,8 @@ export interface ScaleResult {
 	about?: string;
 	verified: boolean;
 	uncalibrated: boolean;
+	/** درجة متوسّط تُعرض بمنزلتين عشريّتين؛ المجموع والعدّ أعداد صحيحة. */
+	mean: boolean;
 }
 
 /** z لنطاق ثقة 90%. */
@@ -91,28 +93,39 @@ export function scoreTest( test: Test, answers: Record<string, Answer> ): ScaleR
 			score = values.length ? values.reduce( ( a, b ) => a + b, 0 ) / values.length : 0;
 		}
 
-		const sem = scale.uncalibrated ? 0 : standardError( scale.sd, scale.alpha );
-		const low = Math.max( scale.min, score - Z90 * sem );
-		const high = Math.min( scale.max, score + Z90 * sem );
-		const band = scale.bands.find( ( b ) => score <= b.upTo ) ?? scale.bands[ scale.bands.length - 1 ];
-
-		return {
-			id: scale.id,
-			name: scale.name,
-			score: round( score, scale.scoring === 'mean' ? 2 : 0 ),
-			min: scale.min,
-			max: scale.max,
-			position: round( ( ( score - scale.min ) / ( scale.max - scale.min ) ) * 100, 0 ),
-			low: round( low, scale.scoring === 'mean' ? 2 : 0 ),
-			high: round( high, scale.scoring === 'mean' ? 2 : 0 ),
-			sem: round( sem, 2 ),
-			band,
-			higherIs: scale.higherIs,
-			about: scale.about,
-			verified: scale.verified,
-			uncalibrated: Boolean( scale.uncalibrated ),
-		};
+		return resultFor( scale, score );
 	} );
+}
+
+/**
+ * النتيجة الكاملة لدرجة واحدة: الموضع، ونطاق الثقة، والفئة.
+ *
+ * يستخدمها التصحيح، والمهامّ التفاعلية التي تحسب درجتها بنفسها (مدى
+ * الأرقام مثلاً)، فتمرّ النتيجتان بالعرض وميزان الثقة نفسيهما.
+ */
+export function resultFor( scale: Subscale, score: number ): ScaleResult {
+	const sem = scale.uncalibrated ? 0 : standardError( scale.sd, scale.alpha );
+	const low = Math.max( scale.min, score - Z90 * sem );
+	const high = Math.min( scale.max, score + Z90 * sem );
+	const band = scale.bands.find( ( b ) => score <= b.upTo ) ?? scale.bands[ scale.bands.length - 1 ];
+
+	return {
+		id: scale.id,
+		name: scale.name,
+		score: round( score, scale.scoring === 'mean' ? 2 : 0 ),
+		min: scale.min,
+		max: scale.max,
+		position: round( ( ( score - scale.min ) / ( scale.max - scale.min ) ) * 100, 0 ),
+		low: round( low, scale.scoring === 'mean' ? 2 : 0 ),
+		high: round( high, scale.scoring === 'mean' ? 2 : 0 ),
+		sem: round( sem, 2 ),
+		band,
+		higherIs: scale.higherIs,
+		about: scale.about,
+		verified: scale.verified,
+		uncalibrated: Boolean( scale.uncalibrated ),
+		mean: scale.scoring === 'mean',
+	};
 }
 
 /** عدد الإجابات الحدسية الخاطئة (اختبار الانعكاس المعرفي). */

@@ -125,6 +125,7 @@ export interface Test {
 	typology?: {
 		x: string;
 		y: string;
+		/** منتصف المقياس: ما فوقه «مرتفع»، والمنتصف نفسه لا يُحسب ميلاً. */
 		cut: number;
 		cells: Record<'lowlow' | 'highlow' | 'lowhigh' | 'highhigh', { label: string; text: string }>;
 	};

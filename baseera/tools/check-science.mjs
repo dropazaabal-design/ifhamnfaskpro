@@ -13,6 +13,8 @@
 import { tests } from '../src/data/tests/index.ts';
 import { scoreTest } from '../src/lib/scoring.ts';
 import { assessQuality } from '../src/lib/quality.ts';
+import { countNoun, TESTS } from '../src/lib/format.ts';
+import { ROTATIONS, NETS, normalize, mirror, turns } from '../src/data/tests/spatial-reasoning.ts';
 
 const errors = [];
 const pending = [];
@@ -69,6 +71,14 @@ for ( const t of tests ) {
 		if ( ! s.verified ) pending.push( `${ t.slug } · ${ s.name }: ${ s.paramsSource }` );
 	}
 
+	// المهامّ التفاعلية بلا بنود: درجتها من الأداء، وتصحيحها في src/scripts/tasks.ts.
+	if ( t.kind === 'task' ) {
+		if ( ! t.task ) fail( t.slug, 'مهمّة تفاعلية بلا نوع (task)' );
+		if ( t.items.length ) fail( t.slug, 'المهمّة التفاعلية لا تحمل بنوداً' );
+		if ( t.subscales.some( ( s ) => ! s.uncalibrated ) ) fail( t.slug, 'نسخ المهامّ هنا غير مقنّنة: يجب أن تكون uncalibrated' );
+		continue;
+	}
+
 	// 4 — التصحيح نفسه: أدنى الإجابات وأعلاها يجب أن يعطيا حدود المقياس.
 	const answerAll = ( pick ) => {
 		const a = {};
@@ -108,7 +118,59 @@ for ( const t of tests ) {
 	}
 }
 
-console.log( `فُحص ${ tests.length } اختبارات · ${ tests.reduce( ( n, t ) => n + t.items.length, 0 ) } بنداً · ${ tests.reduce( ( n, t ) => n + t.subscales.length, 0 ) } مقياساً فرعياً` );
+// 6 — الأشكال المكانية: تُتحقَّق هندسياً لا بالعين.
+const key = ( c ) => JSON.stringify( normalize( c ) );
+ROTATIONS.forEach( ( r, i ) => {
+	const rotations = [ 0, 1, 2, 3 ].map( ( k ) => key( turns( r.shape, k ) ) );
+	if ( rotations.includes( key( mirror( r.shape ) ) ) ) fail( 'spatial-reasoning', `شكل التدوير ${ i + 1 } متناظر: صورة المرآة تدوير له` );
+	const mirrors = r.mirrors.map( ( k ) => key( turns( mirror( r.shape ), k ) ) );
+	if ( new Set( mirrors ).size !== 3 ) fail( 'spatial-reasoning', `خيارات المرآة في السؤال ${ i + 1 } مكرّرة` );
+	if ( mirrors.some( ( m ) => rotations.includes( m ) ) ) fail( 'spatial-reasoning', `خيار مرآة في السؤال ${ i + 1 } هو تدوير للأصل` );
+} );
+
+// شبكة المكعّب صالحة إن غطّت دحرجة مكعّب عليها ستّة أوجه مختلفة.
+function foldsToCube( cells ) {
+	const set = new Set( cells.map( ( [ x, y ] ) => `${ x },${ y }` ) );
+	const roll = {
+		e: ( o ) => ( { ...o, bottom: o.e, e: o.top, top: o.w, w: o.bottom } ),
+		w: ( o ) => ( { ...o, bottom: o.w, w: o.top, top: o.e, e: o.bottom } ),
+		s: ( o ) => ( { ...o, bottom: o.s, s: o.top, top: o.n, n: o.bottom } ),
+		n: ( o ) => ( { ...o, bottom: o.n, n: o.top, top: o.s, s: o.bottom } ),
+	};
+	const step = { e: [ 1, 0 ], w: [ -1, 0 ], s: [ 0, 1 ], n: [ 0, -1 ] };
+	const start = cells[ 0 ];
+	const seen = new Map( [ [ `${ start[ 0 ] },${ start[ 1 ] }`, { top: 'T', bottom: 'B', n: 'N', s: 'S', e: 'E', w: 'W' } ] ] );
+	const queue = [ start ];
+	while ( queue.length ) {
+		const [ x, y ] = queue.shift();
+		const o = seen.get( `${ x },${ y }` );
+		for ( const d of Object.keys( step ) ) {
+			const nx = x + step[ d ][ 0 ];
+			const ny = y + step[ d ][ 1 ];
+			const k = `${ nx },${ ny }`;
+			if ( set.has( k ) && ! seen.has( k ) ) {
+				seen.set( k, roll[ d ]( o ) );
+				queue.push( [ nx, ny ] );
+			}
+		}
+	}
+	return seen.size === 6 && new Set( [ ...seen.values() ].map( ( o ) => o.bottom ) ).size === 6;
+}
+NETS.forEach( ( n, i ) => {
+	const ok = n.options.map( foldsToCube );
+	if ( ok.filter( Boolean ).length !== 1 || ! ok[ n.valid ] ) fail( 'spatial-reasoning', `سؤال الشبكة ${ i + 1 }: الصالحة ${ ok.map( ( v, j ) => ( v ? j + 1 : '' ) ).filter( Boolean ).join( '، ' ) || 'لا شيء' }، لا ${ n.valid + 1 } وحدها` );
+} );
+// ضابط للمحاكي نفسه: الشبكات الإحدى عشرة المعروفة كلّها صالحة.
+const ELEVEN = [
+	'0,1 1,1 2,1 3,1 0,0 0,2', '0,1 1,1 2,1 3,1 0,0 1,2', '0,1 1,1 2,1 3,1 0,0 2,2', '0,1 1,1 2,1 3,1 0,0 3,2',
+	'0,1 1,1 2,1 3,1 1,0 1,2', '0,1 1,1 2,1 3,1 1,0 2,2', '0,0 1,0 1,1 2,1 3,1 3,2', '0,0 1,0 1,1 2,1 2,2 3,2',
+	'0,0 1,0 2,0 2,1 3,1 4,1', '0,0 1,0 1,1 2,1 3,1 2,2', '0,0 1,0 1,1 2,1 3,1 1,2',
+];
+ELEVEN.forEach( ( s, i ) => {
+	if ( ! foldsToCube( s.split( ' ' ).map( ( p ) => p.split( ',' ).map( Number ) ) ) ) fail( 'check-science', `محاكي المكعّب يرفض الشبكة المعروفة ${ i + 1 }` );
+} );
+
+console.log( `فُحص ${ countNoun( tests.length, TESTS ) } · ${ tests.reduce( ( n, t ) => n + t.items.length, 0 ) } بنداً · ${ tests.reduce( ( n, t ) => n + t.subscales.length, 0 ) } مقياساً فرعياً · والأشكال المكانية متحقَّق منها هندسياً` );
 
 if ( pending.length ) {
 	console.log( `\nقيم تحتاج مراجعة من المصدر الأصلي قبل الإطلاق (${ pending.length }):` );
