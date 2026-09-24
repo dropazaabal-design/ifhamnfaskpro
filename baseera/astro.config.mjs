@@ -10,7 +10,7 @@ const SITE_URL = 'https://baseera.kitabwbs.com';
 export default defineConfig( {
 	site: SITE_URL,
 	trailingSlash: 'always',
-	build: { format: 'directory', inlineStylesheets: 'auto' },
+	build: { format: 'directory', inlineStylesheets: 'auto', assets: 'assets' },
 	compressHTML: true,
 	integrations: [
 		sitemap( {
