@@ -7,7 +7,6 @@
  * جاهز في الصفحة، والسكربت للبحث والتصفية وحدهما.
  */
 import Layout from '../layouts/Layout.astro';
-import Logo from '../components/Logo.astro';
 import TestCard from '../components/TestCard.astro';
 import AdSlot from '../components/AdSlot.astro';
 import ProductPick from '../components/ProductPick.astro';
@@ -27,13 +26,28 @@ const sourceOf = ( slug: string ) => testBySlug.get( slug )?.instrument.authors.
 	description="اختبارات الشخصية والصلابة والقلق والاحتراق والتفكير — بمصدر معلن لكل اختبار، بلا تسجيل، مع هامش الخطأ وما لا يستطيع كل اختبار قوله."
 	path="/"
 	jsonld={ graph() }
+	wide
 >
 	<section class="hero">
-		<div class="glow" aria-hidden="true"></div>
-		<div class="mark"><Logo rays /></div>
-		<h1>بَصيرة</h1>
-		<p class="tagline">اعرف نفسك بعُمق — وبصدق عن حدود ما تعرفه</p>
-		<p class="subline">اختبارات في علم النفس والشخصية والتفكير، بمصدر معلن لكل اختبار، وهامش الخطأ حين يُعرف.</p>
+		<span class="eyebrow"><i aria-hidden="true"></i>مجاناً · بلا تسجيل · إجاباتك لا تغادر جهازك</span>
+		<h1>اعرف نفسك بعُمق<em>وبصدق عن حدود ما تعرفه</em></h1>
+		<p class="subline">اختبارات في علم النفس والشخصية والتفكير، لكلّ منها مصدر معلن. ونتيجتك لا تأتي رقماً وحده: تأتي مع النطاق الذي تقع فيه درجتك على الأرجح.</p>
+
+		<figure class="gauge" aria-label="مثال لنتيجة: درجة 34 من 10 إلى 50، والنطاق المرجّح بين 30 و38">
+			<div class="g-top"><span class="g-name">مثال · الانبساط</span><span class="g-score num">34</span></div>
+			<div class="g-track ticks" aria-hidden="true"><span class="g-band"></span><span class="g-needle"></span></div>
+			<div class="g-axis" aria-hidden="true"><span>10</span><span>30</span><span>50</span></div>
+			<figcaption class="g-key">
+				<span><i class="k-needle"></i>درجتك</span>
+				<span><i class="k-band"></i>النطاق المرجّح <b class="num">30–38</b></span>
+			</figcaption>
+		</figure>
+
+		<div class="cta-row">
+			<a class="btn btn--primary" href="#tests">ابدأ اختباراً</a>
+			<a class="btn btn--ghost" href="/methodology/">كيف نقيس؟</a>
+		</div>
+
 		<div class="stats">
 			<div><b class="num">{ num( liveCatalog.length ) }</b><span>متاح الآن</span></div>
 			<div><b class="num">{ num( catalog.length ) }</b><span>في الخطّة</span></div>
@@ -42,9 +56,9 @@ const sourceOf = ( slug: string ) => testBySlug.get( slug )?.instrument.authors.
 
 		<div class="promise">
 			<ul class="promise-chips" aria-label="وعدنا">
-				<li>📚 مصدر معلن لكل اختبار</li>
-				<li>📏 هامش الخطأ حين نعرفه</li>
-				<li>🚫 لا أرقام مُخترَعة</li>
+				<li>مصدر معلن لكل اختبار</li>
+				<li>هامش الخطأ حين نعرفه</li>
+				<li>لا أرقام مُخترَعة</li>
 			</ul>
 			<details>
 				<summary>وعدنا كاملاً</summary>
@@ -55,17 +69,17 @@ const sourceOf = ( slug: string ) => testBySlug.get( slug )?.instrument.authors.
 		<label class="search">
 			<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" /><path d="m20 20-3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
 			<span class="sr-only">ابحث عن اختبار</span>
-			<input id="q" type="search" placeholder="ابحث عن اختبار…" autocomplete="off" enterkeyhint="search" />
+			<input id="q" type="search" placeholder="ابحث: قلق، شخصية، ذاكرة…" autocomplete="off" enterkeyhint="search" />
 		</label>
 	</section>
 
-	<div class="filters" role="group" aria-label="تصفية حسب الفئة">
+	<div class="filters" id="tests" role="group" aria-label="تصفية حسب الفئة">
 		<button type="button" class="chip" aria-pressed="true" data-cat="all">الكل</button>
 		{ categories.map( ( c ) => <button type="button" class="chip" aria-pressed="false" data-cat={ c.id }>{ c.name }</button> ) }
 	</div>
 
 	<div data-featured>
-		<div class="sec-h"><span aria-hidden="true" style="font-size:17px">⭐</span><h2>ابدأ من هنا</h2></div>
+		<div class="sec-h" style="--cc:var(--signal)"><span class="cic" aria-hidden="true"></span><h2>ابدأ من هنا</h2></div>
 		<div class="feat">
 			{ featured.map( ( e ) => <TestCard entry={ e } variant="featured" source={ sourceOf( e.slug ) } /> ) }
 		</div>
@@ -78,8 +92,9 @@ const sourceOf = ( slug: string ) => testBySlug.get( slug )?.instrument.authors.
 		return (
 			<section class="cat-section" data-section={ c.id } style={ `--cc:${ c.color }` } aria-labelledby={ `h-${ c.id }` }>
 				<div class="sec-h">
-					<span class="cic" aria-hidden="true">{ c.icon }</span>
+					<span class="cic" aria-hidden="true"></span>
 					<h2 id={ `h-${ c.id }` }>{ c.name }</h2>
+					<span class="cnt">{ num( items.filter( ( e ) => e.status !== 'soon' ).length ) }/{ num( items.length ) }</span>
 					<a class="more" href={ `/category/${ c.id }/` }>الكل ‹</a>
 				</div>
 				<div class="grid">{ items.map( ( e ) => <TestCard entry={ e } /> ) }</div>
@@ -94,9 +109,9 @@ const sourceOf = ( slug: string ) => testBySlug.get( slug )?.instrument.authors.
 	<section class="why" aria-labelledby="why-h">
 		<h2 id="why-h">لماذا بصيرة مختلفة؟</h2>
 		<ul class="why-cards">
-			<li><span aria-hidden="true">📚</span><b>مصدر معلن</b><small>لا أسئلة مجهولة المصدر</small></li>
-			<li><span aria-hidden="true">⚖️</span><b>ميزان ثقة</b><small>مع كل نتيجة</small></li>
-			<li><span aria-hidden="true">🔒</span><b>على جهازك</b><small>بلا تسجيل ولا خادم</small></li>
+			<li><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 4.5h10.5a3 3 0 0 1 3 3V19.5H8a3 3 0 0 1-3-3v-12Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M5 16.5a3 3 0 0 1 3-3h10.5" stroke="currentColor" stroke-width="1.7"/></svg></span><b>مصدر معلن</b><small>اسم المقياس ومؤلّفه وترخيصه تحت كل اختبار</small></li>
+			<li><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 16h18M3 16v-3M7.5 16v-2M12 16v-4M16.5 16v-2M21 16v-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><rect x="8" y="6" width="8" height="4" rx="1.5" fill="var(--signal)"/></svg></span><b>ميزان ثقة</b><small>هامش الخطأ، وتنبيه إن بدت إجاباتك متسرّعة</small></li>
+			<li><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="10.5" width="14" height="9.5" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" stroke="currentColor" stroke-width="1.7"/></svg></span><b>على جهازك</b><small>التصحيح في متصفّحك، بلا تسجيل ولا خادم</small></li>
 		</ul>
 		<details class="fold">
 			<summary><h3>القصّة كاملة</h3></summary>

@@ -37,7 +37,7 @@ function render() {
 						}
 					}
 
-					return `<li style="display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:6px 0;border-bottom:1px solid var(--color-border)"><span>${ esc( s.name ) }${ change }</span><b class="num">${ f( s.score, s ) } <span style="font-weight:500;color:var(--color-text-muted);font-size:12px">${ esc( s.band ) }</span></b></li>`;
+					return `<li style="display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:6px 0;border-bottom:1px solid var(--color-border)"><span>${ esc( s.name ) }${ change }</span><b class="num">${ f( s.score, s ) } <span style="font-family:var(--font-body);font-weight:500;color:var(--color-text-muted);font-size:12px">${ esc( s.band ) }</span></b></li>`;
 				} )
 				.join( '' );
 

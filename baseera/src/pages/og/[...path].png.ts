@@ -13,12 +13,12 @@ import { SITE } from '../../config.ts';
 import { countNoun, QUESTIONS, STATEMENTS, MINUTES } from '../../lib/format.ts';
 
 const CAT_HEX: Record<string, string> = {
-	psychology: '#0d9488',
-	cognitive: '#2563eb',
-	intelligence: '#7c3aed',
-	financial: '#059669',
-	habits: '#0284c7',
-	personality: '#4f46e5',
+	psychology: '#c2366a',
+	cognitive: '#2f63c9',
+	intelligence: '#7048e8',
+	financial: '#0d8a62',
+	habits: '#a86200',
+	personality: '#d9480f',
 };
 
 export const getStaticPaths: GetStaticPaths = () => {

@@ -24,7 +24,7 @@ const topics = [
 <Layout title={ `${ p.name } — من ${ SITE.publisher }` } description={ `${ p.pitch } الجهة التي تموّل بصيرة، مع كود خصم ${ STORE.discountCode }.` } path={ path } jsonld={ graph( breadcrumbs( trail ) ) }>
 	<Breadcrumbs trail={ trail } />
 	<header class="page-h">
-		<span class="kicker">📚 { p.format }</span>
+		<span class="kicker">{ p.format }</span>
 		<h1>{ p.name }</h1>
 		<p class="lead">بعد أن تعرف نفسك… طوّرها. { p.pitch }</p>
 	</header>
