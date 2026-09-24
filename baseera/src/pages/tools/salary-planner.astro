@@ -1,0 +1,81 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Limits from '../../components/Limits.astro';
+import Faq from '../../components/Faq.astro';
+import ProductPick from '../../components/ProductPick.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import TestCard from '../../components/TestCard.astro';
+import { salaryPlanner as tool } from '../../data/tools/salary-planner.ts';
+import { categoryById } from '../../data/categories.ts';
+import { catalog } from '../../data/catalog.ts';
+import { breadcrumbs, faqPage, graph, abs } from '../../lib/seo.ts';
+
+const cat = categoryById.get( tool.category )!;
+const path = `/tools/${ tool.slug }/`;
+const trail = [ { name: 'الرئيسية', path: '/' }, { name: cat.name, path: `/category/${ cat.id }/` }, { name: tool.title, path } ];
+const app = {
+	'@type': 'WebApplication',
+	name: tool.title,
+	description: tool.description,
+	url: abs( path ),
+	applicationCategory: 'FinanceApplication',
+	operatingSystem: 'Any',
+	inLanguage: 'ar',
+	isAccessibleForFree: true,
+	offers: { '@type': 'Offer', price: '0', priceCurrency: 'SAR' },
+};
+const related = tool.related.map( ( s ) => catalog.find( ( c ) => c.slug === s ) ).filter( Boolean );
+---
+<Layout title={ tool.seoTitle } description={ tool.description } path={ path } jsonld={ graph( breadcrumbs( trail ), app, faqPage( tool.faq ) ) }>
+	<Breadcrumbs trail={ trail } />
+	<header class="page-h" style={ `--cc:${ cat.color }` }>
+		<span class="kicker"><span aria-hidden="true">{ tool.icon }</span> أداة</span>
+		<h1>{ tool.title }</h1>
+		<p class="lead">{ tool.intro }</p>
+	</header>
+
+	<section class="runner card" data-salary style="margin-top:22px;padding:20px;box-shadow:var(--shadow)">
+		<label for="salary" style="font-weight:800;font-size:14.5px">راتبك الصافي الشهري</label>
+		<div style="display:flex;gap:8px;margin-top:8px">
+			<input id="salary" type="text" inputmode="decimal" autocomplete="off" placeholder="مثال: ٨٠٠٠" style="flex:1;min-width:0;font:inherit;font-size:20px;font-weight:800;padding:12px 14px;border-radius:12px;border:1.5px solid var(--color-border-strong);background:var(--color-bg);color:var(--color-text)" />
+			<input id="currency" type="text" value="ريال" aria-label="العملة" style="width:84px;font:inherit;font-size:15px;padding:12px;border-radius:12px;border:1.5px solid var(--color-border-strong);background:var(--color-bg);color:var(--color-text);text-align:center" />
+		</div>
+
+		<fieldset style="border:0;margin-top:16px">
+			<legend style="font-weight:800;font-size:14px">التقسيم</legend>
+			<div class="filters" style="padding-top:8px" role="group">
+				<button type="button" class="chip" aria-pressed="true" data-split="50,30,20">٥٠ / ٣٠ / ٢٠</button>
+				<button type="button" class="chip" aria-pressed="false" data-split="60,20,20">٦٠ / ٢٠ / ٢٠</button>
+				<button type="button" class="chip" aria-pressed="false" data-split="70,20,10">٧٠ / ٢٠ / ١٠</button>
+			</div>
+			<p style="font-size:12.5px;color:var(--color-text-muted);margin-top:6px">إن كان إيجارك وحده يأخذ نصف راتبك، ٦٠/٢٠/٢٠ أو ٧٠/٢٠/١٠ أصدق من قاعدة لا تناسب مدينتك.</p>
+		</fieldset>
+
+		<div data-out style="display:grid;gap:10px;margin-top:16px"></div>
+		<p style="font-size:12px;color:var(--color-text-muted);margin-top:10px">الحساب في متصفّحك، ولا يُرسل راتبك إلى أي مكان.</p>
+	</section>
+
+	<Limits items={ tool.cannot } title="ما لا تستطيع هذه الحاسبة قوله" />
+	<AdSlot slot="inArticle" />
+
+	<article class="prose">
+		{ tool.article.map( ( s ) => (
+			<section><h2>{ s.heading }</h2>{ s.body.split( '\n\n' ).map( ( p ) => <p>{ p }</p> ) }</section>
+		) ) }
+		<p style="font-size:13px;color:var(--color-text-muted)">المصدر: <span class="num" style="direction:ltr">{ tool.source.citation }</span></p>
+	</article>
+
+	<ProductPick topic={ tool.product.topic } why={ tool.product.why } campaign={ tool.slug } />
+	<Faq items={ tool.faq } />
+	<AdSlot slot="afterResult" />
+
+	<section class="related" aria-labelledby="rel-h">
+		<div class="sec-h"><h2 id="rel-h">اختبارات قريبة</h2></div>
+		<div class="grid">{ related.map( ( r ) => <TestCard entry={ r! } /> ) }</div>
+	</section>
+
+	<script>
+		import '../../scripts/salary.ts';
+	</script>
+</Layout>

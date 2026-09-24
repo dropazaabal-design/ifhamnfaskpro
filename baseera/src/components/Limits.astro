@@ -1,0 +1,12 @@
+---
+/** «ما لا يستطيع هذا الاختبار قوله» — يُطبع قبل الاختبار لا بعده. */
+interface Props { items: string[]; title?: string }
+const { items, title = 'ما لا يستطيع هذا الاختبار قوله' } = Astro.props;
+---
+<section class="limits" aria-labelledby="limits-h">
+	<h2 id="limits-h">
+		<svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" /><path d="M12 8v5M12 16.2v.3" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+		{ title }
+	</h2>
+	<ul>{ items.map( ( t ) => <li>{ t }</li> ) }</ul>
+</section>

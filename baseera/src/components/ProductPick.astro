@@ -1,0 +1,34 @@
+---
+/**
+ * توصية منتج رقمي — مُفصَح عنها ومرتبطة بموضوع الاختبار.
+ *
+ * لا تُربط بالنتيجة: «نتيجتك منخفضة، اشترِ هذا» استغلال للقلق، ويهدم
+ * الثقة التي بنتها الصفحة كلّها.
+ */
+import { productFor, productLink } from '../data/products.ts';
+import { STORE } from '../config.ts';
+
+interface Props { topic?: string; why?: string; campaign: string; medium?: string }
+const { topic, why, campaign, medium = 'test-page' } = Astro.props;
+const product = productFor( topic );
+---
+{
+	product && (
+		<aside class="promo" aria-labelledby={ `promo-${ campaign }` }>
+			<span class="disclose">من { product.format } · منتج الجهة التي تموّل بصيرة</span>
+			<h3 id={ `promo-${ campaign }` }>{ product.name }</h3>
+			<p>{ why ?? product.pitch }</p>
+			<button type="button" class="code" data-copy={ STORE.discountCode } aria-label={ `انسخ كود الخصم ${ STORE.discountCode }` }>
+				كود الخصم: <b>{ STORE.discountCode }</b>
+			</button>
+			<br />
+			<a class="pcta" href={ productLink( product, campaign, medium ) } rel="noopener sponsored" data-product={ product.id }>
+				اكتشف المكتبة ←
+			</a>
+		</aside>
+	)
+}
+
+<script>
+	import '../scripts/copy.ts';
+</script>

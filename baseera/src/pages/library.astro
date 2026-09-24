@@ -1,0 +1,65 @@
+---
+/**
+ * المكتبة — صفحة المنتج الرقمي.
+ *
+ * صفحة بيع صادقة: تقول من يملك المنتج، وأنه يموّل المنصّة، وما فيه وما
+ * ليس فيه. لا عدّاد تنازلي مزيّف، ولا «بقيت ٣ نسخ» لمنتج رقمي لا ينفد.
+ */
+import Layout from '../layouts/Layout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { products, productLink } from '../data/products.ts';
+import { STORE, SITE } from '../config.ts';
+import { breadcrumbs, graph } from '../lib/seo.ts';
+
+const path = '/library/';
+const trail = [ { name: 'الرئيسية', path: '/' }, { name: 'المكتبة', path } ];
+const p = products[ 0 ];
+const topics = [
+	{ t: 'المال', ic: '💰', d: 'الميزانية، والديون، والادّخار، وقرارات الإنفاق — وكيف تخدعنا عقولنا فيها.', tests: [ 'salary-planner', 'genius-test' ] },
+	{ t: 'الإنتاجية', ic: '📈', d: 'الطاقة لا الساعات، والتركيز العميق، وكيف تمنع الاحتراق قبل أن يصل.', tests: [ 'burnout-assessment', 'self-discipline' ] },
+	{ t: 'العادات', ic: '🔁', d: 'كيف تُبنى العادة وكيف تُكسر، وعلاقتك بالشاشة، والانضباط كبيئة لا كإرادة.', tests: [ 'self-discipline', 'brainrot-test' ] },
+	{ t: 'علم النفس', ic: '🧠', d: 'الشخصية، والحديث مع النفس، والصلابة — بلغة قريبة وقابلة للتطبيق.', tests: [ 'big-five', 'self-esteem' ] },
+];
+---
+<Layout title={ `${ p.name } — من ${ SITE.publisher }` } description={ `${ p.pitch } الجهة التي تموّل بصيرة، مع كود خصم ${ STORE.discountCode }.` } path={ path } jsonld={ graph( breadcrumbs( trail ) ) }>
+	<Breadcrumbs trail={ trail } />
+	<header class="page-h">
+		<span class="kicker">📚 { p.format }</span>
+		<h1>{ p.name }</h1>
+		<p class="lead">بعد أن تعرف نفسك… طوّرها. { p.pitch }</p>
+	</header>
+
+	<p class="caution" role="note" style="background:var(--color-primary-soft);border-color:color-mix(in srgb,var(--color-primary) 25%,transparent)">
+		<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" style="color:var(--color-primary)"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" /><path d="M12 11v5M12 8v.3" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+		<span><b>إفصاح:</b> المكتبة من { SITE.publisher }، الجهة التي تملك بصيرة وتموّلها. شراؤها يُبقي الاختبارات مجّانية وبلا تسجيل. ولن تتغيّر نتيجة أيّ اختبار لتدفعك إليها.</span>
+	</p>
+
+	<section style="display:grid;gap:12px;margin-top:22px">
+		{ topics.map( ( x ) => (
+			<div class="card" style="display:grid;grid-template-columns:44px 1fr;gap:12px">
+				<span aria-hidden="true" style="font-size:26px">{ x.ic }</span>
+				<div>
+					<h2 style="font-size:16px;font-weight:800">{ x.t }</h2>
+					<p style="font-size:14px;line-height:1.9;color:var(--color-text-muted);margin-top:4px">{ x.d }</p>
+					<p style="font-size:12.5px;margin-top:6px">مرتبط بـ: { x.tests.map( ( s, i ) => <>{ i > 0 && '، ' }<a href={ s === 'salary-planner' ? `/tools/${ s }/` : `/tests/${ s }/` } style="color:var(--color-primary)">{ s === 'salary-planner' ? 'حاسبة الراتب' : s.replace( /-/g, ' ' ) }</a></> ) }</p>
+				</div>
+			</div>
+		) ) }
+	</section>
+
+	<aside class="promo">
+		<h3>{ p.name }</h3>
+		<p>خمسون خريطة، كل قاعدة تُقرأ في دقيقتين.</p>
+		<button type="button" class="code" data-copy={ STORE.discountCode }>كود الخصم: <b>{ STORE.discountCode }</b></button><br />
+		<a class="pcta" href={ productLink( p, 'library', 'library-page' ) } rel="noopener sponsored">اذهب إلى المكتبة ←</a>
+	</aside>
+
+	<section class="prose">
+		<h2>ما الذي ليس في المكتبة؟</h2>
+		<p>ليست علاجاً ولا بديلاً عن مختصّ. هي خرائط تلخّص أفكاراً من كتب وأبحاث في المال والإنتاجية والعادات وعلم النفس، لتُقرأ بسرعة ويُرجع إليها. إن كان ما تمرّ به يؤثّر في حياتك، فالحديث مع مختصّ أولى من أيّ كتاب.</p>
+	</section>
+
+	<script>
+		import '../scripts/copy.ts';
+	</script>
+</Layout>

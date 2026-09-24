@@ -1,0 +1,39 @@
+---
+/**
+ * دليل قراءة النتائج — كل المستويات مكتوبة قبل الاختبار.
+ *
+ * يُنشر مسبقاً لسببين: أن يعرف الزائر ما سيحصل عليه قبل أن يبدأ، وأن
+ * تجيب الصفحة عن أسئلة يبحث عنها الناس مباشرةً («ماذا تعني الدرجة
+ * المنخفضة في…؟»).
+ */
+import type { Subscale } from '../lib/types.ts';
+import { toArabicDigits } from '../lib/format.ts';
+
+interface Props { scales: Subscale[] }
+const { scales } = Astro.props;
+
+const range = ( s: Subscale, i: number ) => {
+	const from = i === 0 ? s.min : s.bands[ i - 1 ].upTo + ( s.scoring === 'mean' ? 0.01 : 1 );
+	const to = s.bands[ i ].upTo;
+	const fmt = ( n: number ) => toArabicDigits( s.scoring === 'mean' ? n.toFixed( 2 ).replace( /\.?0+$/, '' ) : String( Math.round( n ) ) );
+
+	return from === to ? fmt( to ) : `${ fmt( from ) }–${ fmt( to ) }`;
+};
+---
+<section class="guide" aria-labelledby="guide-h">
+	<h2 id="guide-h">دليل قراءة النتائج</h2>
+	{ scales.map( ( s ) => (
+		<div class="scale">
+			{ scales.length > 1 && <h3>{ s.name }</h3> }
+			{ s.about && <p>{ s.about }</p> }
+			<div class="bands">
+				{ s.bands.map( ( b, i ) => (
+					<div class:list={ [ 'band', `t-${ b.tone }` ] }>
+						<b>{ b.label }<span class="rng">{ range( s, i ) }</span></b>
+						<p>{ b.text }</p>
+					</div>
+				) ) }
+			</div>
+		</div>
+	) ) }
+</section>

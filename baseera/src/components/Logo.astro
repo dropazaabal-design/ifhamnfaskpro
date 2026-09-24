@@ -1,0 +1,11 @@
+---
+/** شعار العين من التصميم الأصلي. */
+interface Props { rays?: boolean }
+const { rays = false } = Astro.props;
+---
+<svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+	<path d="M4 24C10 14.5 16.5 12 24 12s14 2.5 20 12c-6 9.5-12.5 12-20 12S10 33.5 4 24Z" stroke="var(--color-primary)" stroke-width="2" stroke-linejoin="round" />
+	<circle cx="24" cy="24" r="6.5" stroke="var(--color-primary)" stroke-width="2" />
+	<circle cx="24" cy="24" r="2.3" fill="var(--color-primary)" />
+	{ rays && <path d="M24 9v3M24 36v3M9 24H6M42 24h-3" stroke="var(--color-primary)" stroke-width="1.6" stroke-linecap="round" /> }
+</svg>

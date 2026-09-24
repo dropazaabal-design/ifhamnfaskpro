@@ -1,0 +1,96 @@
+---
+/**
+ * الرئيسية — تصميم بصيرة الأصلي، مصيَّراً على الخادم.
+ *
+ * الفرق الجوهري عن الأصل: البطاقات كانت تُبنى بـ JavaScript من مصفوفة،
+ * فكان على Google أن يشغّل السكربت ليرى أيّ اختبار. هنا كل بطاقة HTML
+ * جاهز في الصفحة، والسكربت للبحث والتصفية وحدهما.
+ */
+import Layout from '../layouts/Layout.astro';
+import Logo from '../components/Logo.astro';
+import TestCard from '../components/TestCard.astro';
+import AdSlot from '../components/AdSlot.astro';
+import ProductPick from '../components/ProductPick.astro';
+import { catalog, liveCatalog } from '../data/catalog.ts';
+import { categories } from '../data/categories.ts';
+import { testBySlug } from '../data/tests/index.ts';
+import { SITE } from '../config.ts';
+import { graph } from '../lib/seo.ts';
+import { toArabicDigits } from '../lib/format.ts';
+
+const featured = [ 'big-five', 'genius-test', 'resilience-test', 'burnout-assessment', 'iq-test', 'salary-planner' ]
+	.map( ( s ) => catalog.find( ( c ) => c.slug === s )! );
+const sourceOf = ( slug: string ) => testBySlug.get( slug )?.instrument.authors.split( ' · ' )[ 0 ];
+---
+<Layout
+	title={ `${ SITE.name } · اختبارات نفسية وشخصية علمية مجانية — بصدق عن حدودها` }
+	description="اختبارات الشخصية والصلابة والقلق والاحتراق والتفكير — من مقاييس منشورة في الأبحاث، بلا تسجيل، مع هامش الخطأ لكل نتيجة وما لا يستطيع كل اختبار قوله."
+	path="/"
+	jsonld={ graph() }
+>
+	<section class="hero">
+		<div class="glow" aria-hidden="true"></div>
+		<div class="mark"><Logo rays /></div>
+		<h1>بَصيرة</h1>
+		<p class="tagline">اعرف نفسك بعُمق — وبصدق عن حدود ما تعرفه</p>
+		<p class="subline">اختبارات في علم النفس والشخصية والتفكير، مبنيّة على مقاييس منشورة في الأبحاث، مع هامش الخطأ لكل نتيجة.</p>
+		<div class="stats">
+			<div><b class="num">{ toArabicDigits( liveCatalog.length ) }</b><span>متاح الآن</span></div>
+			<div><b class="num">{ toArabicDigits( catalog.length ) }</b><span>في الخطّة</span></div>
+			<div><b class="num">١٠٠٪</b><span>مجاني</span></div>
+		</div>
+
+		<p class="promise">
+			<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v18M5 7h14M7 7l-3 6a3 3 0 0 0 6 0L7 7Zm10 0-3 6a3 3 0 0 0 6 0l-3-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" /></svg>
+			<span><b>وعدنا:</b> لا اختبار بلا مصدر منشور، ولا نتيجة بلا هامش خطأ، ولا رقم ذكاء مُخترَع. وحين لا يوجد مقياس علمي لشيء، نقول ذلك بدل أن نخترع أسئلة.</span>
+		</p>
+
+		<label class="search">
+			<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" /><path d="m20 20-3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+			<span class="sr-only">ابحث عن اختبار</span>
+			<input id="q" type="search" placeholder="ابحث عن اختبار…" autocomplete="off" enterkeyhint="search" />
+		</label>
+	</section>
+
+	<div class="filters" role="group" aria-label="تصفية حسب الفئة">
+		<button type="button" class="chip" aria-pressed="true" data-cat="all">الكل</button>
+		{ categories.map( ( c ) => <button type="button" class="chip" aria-pressed="false" data-cat={ c.id }>{ c.name }</button> ) }
+	</div>
+
+	<div data-featured>
+		<div class="sec-h"><span aria-hidden="true" style="font-size:17px">⭐</span><h2>ابدأ من هنا</h2></div>
+		<div class="feat">
+			{ featured.map( ( e ) => <TestCard entry={ e } variant="featured" source={ sourceOf( e.slug ) } /> ) }
+		</div>
+	</div>
+
+	<AdSlot slot="inArticle" />
+
+	{ categories.map( ( c ) => {
+		const items = catalog.filter( ( e ) => e.category === c.id ).sort( ( a, b ) => ( a.status === 'soon' ? 1 : 0 ) - ( b.status === 'soon' ? 1 : 0 ) );
+		return (
+			<section class="cat-section" data-section={ c.id } style={ `--cc:${ c.color }` } aria-labelledby={ `h-${ c.id }` }>
+				<div class="sec-h">
+					<span class="cic" aria-hidden="true">{ c.icon }</span>
+					<h2 id={ `h-${ c.id }` }>{ c.name }</h2>
+					<a class="more" href={ `/category/${ c.id }/` }>الكل ‹</a>
+				</div>
+				<div class="grid">{ items.map( ( e ) => <TestCard entry={ e } /> ) }</div>
+			</section>
+		);
+	} ) }
+
+	<p class="noresults" data-empty hidden>لا اختبار يطابق بحثك. جرّب كلمة أخرى.</p>
+
+	<ProductPick topic="علم النفس" campaign="home" medium="home" why="بعد أن تعرف نفسك… طوّرها. خمسون خريطة بصرية في المال والإنتاجية والعادات وعلم النفس — كل قاعدة تُقرأ في دقيقتين." />
+
+	<section class="prose" aria-labelledby="why-h">
+		<h2 id="why-h">لماذا بصيرة مختلفة؟</h2>
+		<p>أغلب مواقع الاختبارات العربية تعطيك نتيجة واثقة لأسئلة لا يُعرف مصدرها. بصيرة تبني كل اختبار على مقياس منشور في الأبحاث — مقياس روزنبرغ لتقدير الذات، ومقياس كوبنهاغن للاحتراق، وبنود IPIP للشخصية — وتذكر مصدره وترخيصه تحت كل اختبار.</p>
+		<p>ولكل نتيجة «ميزان ثقة»: النطاق الذي تقع فيه درجتك على الأرجح محسوباً من ثبات المقياس، وتنبيه إن بدت إجاباتك متسرّعة، وحين تعيد اختباراً، حكم صادق إن كان تغيّرك حقيقياً أم ضمن هامش الخطأ. <a href="/methodology/">اقرأ منهجيتنا كاملة</a>.</p>
+	</section>
+
+	<script>
+		import '../scripts/home.ts';
+	</script>
+</Layout>

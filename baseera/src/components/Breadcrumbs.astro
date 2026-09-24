@@ -1,0 +1,11 @@
+---
+interface Props { trail: { name: string; path: string }[] }
+const { trail } = Astro.props;
+---
+<nav aria-label="مسار التنقّل">
+	<ol class="crumbs">
+		{ trail.map( ( t, i ) => (
+			<li>{ i === trail.length - 1 ? <span aria-current="page">{ t.name }</span> : <a href={ t.path }>{ t.name }</a> }</li>
+		) ) }
+	</ol>
+</nav>

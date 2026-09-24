@@ -1,0 +1,40 @@
+---
+/** مصدر المقياس وترخيصه وترجمته — بصدق عن كلٍّ منها. */
+import type { Instrument } from '../lib/types.ts';
+
+interface Props { instrument: Instrument }
+const { instrument: i } = Astro.props;
+
+const license = {
+	'public-domain': { label: 'ملك عام', ok: true },
+	'free-with-citation': { label: 'مجّاني مع الإسناد', ok: true },
+	original: { label: 'بنود أصلية', ok: true },
+}[ i.license ];
+
+const translation = {
+	platform: { label: 'ترجمة المنصّة', ok: false },
+	validated: { label: 'ترجمة مُحكَّمة', ok: true },
+	original: { label: 'كُتب بالعربية', ok: true },
+}[ i.translation ];
+---
+<section class="card source" aria-labelledby="src-h">
+	<h2 id="src-h" style="font-size:16px;font-weight:800">من أين جاءت هذه الأسئلة؟</h2>
+	<dl>
+		<div>
+			<dt>المقياس</dt>
+			<dd>{ i.name } <span class="num" style="color:var(--color-text-muted)">— { i.authors }</span></dd>
+		</div>
+		<div>
+			<dt>الترخيص</dt>
+			<dd><span class:list={ [ 'pill', license.ok ? 'pill--ok' : 'pill--warn' ] }>{ license.label }</span> { i.licenseNote }</dd>
+		</div>
+		<div>
+			<dt>النصّ العربي</dt>
+			<dd><span class:list={ [ 'pill', translation.ok ? 'pill--ok' : 'pill--warn' ] }>{ translation.label }</span> { i.translationNote }</dd>
+		</div>
+		<div>
+			<dt>المرجع</dt>
+			<dd class="cite">{ i.citation }{ i.url && <> · <a href={ i.url } rel="noopener nofollow" style="color:var(--color-primary)">المصدر</a></> }</dd>
+		</div>
+	</dl>
+</section>

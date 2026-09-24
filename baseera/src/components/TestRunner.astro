@@ -1,0 +1,126 @@
+---
+/**
+ * مشغّل الاختبار: الهيكل على الخادم، والتفاعل في المتصفّح.
+ *
+ * بيانات الاختبار تُطبع JSON في وسم application/json لا في سكربت مضمّن،
+ * فلا يعترضها Content-Security-Policy ولا تُنفَّذ. والتصحيح كلّه على جهاز
+ * الزائر: لا إجابة تغادره.
+ */
+import type { Test } from '../lib/types.ts';
+import { countNoun, QUESTIONS, STATEMENTS, MINUTES } from '../lib/format.ts';
+import { SITE } from '../config.ts';
+
+interface Props { test: Test }
+const { test } = Astro.props;
+
+// «<» يُهرَّب كي لا يُغلق نصٌّ داخل البيانات وسمَ script.
+const json = JSON.stringify( { ...test, article: undefined, faq: undefined } ).replace( /</g, '\\u003c' );
+---
+<section class="runner card" data-runner data-slug={ test.slug } data-site={ SITE.url } aria-live="polite">
+	<div data-screen="start">
+		<p class="runner__meta">
+			<span><b>{ countNoun( test.items.length, test.kind === 'choice' ? QUESTIONS : STATEMENTS ) }</b></span>
+			<span>نحو <b>{ countNoun( test.minutes, MINUTES, 'gen' ) }</b></span>
+			<span>التصحيح على جهازك</span>
+		</p>
+		<p class="runner__instr">{ test.instructions }</p>
+		<p class="runner__honest">
+			<svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M12 3v18M5 7h14M7 7l-3 6a3 3 0 0 0 6 0L7 7Zm10 0-3 6a3 3 0 0 0 6 0l-3-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" /></svg>
+			<span>النتيجة تقدير لا حكم: سنعرض لك معها هامش الخطأ، ونخبرك إن بدت إجاباتك متسرّعة.</span>
+		</p>
+		<button type="button" class="btn btn--primary btn--block" data-start>
+			ابدأ الاختبار
+			<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+		</button>
+		<p class="runner__resume" data-resume hidden>
+			لديك إجابات لم تكتمل في هذا الاختبار. <button type="button" class="linkish" data-resume-go>أكمل من حيث توقّفت</button>
+		</p>
+	</div>
+
+	<div data-screen="question" hidden>
+		<div class="runner__bar" aria-hidden="true"><span data-bar></span></div>
+		<p class="runner__count"><span data-count></span></p>
+		<fieldset class="runner__q">
+			<legend data-question></legend>
+			<div data-figure class="runner__figure"></div>
+			<div class="runner__opts" data-options></div>
+		</fieldset>
+		<div class="runner__nav">
+			<button type="button" class="btn btn--ghost" data-back>السابق</button>
+		</div>
+	</div>
+
+	<div data-screen="result" hidden tabindex="-1"></div>
+
+	<script type="application/json" data-test set:html={ json } />
+	<noscript><p class="runner__instr">هذا الاختبار يحتاج JavaScript ليعمل، لأن التصحيح يحدث على جهازك لا على خادم.</p></noscript>
+</section>
+
+<style is:global>
+	.runner { margin-top: 22px; padding: 20px; box-shadow: var(--shadow); }
+	.runner__meta { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--color-text-muted); }
+	.runner__meta b { color: var(--color-text); }
+	.runner__instr { font-size: 14.5px; line-height: 1.9; margin: 12px 0 16px; }
+	.runner__honest { display: flex; gap: 8px; align-items: flex-start; font-size: 12.5px; line-height: 1.8; color: var(--color-text-muted); background: var(--color-bg); border: 1px dashed var(--color-border-strong); border-radius: 12px; padding: 9px 12px; margin-bottom: 14px; }
+	.runner__honest svg { flex-shrink: 0; margin-top: 3px; color: var(--color-primary); }
+	.runner__resume { font-size: 13px; color: var(--color-text-muted); margin-top: 12px; text-align: center; }
+	.linkish { background: none; border: 0; color: var(--color-primary); font-weight: 700; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+	.runner__bar { height: 6px; background: var(--color-surface-2); border-radius: 100px; overflow: hidden; }
+	.runner__bar span { display: block; height: 100%; width: 0; background: var(--color-primary); border-radius: 100px; transition: width .25s ease; }
+	.runner__count { font-size: 12px; color: var(--color-text-muted); margin-top: 10px; }
+	.runner__q { border: 0; margin-top: 8px; min-width: 0; }
+	.runner__q legend { font-size: 19px; font-weight: 800; line-height: 1.75; padding: 0; text-wrap: balance; }
+	.runner__figure:empty { display: none; }
+	.runner__figure { margin: 16px auto 4px; display: grid; place-items: center; color: var(--color-text); }
+	.runner__figure svg { width: min(100%, 236px); height: auto; }
+	.runner__opts { display: grid; gap: 9px; margin-top: 16px; }
+	.runner__opts.figs { grid-template-columns: repeat(4, 1fr); }
+	.opt { position: relative; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 12px 16px; border-radius: 13px; border: 1.5px solid var(--color-border); background: var(--color-surface); cursor: pointer; font-size: 15px; font-weight: 600; line-height: 1.5; transition: border-color .14s, background .14s; color: var(--color-text); }
+	.opt:hover { border-color: var(--color-border-strong); }
+	.opt input { position: absolute; opacity: 0; pointer-events: none; }
+	.opt .k { flex-shrink: 0; width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; font-family: var(--font-num); font-size: 12px; font-weight: 700; background: var(--color-surface-2); color: var(--color-text-muted); }
+	.opt:has(input:checked) { border-color: var(--color-primary); background: var(--color-primary-soft); }
+	.opt:has(input:checked) .k { background: var(--color-primary); color: var(--color-primary-contrast); }
+	.opt:has(input:focus-visible) { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+	.opt--fig { flex-direction: column; justify-content: center; padding: 10px 4px; color: var(--color-text); }
+	.opt--fig svg { width: 100%; max-width: 56px; height: auto; }
+	.runner__nav { display: flex; justify-content: space-between; margin-top: 18px; }
+
+	/* النتيجة */
+	.res h2 { font-family: var(--font-display); font-size: 22px; font-weight: 700; }
+	.res .scale { margin-top: 20px; }
+	.res .scale h3 { font-size: 15px; font-weight: 800; display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+	.res .scale h3 .num { font-size: 22px; color: var(--tone); }
+	.res .band-label { display: inline-block; font-size: 12.5px; font-weight: 800; padding: 3px 10px; border-radius: 100px; color: var(--tone); background: color-mix(in srgb, var(--tone) 12%, transparent); margin-top: 6px; }
+	.meter { position: relative; height: 12px; border-radius: 100px; background: var(--color-surface-2); margin-top: 12px; direction: ltr; }
+	.meter .ci { position: absolute; top: 0; bottom: 0; border-radius: 100px; background: color-mix(in srgb, var(--tone) 28%, transparent); }
+	.meter .pt { position: absolute; top: 50%; width: 16px; height: 16px; border-radius: 50%; background: var(--tone); border: 3px solid var(--color-surface); transform: translate(-50%, -50%); box-shadow: var(--shadow-sm); }
+	.meter-axis { display: flex; justify-content: space-between; font-size: 11px; color: var(--color-text-muted); margin-top: 4px; direction: ltr; }
+	.res .scale p { font-size: 14.5px; line-height: 1.95; margin-top: 10px; }
+	.trust { margin-top: 22px; border: 1px solid var(--color-border); border-radius: 16px; padding: 15px 16px; background: var(--color-bg); }
+	.trust h3 { font-size: 14.5px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+	.trust h3 svg { width: 18px; height: 18px; color: var(--color-primary); }
+	.trust ul { list-style: none; display: grid; gap: 9px; margin-top: 10px; }
+	.trust li { font-size: 13.5px; line-height: 1.85; display: grid; grid-template-columns: 20px 1fr; gap: 6px; }
+	.trust li .i { font-size: 14px; line-height: 1.7; }
+	.trust .caution-line { color: var(--tone-warn); font-weight: 600; }
+	.change { margin-top: 10px; font-size: 13px; line-height: 1.8; padding: 9px 12px; border-radius: 10px; background: var(--color-surface-2); }
+	.change b { font-family: var(--font-num); }
+	.answers { margin-top: 20px; display: grid; gap: 10px; }
+	.answers details { border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-surface); }
+	.answers summary { cursor: pointer; padding: 12px 14px; font-size: 14px; font-weight: 700; display: flex; gap: 8px; align-items: flex-start; }
+	.answers summary .mark { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 800; }
+	.answers .ok { background: var(--tone-ok-soft); color: var(--tone-low); }
+	.answers .no { background: var(--tone-alert-soft); color: var(--tone-alert); }
+	.answers .body { padding: 0 14px 13px; font-size: 13.5px; line-height: 1.9; color: var(--color-text-muted); }
+	.answers .body b { color: var(--color-text); }
+	.share { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 18px; }
+	.share .btn { min-height: 46px; font-size: 14px; }
+	.share .wide { grid-column: 1 / -1; }
+	.save-note { font-size: 12px; color: var(--color-text-muted); text-align: center; margin-top: 8px; line-height: 1.7; }
+	.toast { position: fixed; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--color-text); color: var(--color-bg); padding: 10px 16px; border-radius: 100px; font-size: 13px; font-weight: 700; z-index: 60; box-shadow: var(--shadow-lg); }
+</style>
+
+<script>
+	import '../scripts/runner.ts';
+</script>

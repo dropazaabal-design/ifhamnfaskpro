@@ -1,0 +1,73 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Logo from '../components/Logo.astro';
+import { SITE, STORE } from '../config.ts';
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description: string;
+	path: string;
+	og?: string;
+	jsonld?: object;
+	noindex?: boolean;
+	ads?: boolean;
+	type?: 'website' | 'article';
+	wide?: boolean;
+}
+
+const props = Astro.props;
+const year = new Date().getFullYear();
+---
+<!doctype html>
+<html lang="ar" dir="rtl">
+	<head>
+		<BaseHead { ...props } />
+	</head>
+	<body>
+		<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+		<header class="topbar">
+			<div class="in">
+				<a class="brand" href="/" aria-label={ `${ SITE.name } — الرئيسية` }>
+					<span class="mark"><Logo /></span>
+					<span class="nm">{ SITE.name }<small>من { SITE.publisher }</small></span>
+				</a>
+				<a class="icon-btn" href="/me/" aria-label="ملفّي: نتائجي المحفوظة على هذا الجهاز" title="ملفّي">
+					<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.6" stroke="currentColor" stroke-width="1.8" /><path d="M5 20c.6-3.6 3.4-5.6 7-5.6s6.4 2 7 5.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+				</a>
+				<button class="icon-btn" type="button" data-theme-toggle aria-label="تبديل الوضع الليلي">
+					<svg class="sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8" /><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+					<svg class="moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" /></svg>
+				</button>
+				<a class="tb-link" href="/library/">المكتبة</a>
+			</div>
+		</header>
+
+		<main id="main" class:list={ [ 'wrap', { 'wrap--wide': props.wide } ] }>
+			<slot />
+		</main>
+
+		<footer class="site">
+			<div class="wrap">
+				<div class="fbrand">{ SITE.name }</div>
+				<nav class="legal" aria-label="روابط الموقع">
+					<a href="/methodology/">منهجيتنا</a>
+					<a href="/legal/about/">من نحن</a>
+					<a href="/legal/privacy-policy/">سياسة الخصوصية</a>
+					<a href="/legal/terms-of-use/">شروط الاستخدام</a>
+					<a href="/legal/disclaimer/">إخلاء المسؤولية</a>
+					<a href="/legal/contact/">اتصل بنا</a>
+				</nav>
+				<p class="copy">
+					اختباراتنا أدوات توعية ذاتية مبنيّة على مقاييس منشورة، وليست تشخيصاً.<br />
+					كل نتيجة تقدير له هامش خطأ — ونعرضه لك.<br />
+					من <a href={ STORE.url } rel="noopener">{ SITE.publisher }</a> · <a href={ `https://x.com/${ SITE.twitter.replace( '@', '' ) }` } rel="noopener">{ SITE.twitter }</a> · <span class="num">© { year }</span>
+				</p>
+			</div>
+		</footer>
+
+		<script>
+			import '../scripts/theme.ts';
+		</script>
+	</body>
+</html>
