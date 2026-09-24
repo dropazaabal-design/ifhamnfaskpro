@@ -40,8 +40,3 @@ export const ADSENSE = {
 		sidebar: '',
 	},
 } as const;
-
-/** نموذج النشرة البريدية: عنوان POST لأي مزوّد (اتركه فارغاً لإخفائه). */
-export const NEWSLETTER = {
-	action: '',
-} as const;
