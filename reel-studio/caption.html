@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مولّد الكابشن · استوديو الريلات — كتاب وبس</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&family=Almarai:wght@300;400;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23dc2626'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3E%D9%83%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/themes.css">
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark">ك</span>
+      <span class="txt"><b>استوديو الريلات</b><span>كتاب وبس · @kitabwbs</span></span>
+    </div>
+    <nav class="nav">
+      <a href="index.html"><span class="ic">📊</span><span>لوحة التحكم</span></a>
+      <a href="editor.html"><span class="ic">🎬</span><span>المحرّر</span></a>
+      <a href="library.html"><span class="ic">📚</span><span>مكتبة المواضيع</span></a>
+      <a href="caption.html" class="on"><span class="ic">💬</span><span>مولّد الكابشن</span></a>
+      <a href="preview.html"><span class="ic">👁️</span><span>معاينة ومقارنة</span></a>
+    </nav>
+    <div class="foot"><span class="dot"></span><span id="srcState">—</span></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <h1>مولّد الكابشن<span class="sub">يسحب بيانات المشروع المفتوح تلقائيًا</span></h1>
+      <button class="btn" id="btnPull">↻ اسحب من المحرّر</button>
+    </header>
+
+    <div class="content">
+      <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:18px" id="wrap">
+
+        <!-- المدخلات والإعدادات -->
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div class="card">
+            <div class="card-hd"><h3>المدخلات</h3><span class="n" id="srcName">—</span></div>
+            <div class="field"><label>الهوك</label><input type="text" id="iHook"></div>
+            <div class="field"><label>العنوان</label><input type="text" id="iTitle"></div>
+            <div class="field"><label>عناوين النقاط — سطر لكل نقطة</label>
+              <textarea id="iHeads" rows="6"></textarea></div>
+            <div class="field"><label>الخاتمة</label><textarea id="iOutro" rows="2"></textarea></div>
+            <div class="field" style="margin-bottom:0"><label>سؤال الختام</label>
+              <input type="text" id="iCta"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-hd"><h3>الإعدادات</h3></div>
+            <div class="field"><label>تصنيف المحتوى <span class="hint">يحدّد الهاشتاقات</span></label>
+              <select id="oCategory"></select></div>
+            <div class="field"><label>نوع الكابشن</label><select id="oStyle"></select></div>
+            <div class="field"><label>طول الكابشن</label><select id="oLength"></select></div>
+            <div class="field">
+              <label>عدد الهاشتاقات <span class="hint"><b id="vTags">7</b></span></label>
+              <input type="range" id="oTags" min="5" max="10" step="1" value="7">
+            </div>
+            <label class="check"><input type="checkbox" id="oIslamic"><span>تضمين لمسة إسلامية</span></label>
+            <label class="check"><input type="checkbox" id="oSave" checked><span>تضمين دعوة حفظ المنشور</span></label>
+            <label class="check"><input type="checkbox" id="oList"><span>تضمين دعوة إكمال القائمة</span></label>
+          </div>
+        </div>
+
+        <!-- الناتج -->
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div class="card" style="position:sticky;top:78px">
+            <div class="card-hd">
+              <h3>الكابشن</h3>
+              <span class="n"><span id="capChars">0</span> حرفًا · <span id="capLines">0</span> سطرًا</span>
+            </div>
+            <textarea id="out" rows="20" style="font-size:14px;line-height:2;min-height:420px"></textarea>
+            <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+              <button class="btn btn-primary" id="btnCopy">📋 نسخ الكابشن</button>
+              <button class="btn" id="btnRegen">🎲 ولّد نسخة أخرى</button>
+              <button class="btn" id="btnSaveCap">💾 حفظ مع المشروع</button>
+            </div>
+            <p style="font-size:11.5px;color:var(--color-muted);margin-top:11px;line-height:1.9">
+              💡 إنستغرام يقصّ الكابشن بعد ~125 حرفًا — اجعل أهم جملة في أول سطرين.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script src="js/themes.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/canvas.js"></script>
+<script src="js/library.js"></script>
+<script src="js/caption.js"></script>
+<script src="js/export.js"></script>
+<script>
+/* ═══ صفحة مولّد الكابشن ═══ */
+const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
+let P = null;
+
+function toast(msg, kind) {
+  const el = document.createElement('div');
+  el.className = 'toast' + (kind ? ' ' + kind : '');
+  el.textContent = msg;
+  $('#toasts').appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 260); }, 2600);
+}
+
+function fillSelects() {
+  CAPTION_CATEGORIES.forEach(c => $('#oCategory').appendChild(new Option(c.label, c.key)));
+  CAPTION_STYLES.forEach(s     => $('#oStyle').appendChild(new Option(s.label, s.key)));
+  CAPTION_LENGTHS.forEach(l    => $('#oLength').appendChild(new Option(l.label, l.key)));
+}
+
+/* يسحب حقول المشروع المفتوح في المحرّر */
+function pull() {
+  P = loadOrCreateCurrent();
+  const inp = captionInputFromProject(P);
+  $('#iHook').value  = inp.hook  || '';
+  $('#iTitle').value = inp.title || '';
+  $('#iHeads').value = (inp.heads || []).join('\n');
+  $('#iOutro').value = inp.outro || '';
+  $('#iCta').value   = inp.cta   || '';
+  $('#srcName').textContent = P.name;
+  $('#srcState').textContent = P.name;
+
+  const m = P.captionMeta || {};
+  if (m.category) $('#oCategory').value = m.category;
+  if (m.style)    $('#oStyle').value    = m.style;
+  if (m.length)   $('#oLength').value   = m.length;
+  if (P.caption) { $('#out').value = P.caption; updateCount(); }
+  else gen();
+}
+
+function currentInput() {
+  return {
+    hook:  $('#iHook').value.trim(),
+    title: $('#iTitle').value.trim(),
+    outro: $('#iOutro').value.trim(),
+    cta:   $('#iCta').value.trim(),
+    heads: $('#iHeads').value.split('\n').map(s => s.trim()).filter(Boolean),
+    pointCount: $('#iHeads').value.split('\n').filter(s => s.trim()).length
+  };
+}
+
+function currentOpts() {
+  return {
+    category: $('#oCategory').value,
+    style:    $('#oStyle').value,
+    length:   $('#oLength').value,
+    islamic:  $('#oIslamic').checked,
+    saveCta:  $('#oSave').checked,
+    listCta:  $('#oList').checked,
+    tagCount: parseInt($('#oTags').value, 10)
+  };
+}
+
+function gen() {
+  $('#out').value = generateCaption(currentInput(), currentOpts());
+  updateCount();
+}
+
+function updateCount() {
+  const v = $('#out').value;
+  $('#capChars').textContent = v.length;
+  $('#capLines').textContent = v.split('\n').filter(Boolean).length;
+}
+
+/* ── الربط ── */
+['#iHook','#iTitle','#iHeads','#iOutro','#iCta'].forEach(s =>
+  $(s).addEventListener('input', gen));
+['#oCategory','#oStyle','#oLength','#oIslamic','#oSave','#oList'].forEach(s =>
+  $(s).addEventListener('change', gen));
+$('#oTags').addEventListener('input', e => { $('#vTags').textContent = e.target.value; gen(); });
+$('#out').addEventListener('input', updateCount);
+$('#btnPull').addEventListener('click', () => { pull(); toast('سُحبت بيانات المشروع'); });
+$('#btnRegen').addEventListener('click', () => { gen(); toast('نسخة جديدة 🎲'); });
+$('#btnCopy').addEventListener('click', () => {
+  copyText($('#out').value)
+    .then(() => toast('نُسخ الكابشن ✓'))
+    .catch(() => toast('تعذّر النسخ — حدّده وانسخه يدويًا', 'err'));
+});
+$('#btnSaveCap').addEventListener('click', () => {
+  if (!P) P = loadOrCreateCurrent();
+  P.caption = $('#out').value;
+  P.captionMeta = {
+    category: $('#oCategory').value,
+    style:    $('#oStyle').value,
+    length:   $('#oLength').value
+  };
+  const r = saveProject(P);
+  toast(r.ok ? 'حُفظ مع المشروع ✓' : r.msg, r.ok ? '' : 'err');
+});
+
+fillSelects();
+pull();
+</script>
+</body>
+</html>

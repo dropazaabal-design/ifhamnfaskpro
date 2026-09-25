@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>المحرّر · استوديو الريلات — كتاب وبس</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&family=Almarai:wght@300;400;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23dc2626'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3E%D9%83%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/themes.css">
+<link rel="stylesheet" href="css/editor.css">
+</head>
+<body>
+
+<div class="shell">
+  <!-- ═══ الشريط الجانبي ═══ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark">ك</span>
+      <span class="txt"><b>استوديو الريلات</b><span>كتاب وبس · @kitabwbs</span></span>
+    </div>
+    <nav class="nav">
+      <a href="index.html"><span class="ic">📊</span><span>لوحة التحكم</span></a>
+      <a href="editor.html" class="on"><span class="ic">🎬</span><span>المحرّر</span></a>
+      <a href="library.html"><span class="ic">📚</span><span>مكتبة المواضيع</span></a>
+      <a href="caption.html"><span class="ic">💬</span><span>مولّد الكابشن</span></a>
+      <a href="preview.html"><span class="ic">👁️</span><span>معاينة ومقارنة</span></a>
+    </nav>
+    <div class="foot"><span class="dot"></span><span id="saveState">جاهز</span></div>
+  </aside>
+
+  <!-- ═══ المحتوى ═══ -->
+  <div class="main">
+    <header class="topbar">
+      <input type="text" id="projName" placeholder="اسم المشروع" style="max-width:260px;font-weight:700">
+      <div style="flex:1"></div>
+      <button class="btn btn-icon" id="btnUndo" title="تراجع (Ctrl+Z)" disabled>↶</button>
+      <button class="btn btn-icon" id="btnRedo" title="إعادة (Ctrl+Y)" disabled>↷</button>
+      <button class="btn" id="btnSave" title="حفظ (Ctrl+S)">💾 حفظ</button>
+      <button class="btn btn-primary" id="btnExport" title="تصدير (Ctrl+E)">⬇️ تصدير PNG</button>
+    </header>
+
+    <div class="editor">
+      <!-- ─── العمود ١: لوحة التحكم ─── -->
+      <section class="pane pane-l">
+        <div class="pane-hd">
+          <div class="tabs">
+            <button data-tab="content" class="on">المحتوى</button>
+            <button data-tab="hook">الهوك</button>
+            <button data-tab="quick">المكتبة</button>
+          </div>
+        </div>
+        <div class="pane-bd">
+
+          <!-- تبويب المحتوى -->
+          <div class="tab-panel on" id="tab-content">
+            <div class="field">
+              <label>نص الهوك <span class="hint" id="hookLen">0 / 120</span></label>
+              <input type="text" id="fHook" maxlength="120" placeholder="خلاصات الكتب اللي غيّرت ملايين البشر">
+            </div>
+
+            <div class="field">
+              <label>الإيموجي</label>
+              <input type="text" id="fEmoji" maxlength="4" placeholder="🛑" style="max-width:90px;text-align:center;font-size:19px">
+              <div class="emoji-pick" id="emojiPick"></div>
+            </div>
+
+            <div class="field">
+              <label>عنوان الريل <span class="hint" id="titleLen">0</span></label>
+              <textarea id="fTitle" rows="2" placeholder="توقّف عن هذه العادات لتحترم نفسك"></textarea>
+              <div class="suggest" id="titleSuggest"></div>
+              <button class="btn btn-sm btn-block" id="btnAltTitles" style="margin-top:7px">✨ ولّد 3 عناوين بديلة</button>
+              <div class="suggest" id="altTitles"></div>
+            </div>
+
+            <div class="field">
+              <label>النقاط <span class="hint" id="ptCount">0 / 10</span></label>
+              <div class="points" id="points"></div>
+              <button class="btn btn-sm btn-block" id="btnAddPoint" style="margin-top:9px">＋ إضافة نقطة</button>
+            </div>
+
+            <div class="field">
+              <label>الخاتمة</label>
+              <textarea id="fOutro" rows="2" placeholder="احترام الناس لك يبدأ من اللحظة التي تكفّ فيها عن طلبه."></textarea>
+              <div class="suggest" id="outroSuggest"></div>
+            </div>
+
+            <div class="field">
+              <label>سؤال الختام</label>
+              <input type="text" id="fCta" placeholder="أي واحدة لاحظتها؟ احكِ لنا 👇">
+              <div class="suggest" id="ctaTemplates"></div>
+            </div>
+
+            <div class="field">
+              <label>العلامة</label>
+              <input type="text" id="fBrand" dir="ltr" style="text-align:left" placeholder="@kitabwbs">
+            </div>
+          </div>
+
+          <!-- تبويب الهوك -->
+          <div class="tab-panel" id="tab-hook">
+            <div class="field">
+              <label>صيغة الهوك</label>
+              <div class="suggest" id="hookStyles"></div>
+              <button class="btn btn-sm btn-block" id="btnCycleStyle" style="margin-top:8px">🔄 بدّل الصيغة</button>
+            </div>
+            <div class="field">
+              <label>نص الشارة</label>
+              <input type="text" id="fBadge" maxlength="24" placeholder="POV">
+            </div>
+            <div class="field">
+              <label>نص الهوك <span class="hint" id="hookLen2">0 / 120</span></label>
+              <textarea id="fHook2" rows="3" maxlength="120" placeholder="POV: تكتشف أن أقوى من عرفت.. كان أكتمهم"></textarea>
+            </div>
+            <div class="field">
+              <label>السطر الفرعي</label>
+              <input type="text" id="fSub" maxlength="90" placeholder="ستّة أشياء لا يعلنها القويّ أبدًا">
+            </div>
+            <div class="card" style="background:var(--color-bg);padding:13px">
+              <p style="font-size:12px;color:var(--color-muted);line-height:1.9">
+                💡 أول ٣ ثوانٍ تحسم بقاء المشاهد. اجعل الهوك جملة واحدة قصيرة،
+                وابدأها بالنتيجة لا بالمقدّمة.
+              </p>
+            </div>
+          </div>
+
+          <!-- تبويب المكتبة السريعة -->
+          <div class="tab-panel" id="tab-quick">
+            <p style="font-size:12px;color:var(--color-muted);margin-bottom:12px">
+              اضغط أي موضوع ليُحمَّل بكل حقوله في المحرّر.
+            </p>
+            <div id="quickList" style="display:flex;flex-direction:column;gap:9px"></div>
+            <a href="library.html" class="btn btn-sm btn-block" style="margin-top:12px">📚 المكتبة كاملة (25 موضوعًا)</a>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ─── العمود ٢: المعاينة ─── -->
+      <section class="pane pane-c">
+        <div class="stage-wrap">
+          <div class="screens">
+            <button data-screen="hook" class="on"><span class="num">١</span> هوك</button>
+            <button data-screen="content"><span class="num">٢</span> محتوى</button>
+            <button data-screen="flow"><span class="num">٣</span> متدفّق</button>
+          </div>
+
+          <div class="stage" id="stage" style="width:var(--canvas-width);max-width:100%">
+            <canvas id="cv" width="1080" height="1920" aria-label="معاينة الريل"></canvas>
+          </div>
+
+          <div class="stage-tools">
+            <button class="btn btn-sm" id="btnZoomOut" title="تصغير">➖</button>
+            <span class="zoom-val" id="zoomVal">100%</span>
+            <button class="btn btn-sm" id="btnZoomIn" title="تكبير">➕</button>
+            <button class="btn btn-sm" id="btnFull" title="ملء الشاشة">⛶ ملء الشاشة</button>
+            <button class="btn btn-sm" id="btnRuler" title="مسطرة">📐 مسطرة</button>
+            <button class="btn btn-sm" id="btnSafe" title="مناطق الأمان">🛡️ الأمان</button>
+            <button class="btn btn-sm btn-ok" id="btnPlay" title="شغّل الحركة">▶️ شغّل</button>
+          </div>
+          <p class="stage-note">
+            المعاينة بمقاس <b>1080×1920</b> — نفس مقاس التصدير بالضبط.
+            <span id="fitNote"></span>
+          </p>
+        </div>
+      </section>
+
+      <!-- ─── العمود ٣: الخصائص ─── -->
+      <section class="pane pane-r">
+        <div class="pane-bd" style="padding:0">
+
+          <div class="prop-group">
+            <h4><span class="ic">🎨</span> الثيم</h4>
+            <div class="theme-grid" id="themeGrid"></div>
+            <div class="swatches" id="swatches"></div>
+            <button class="btn btn-sm btn-block" id="btnResetColors" style="margin-top:10px">↺ إرجاع ألوان الثيم</button>
+          </div>
+
+          <div class="prop-group">
+            <h4><span class="ic">🖼️</span> الجرافيك</h4>
+            <div id="graphicBox"></div>
+            <div style="height:10px"></div>
+            <div id="hookBgBox"></div>
+          </div>
+
+          <div class="prop-group">
+            <h4><span class="ic">🔤</span> الخط</h4>
+            <div class="field" style="margin-bottom:12px">
+              <select id="fFont"></select>
+            </div>
+            <div class="slider">
+              <label>حجم خط النقاط <b><span id="vPt">34</span>px</b></label>
+              <input type="range" id="sPt" min="26" max="44" step="1">
+            </div>
+            <div class="slider">
+              <label>حجم خط العنوان <b><span id="vTitle">56</span>px</b></label>
+              <input type="range" id="sTitle" min="40" max="72" step="1">
+            </div>
+            <div class="slider">
+              <label>التباعد بين السطور <b><span id="vLh">1.55</span></b></label>
+              <input type="range" id="sLh" min="1.2" max="2" step="0.05">
+            </div>
+          </div>
+
+          <div class="prop-group">
+            <h4><span class="ic">⚙️</span> متقدّم</h4>
+            <div class="slider">
+              <label>ارتفاع الجرافيك <b><span id="vGh">340</span>px</b></label>
+              <input type="range" id="sGh" min="200" max="400" step="10">
+            </div>
+            <div class="slider">
+              <label>استدارة الزوايا <b><span id="vRad">20</span>px</b></label>
+              <input type="range" id="sRad" min="10" max="30" step="1">
+            </div>
+            <div class="slider">
+              <label>الهوامش الجانبية <b><span id="vMar">42</span>px</b></label>
+              <input type="range" id="sMar" min="30" max="60" step="2">
+            </div>
+            <div class="slider">
+              <label>المسافة بين النقاط <b><span id="vGap">12</span>px</b></label>
+              <input type="range" id="sGap" min="6" max="20" step="1">
+            </div>
+          </div>
+
+          <div class="prop-group">
+            <h4><span class="ic">🎞️</span> الحركة والفيديو</h4>
+            <div class="field" style="margin-bottom:10px">
+              <label>مدّة الريل</label>
+              <select id="fDuration"></select>
+            </div>
+            <div class="field" style="margin-bottom:10px">
+              <label>نمط الحركة</label>
+              <select id="fMotion"></select>
+              <p class="hint" id="motionHint" style="margin-top:5px"></p>
+            </div>
+            <label class="check" style="padding:4px 0">
+              <input type="checkbox" id="fLoop"><span>حلقة سلسة</span></label>
+            <label class="check" style="padding:4px 0;margin-bottom:8px">
+              <input type="checkbox" id="fSafe"><span>تخطيط آمن</span></label>
+            <button class="btn btn-sm btn-block btn-primary" id="btnVideo">🎬 صدّر فيديو (13ث)</button>
+            <div id="vidWrap" hidden style="margin-top:10px">
+              <div style="height:5px;border-radius:5px;background:var(--color-border);overflow:hidden">
+                <i id="vidBar" style="display:block;height:100%;width:0;background:var(--color-ok);transition:width .2s"></i>
+              </div>
+              <p class="hint" id="vidMsg" style="text-align:center;margin-top:6px">…</p>
+            </div>
+            <p class="hint" style="margin-top:9px;line-height:1.8">
+              الفيديو بلا صوت — أضف المقطع الصوتي عند الرفع.
+            </p>
+          </div>
+
+          <div class="prop-group">
+            <h4><span class="ic">⌨️</span> الاختصارات</h4>
+            <div style="font-size:11.5px;color:var(--color-muted);line-height:2.1">
+              <div><b>Ctrl+S</b> — حفظ</div>
+              <div><b>Ctrl+E</b> — تصدير PNG</div>
+              <div><b>Ctrl+1/2/3</b> — تبديل الشاشات</div>
+              <div><b>Ctrl+T</b> — الثيم التالي</div>
+              <div><b>Space</b> — شغّل الحركة</div>
+              <div><b>Ctrl+Z / Ctrl+Y</b> — تراجع / إعادة</div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script src="js/themes.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/canvas.js"></script>
+<script src="js/animate.js"></script>
+<script src="js/library.js"></script>
+<script src="js/caption.js"></script>
+<script src="js/export.js"></script>
+<script src="js/video.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
